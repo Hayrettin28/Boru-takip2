@@ -101,8 +101,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <div class="auth-logo">BORU</div>
     <div class="auth-sub">Tersane Ekip Sistemi</div>
     <div class="auth-tabs">
-      <button class="active" onclick="authTab('login')">Giris Yap</button>
-      <button onclick="authTab('register')">Kayit Ol</button>
+      <button id="tab-login" class="active" onclick="authTab('login')">Giris Yap</button>
+      <button id="tab-register" onclick="authTab('register')">Kayit Ol</button>
     </div>
     <div id="login-form">
       <div class="f"><label>E-Posta</label><input id="l-email" type="email" placeholder="ad@mail.com"></div>
@@ -300,5 +300,4 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <h3>Ay Sec</h3>
     <div class="f"><input type="month" id="month-inp" style="font-size:16px"></div>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-a" onclick="setMonth()">Sec</button>
-      <button class
+      <button class="btn btn-a" onclick="setMonth()"
