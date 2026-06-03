@@ -3,937 +3,302 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>BoruTakip — Tersane</title>
+<title>BoruTakip v2</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0c0f;
-  --s1: #111318;
-  --s2: #181c23;
-  --s3: #1e2330;
-  --border: #252d3d;
-  --accent: #f59e0b;
-  --accent2: #ef4444;
-  --green: #10b981;
-  --red: #ef4444;
-  --blue: #6366f1;
-  --text: #e2e8f0;
-  --muted: #5a6580;
-  --font-h: 'Bebas Neue', sans-serif;
-  --font-b: 'DM Sans', sans-serif;
-  --r: 10px;
-}
+:root{--bg:#0a0c0f;--s1:#111318;--s2:#181c23;--s3:#1e2330;--border:#252d3d;--accent:#f59e0b;--green:#10b981;--red:#ef4444;--blue:#6366f1;--text:#e2e8f0;--muted:#5a6580;--fh:'Bebas Neue',sans-serif;--fb:'DM Sans',sans-serif;--r:10px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height:100vh;font-size:15px}
-input,select,textarea,button{font-family:var(--font-b)}
-
-/* ── SETUP BANNER ── */
-#setup-banner{background:#1a1000;border-bottom:2px solid var(--accent);padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-#setup-banner span{font-size:13px;color:#fbbf24}
-#setup-banner input{background:#0a0c0f;border:1px solid var(--accent);color:var(--text);border-radius:6px;padding:7px 10px;font-size:12px;width:340px;max-width:100%}
-.btn-setup{background:var(--accent);color:#000;border:none;border-radius:6px;padding:7px 16px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap}
-
-/* ── AUTH ── */
-#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at 50% 0%,#1a1500 0%,var(--bg) 60%)}
-.auth-box{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:36px;width:100%;max-width:400px}
-.auth-logo{font-family:var(--font-h);font-size:42px;letter-spacing:2px;color:var(--accent);margin-bottom:4px}
-.auth-sub{color:var(--muted);font-size:13px;margin-bottom:28px}
-.auth-tab{display:flex;gap:4px;background:var(--s2);border-radius:8px;padding:4px;margin-bottom:20px}
-.auth-tab button{flex:1;background:none;border:none;color:var(--muted);padding:8px;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;transition:.15s}
-.auth-tab button.active{background:var(--s3);color:var(--text)}
-
-/* ── FORM ELEMENTS ── */
-.field{margin-bottom:14px}
-.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;letter-spacing:.3px}
-.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:11px 14px;font-size:14px;outline:none;transition:.15s}
-.field input:focus,.field select:focus{border-color:var(--accent)}
-.field select option{background:var(--s2)}
-
-/* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
-.btn-full{width:100%;justify-content:center}
-.btn-amber{background:var(--accent);color:#000}
-.btn-amber:hover{background:#fbbf24}
-.btn-red{background:var(--red);color:#fff}
-.btn-red:hover{opacity:.85}
-.btn-ghost{background:var(--s3);color:var(--text)}
-.btn-ghost:hover{background:var(--border)}
-.btn-green{background:var(--green);color:#000}
-.btn-blue{background:var(--blue);color:#fff}
-.btn-sm{padding:6px 12px;font-size:12px;border-radius:6px}
-.btn-xs{padding:4px 8px;font-size:11px;border-radius:5px}
-
-/* ── APP SHELL ── */
+body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;font-size:15px}
+input,select,textarea,button{font-family:var(--fb)}
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at 50% 0%,#1a1500,var(--bg) 60%)}
+.auth-box{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:380px}
+.auth-logo{font-family:var(--fh);font-size:40px;letter-spacing:2px;color:var(--accent)}
+.auth-sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+.auth-tabs{display:flex;gap:4px;background:var(--s2);border-radius:8px;padding:4px;margin-bottom:18px}
+.auth-tabs button{flex:1;background:none;border:none;color:var(--muted);padding:8px;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;transition:.15s}
+.auth-tabs button.active{background:var(--s3);color:var(--text)}
+.f{margin-bottom:13px}
+.f label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.f input,.f select,.f textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 13px;font-size:14px;outline:none;transition:.15s}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--accent)}
+.f select option{background:var(--s2)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-w{width:100%;justify-content:center}
+.btn-a{background:var(--accent);color:#000}.btn-a:hover{background:#fbbf24}
+.btn-r{background:var(--red);color:#fff}.btn-r:hover{opacity:.85}
+.btn-g{background:var(--s3);color:var(--text)}.btn-g:hover{background:var(--border)}
+.btn-bl{background:var(--blue);color:#fff}
+.btn-sm{padding:6px 11px;font-size:12px;border-radius:6px}
+.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px}
 #app{display:none;flex-direction:column;min-height:100vh}
-
-/* TOPBAR */
-.topbar{background:var(--s1);border-bottom:1px solid var(--border);height:54px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:50}
-.topbar-logo{font-family:var(--font-h);font-size:22px;color:var(--accent);letter-spacing:1px}
-.topbar-month{background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:13px;cursor:pointer;color:var(--text)}
+.topbar{background:var(--s1);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:50}
+.topbar-logo{font-family:var(--fh);font-size:20px;color:var(--accent);letter-spacing:1px}
+.month-btn{background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--text)}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
-.admin-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;position:absolute;bottom:0;right:0}
-
-/* BOTTOM NAV */
-.bottom-nav{background:var(--s1);border-top:1px solid var(--border);display:flex;position:sticky;bottom:0;z-index:50}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-weight:500;transition:.15s;border-top:2px solid transparent}
-.nav-btn.active{color:var(--accent);border-top-color:var(--accent)}
-.nav-btn svg{width:20px;height:20px}
-
-/* CONTENT */
-.content{flex:1;padding:16px;max-width:700px;margin:0 auto;width:100%}
-.page{display:none}
-.page.active{display:block}
-
-/* ── CARDS ── */
-.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px}
-.card-title{font-family:var(--font-h);font-size:19px;letter-spacing:.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.card-sm{font-size:16px}
-
-/* ── STATS ── */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.stat{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px 12px}
-.stat-n{font-family:var(--font-h);font-size:34px;line-height:1}
-.stat-l{font-size:11px;color:var(--muted);margin-top:3px}
-.stat.g{border-color:rgba(16,185,129,.4)}
-.stat.r{border-color:rgba(239,68,68,.4)}
-.stat.a{border-color:rgba(245,158,11,.4)}
-
-/* ── QUICK CHIPS ── */
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{background:var(--s3);border:1px solid var(--border);border-radius:24px;padding:8px 14px;font-size:13px;cursor:pointer;transition:.1s;user-select:none;display:flex;align-items:center;gap:6px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.content{flex:1;padding:14px;max-width:680px;margin:0 auto;width:100%;padding-bottom:72px}
+.page{display:none}.page.active{display:block}
+.bnav{background:var(--s1);border-top:1px solid var(--border);display:flex;position:fixed;bottom:0;left:0;right:0;z-index:50}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-weight:500;transition:.15s;border-top:2px solid transparent}
+.nb.active{color:var(--accent);border-top-color:var(--accent)}
+.nb svg{width:19px;height:19px}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.ct{font-family:var(--fh);font-size:16px;letter-spacing:.5px;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px 10px}
+.sn{font-family:var(--fh);font-size:30px;line-height:1}
+.sl{font-size:11px;color:var(--muted);margin-top:2px}
+.stat.g{border-color:rgba(16,185,129,.4)}.stat.r{border-color:rgba(239,68,68,.4)}.stat.a{border-color:rgba(245,158,11,.4)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:var(--s3);border:1px solid var(--border);border-radius:20px;padding:7px 13px;font-size:13px;cursor:pointer;transition:.1s;user-select:none}
 .chip:hover{border-color:var(--accent);color:var(--accent)}
 .chip.sel{background:var(--accent);color:#000;border-color:var(--accent)}
-.chip-qty{background:rgba(0,0,0,.3);border-radius:12px;padding:1px 7px;font-size:11px;font-weight:700}
-
-/* ── TABLE ── */
-.tbl-wrap{overflow-x:auto}
+.sc-chip{background:var(--s2);border:1px solid var(--blue);border-radius:20px;padding:7px 13px 7px 10px;font-size:13px;cursor:pointer;color:var(--blue);display:inline-flex;align-items:center;gap:6px;user-select:none;transition:.1s}
+.sc-chip.sel{background:var(--blue);color:#fff}
+.sc-del{background:rgba(239,68,68,.2);color:var(--red);border:none;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;flex-shrink:0}
+.tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{font-family:var(--font-h);font-size:12px;letter-spacing:.5px;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
-td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+th{font-family:var(--fh);font-size:11px;letter-spacing:.5px;color:var(--muted);text-align:left;padding:7px 9px;border-bottom:1px solid var(--border)}
+td{padding:8px 9px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,.02)}
-
-/* ── BADGES ── */
-.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.3px}
-.b-g{background:rgba(16,185,129,.15);color:var(--green)}
-.b-r{background:rgba(239,68,68,.15);color:var(--red)}
-.b-a{background:rgba(245,158,11,.15);color:var(--accent)}
-.b-b{background:rgba(99,102,241,.15);color:var(--blue)}
-
-/* ── DIFF ROWS ── */
-.row-miss td{background:rgba(239,68,68,.04)}
-.row-miss td:nth-child(4){color:var(--red);font-weight:600}
-.row-extra td{background:rgba(245,158,11,.04)}
-.row-extra td:nth-child(4){color:var(--accent);font-weight:600}
-
-/* ── MISC ── */
-.empty{text-align:center;padding:32px;color:var(--muted);font-size:13px}
-.empty-icon{font-size:32px;margin-bottom:8px}
-.divider{border:none;border-top:1px solid var(--border);margin:12px 0}
-.tag{display:inline-block;background:var(--s3);border-radius:4px;padding:2px 7px;font-size:11px;color:var(--muted);margin-right:4px}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a2a1a;border:1px solid var(--green);color:var(--green);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none}
-.toast.err{background:#2a1a1a;border-color:var(--red);color:var(--red)}
-.toast.show{opacity:1}
-.section-label{font-size:11px;font-weight:600;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;margin-top:16px}
-
-/* ── MODAL ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:flex-end;justify-content:center}
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-g{background:rgba(16,185,129,.15);color:var(--green)}.b-r{background:rgba(239,68,68,.15);color:var(--red)}.b-a{background:rgba(245,158,11,.15);color:var(--accent)}.b-b{background:rgba(99,102,241,.15);color:var(--blue)}
+.row-miss td{background:rgba(239,68,68,.04)}.row-miss td:nth-child(4){color:var(--red);font-weight:600}
+.row-extra td{background:rgba(245,158,11,.04)}.row-extra td:nth-child(4){color:var(--accent);font-weight:600}
+.frow{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.fc{background:var(--s3);border:1px solid var(--border);border-radius:18px;padding:5px 11px;font-size:12px;cursor:pointer;transition:.1s}
+.fc.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:flex-end;justify-content:center}
 .overlay.open{display:flex}
-.modal{background:var(--s1);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:24px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
-.modal h3{font-family:var(--font-h);font-size:22px;margin-bottom:16px}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:22px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:var(--fh);font-size:21px;margin-bottom:14px}
 @media(min-width:600px){.overlay{align-items:center}.modal{border-radius:16px;max-height:80vh}}
-
-/* ── FILTER CHIPS ── */
-.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.fchip{background:var(--s3);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;transition:.1s}
-.fchip.active{background:var(--accent);color:#000;border-color:var(--accent)}
-
-/* ── TOGGLE ── */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-.toggle-row:last-child{border-bottom:none}
-
-/* ── PAGE HEADER ── */
-.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
-.page-h1{font-family:var(--font-h);font-size:26px;letter-spacing:.5px}
+.hl{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;margin-top:10px}
+.hchip{background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:monospace;transition:.1s;display:inline-block;margin:3px}
+.hchip:hover{border-color:var(--accent)}.hchip.sel{background:var(--accent);color:#000;border-color:var(--accent)}
+.empty{text-align:center;padding:28px;color:var(--muted);font-size:13px}
+.ei{font-size:30px;margin-bottom:6px}
+.divider{border:none;border-top:1px solid var(--border);margin:10px 0}
+.tag{display:inline-block;background:var(--s3);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--muted);margin-right:3px}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.h1{font-family:var(--fh);font-size:24px;letter-spacing:.5px}
+.toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:#1a2a1a;border:1px solid var(--green);color:var(--green);padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.err{background:#2a1a1a;border-color:var(--red);color:var(--red)}.toast.show{opacity:1}
+.upload-box{border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:.15s}
+.upload-box:hover{border-color:var(--accent)}
+.upload-box input{display:none}
+.code-pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;max-height:160px;overflow-y:auto;margin-top:8px;white-space:pre-wrap;word-break:break-all}
+.inp{background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 11px;font-size:14px;outline:none;transition:.15s}
+.inp:focus{border-color:var(--accent)}
 </style>
 </head>
 <body>
 
-<!-- SETUP BANNER -->
-<div id="setup-banner">
-  <span>⚙️ Supabase bağlantısını gir:</span>
-  <input id="sb-url" type="text" placeholder="https://xxxxx.supabase.co">
-  <input id="sb-key" type="text" placeholder="anon public key">
-  <button class="btn-setup" onclick="saveConfig()">Bağlan</button>
-</div>
-
-<!-- AUTH -->
 <div id="auth-screen" style="display:none">
   <div class="auth-box">
-    <div class="auth-logo">BORU<span style="color:var(--text)">TAKİP</span></div>
+    <div class="auth-logo">BORU</div>
     <div class="auth-sub">Tersane Ekip Sistemi</div>
-    <div class="auth-tab">
-      <button class="active" onclick="authTab('login')">Giriş Yap</button>
-      <button onclick="authTab('register')">Kayıt Ol</button>
+    <div class="auth-tabs">
+      <button class="active" onclick="authTab('login')">Giris Yap</button>
+      <button onclick="authTab('register')">Kayit Ol</button>
     </div>
-    <!-- LOGIN -->
     <div id="login-form">
-      <div class="field"><label>E-POSTA</label><input id="l-email" type="email" placeholder="ad@tersane.com"></div>
-      <div class="field"><label>ŞİFRE</label><input id="l-pass" type="password" placeholder="••••••••"></div>
-      <button class="btn btn-amber btn-full" onclick="doLogin()">Giriş Yap</button>
-      <div id="login-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
+      <div class="f"><label>E-Posta</label><input id="l-email" type="email" placeholder="ad@mail.com"></div>
+      <div class="f"><label>Sifre</label><input id="l-pass" type="password" placeholder="..."></div>
+      <button class="btn btn-a btn-w" onclick="doLogin()">Giris Yap</button>
+      <div id="l-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
-    <!-- REGISTER -->
     <div id="register-form" style="display:none">
-      <div class="field"><label>AD SOYAD</label><input id="r-name" type="text" placeholder="Mehmet Yıldız"></div>
-      <div class="field"><label>E-POSTA</label><input id="r-email" type="email" placeholder="ad@tersane.com"></div>
-      <div class="field"><label>ŞİFRE</label><input id="r-pass" type="password" placeholder="En az 6 karakter"></div>
-      <button class="btn btn-amber btn-full" onclick="doRegister()">Kayıt Ol</button>
-      <div id="reg-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
+      <div class="f"><label>Ad Soyad</label><input id="r-name" type="text" placeholder="Mehmet Yilmaz"></div>
+      <div class="f"><label>E-Posta</label><input id="r-email" type="email" placeholder="ad@mail.com"></div>
+      <div class="f"><label>Sifre</label><input id="r-pass" type="password" placeholder="En az 6 karakter"></div>
+      <button class="btn btn-a btn-w" onclick="doRegister()">Kayit Ol</button>
+      <div id="r-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div class="topbar">
-    <div class="topbar-logo">⚓ BORU</div>
-    <button class="topbar-month" onclick="openMonthModal()">📅 <span id="month-lbl">—</span></button>
+    <div class="topbar-logo">BORU</div>
+    <button class="month-btn" onclick="openOverlay('month-ov')">Ay: <span id="month-lbl">—</span></button>
     <div class="topbar-right">
-      <span id="user-name-lbl" style="font-size:12px;color:var(--muted)"></span>
-      <div style="position:relative;cursor:pointer" onclick="doLogout()">
-        <div class="avatar" id="user-avatar">?</div>
-      </div>
+      <span id="uname-lbl" style="font-size:12px;color:var(--muted)"></span>
+      <div class="avatar" id="uavatar" onclick="doLogout()">?</div>
     </div>
   </div>
 
   <div class="content">
-    <!-- PAGE: GİRİŞ -->
+
+    <!-- GİRİŞ -->
     <div id="page-giris" class="page active">
-      <div class="page-header">
-        <div class="page-h1">Boru Girişi</div>
-        <span id="today-lbl" style="font-size:12px;color:var(--muted)"></span>
+      <div class="ph"><div class="h1">Boru Girisi</div><span id="today-lbl" style="font-size:12px;color:var(--muted)"></span></div>
+
+      <div class="card">
+        <div class="ct">Kisayollarim</div>
+        <div id="sc-chips"></div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center">
+          <input id="q-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:16px">
+          <input id="q-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
+          <button class="btn btn-a" onclick="scAdd()">Ekle</button>
+        </div>
+        <div id="sc-sel-lbl" style="font-size:12px;color:var(--muted);margin-top:5px"></div>
       </div>
 
-      <!-- Hızlı Giriş -->
       <div class="card">
-        <div class="card-title card-sm">⚡ Hızlı Giriş</div>
-        <div class="chips" id="quick-chips"></div>
-        <div style="display:flex;gap:8px;margin-top:14px;align-items:flex-end">
-          <div style="flex:1">
-            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">ADET</div>
-            <input id="q-adet" type="number" min="1" value="1" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 12px;width:100%;font-size:16px;outline:none">
-          </div>
-          <div style="flex:1">
-            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">NOT</div>
-            <input id="q-not" type="text" placeholder="opsiyonel" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 12px;width:100%;font-size:14px;outline:none">
-          </div>
+        <div class="ct">Boru Sec &amp; Kisayol Olustur</div>
+        <div id="hier-sel"></div>
+        <div id="hier-preview" style="font-family:monospace;font-size:14px;color:var(--accent);margin-top:10px;min-height:20px;font-weight:700"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+          <input id="h-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:16px">
+          <input id="h-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
+          <button class="btn btn-a" onclick="hierAdd()">Ekle</button>
+          <button class="btn btn-bl btn-sm" onclick="saveShortcut()">Kisayol Kaydet</button>
         </div>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <button class="btn btn-amber" style="flex:1;justify-content:center" onclick="quickAdd()">+ Ekle</button>
-          <button class="btn btn-ghost btn-sm" onclick="selCat=null;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'))">✕ Temizle</button>
-        </div>
-        <div id="sel-cat-lbl" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
       </div>
 
-      <!-- Manuel Giriş -->
       <div class="card">
-        <div class="card-title card-sm">📝 Manuel Giriş</div>
-        <div class="field">
-          <label>TARİH</label>
-          <input id="m-tarih" type="date">
+        <div class="ct">Manuel Kod Girisi</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input id="man-code" type="text" placeholder="M9-154-M-5510-111-001-SP02" class="inp" style="flex:2;min-width:150px;font-family:monospace;font-size:13px">
+          <input id="man-adet" type="number" min="1" value="1" class="inp" style="width:70px">
+          <button class="btn btn-a" onclick="manAdd()">Ekle</button>
         </div>
-        <div style="display:flex;gap:10px">
-          <div class="field" style="flex:2">
-            <label>KATEGORİ</label>
-            <select id="m-kat"><option value="">— Seç —</option></select>
-          </div>
-          <div class="field" style="flex:0 0 90px">
-            <label>ADET</label>
-            <input id="m-adet" type="number" min="1" value="1">
-          </div>
-        </div>
-        <div class="field">
-          <label>NOT</label>
-          <input id="m-not" type="text" placeholder="Opsiyonel...">
-        </div>
-        <button class="btn btn-amber" onclick="manualAdd()">Ekle</button>
       </div>
 
-      <!-- Bugünün girişleri -->
       <div class="card">
-        <div class="card-title card-sm">📅 Bugünkü Girişlerim</div>
+        <div class="ct">Bugunku Girislerim</div>
         <div id="today-list"></div>
       </div>
     </div>
 
-    <!-- PAGE: LİSTE -->
+    <!-- LİSTE -->
     <div id="page-liste" class="page">
-      <div class="page-header">
-        <div class="page-h1">Ana Liste</div>
+      <div class="ph">
+        <div class="h1">Ana Liste</div>
         <div style="display:flex;gap:6px">
-          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">⬇️ CSV</button>
-          <button class="btn btn-ghost btn-sm" onclick="copyForExcel()">📋 Excel</button>
+          <button class="btn btn-g btn-sm" onclick="expCSV()">CSV</button>
+          <button class="btn btn-g btn-sm" onclick="cpExcel()">Excel Kopyala</button>
         </div>
       </div>
-      <div class="stats-row" id="liste-stats"></div>
-
-      <!-- Kişi filtresi -->
-      <div class="filter-row" id="person-filters"></div>
-
+      <div class="stats" id="l-stats"></div>
+      <div class="frow" id="pf-row"></div>
       <div class="card">
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>KATEGORİ</th><th>TOPLAM</th><th>KİŞİLER</th></tr></thead>
-            <tbody id="liste-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Kişi bazlı detay -->
-      <div class="card" id="person-detail-card" style="display:none">
-        <div class="card-title card-sm">👤 <span id="person-detail-name"></span></div>
-        <div id="person-detail-body"></div>
+        <div class="tw"><table>
+          <thead><tr><th>BORU KODU</th><th>TOPLAM</th><th>KISILER</th></tr></thead>
+          <tbody id="l-tbody"></tbody>
+        </table></div>
       </div>
     </div>
 
-    <!-- PAGE: KARŞILAŞTIRMA -->
+    <!-- KARŞILAŞTIRMA -->
     <div id="page-rapor" class="page">
-      <div class="page-header">
-        <div class="page-h1">Karşılaştırma</div>
-        <button class="btn btn-ghost btn-sm" onclick="exportDiffCSV()">⬇️ Farklar</button>
+      <div class="ph">
+        <div class="h1">Karsilastirma</div>
+        <button class="btn btn-g btn-sm" onclick="expDiff()">Farklari indir</button>
       </div>
-      <div class="stats-row" id="rapor-stats"></div>
-      <div class="filter-row">
-        <div class="fchip active" data-f="all" onclick="setFilter(this)">Tümü</div>
-        <div class="fchip" data-f="ok" onclick="setFilter(this)">✅ Eşit</div>
-        <div class="fchip" data-f="miss" onclick="setFilter(this)">🔴 Eksik</div>
-        <div class="fchip" data-f="extra" onclick="setFilter(this)">🟡 Fazla</div>
-      </div>
-      <!-- Muhasebe yükleme -->
-      <div class="card">
-        <div class="card-title card-sm">🏦 Muhasebe Verisi</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Excel'den kopyala — her satır: <b>Kategori TAB Adet</b></p>
-        <textarea id="muh-paste" rows="5" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;font-family:monospace;font-size:12px;resize:vertical" placeholder="DN50 Dikişsiz	24&#10;DN100 Flanşlı	12"></textarea>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn btn-amber btn-sm" onclick="loadMuhasebe()">✅ Yükle</button>
-          <button class="btn btn-ghost btn-sm" onclick="clearMuhasebe()">🗑️ Temizle</button>
-        </div>
-        <div id="muh-status" style="font-size:12px;margin-top:6px"></div>
+      <div class="stats" id="r-stats"></div>
+      <div class="frow">
+        <div class="fc active" data-f="all" onclick="setRF(this)">Tumunü Göster</div>
+        <div class="fc" data-f="ok" onclick="setRF(this)">Esit</div>
+        <div class="fc" data-f="miss" onclick="setRF(this)">Eksik</div>
+        <div class="fc" data-f="extra" onclick="setRF(this)">Fazla</div>
       </div>
       <div class="card">
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>KATEGORİ</th><th>EKİP</th><th>MUHASEBE</th><th>FARK</th><th>DURUM</th></tr></thead>
-            <tbody id="rapor-tbody"></tbody>
-          </table>
+        <div class="ct">Muhasebe Verisi Yukle</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:7px">Excel kopyala-yapistir — Kod TAB Adet</div>
+        <textarea id="muh-paste" rows="4" class="inp" style="font-family:monospace;font-size:12px;resize:vertical" placeholder="M9-154-M-5510-111-001-SP02&#9;5&#10;M9-154-M-5510-112-002-SP05&#9;3"></textarea>
+        <div style="display:flex;gap:8px;margin-top:7px">
+          <button class="btn btn-a btn-sm" onclick="loadPaste()">Yukle</button>
+          <button class="btn btn-g btn-sm" onclick="clearMuh()">Temizle</button>
         </div>
+        <div class="divider"></div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:7px">Fotograftan Oku (AI)</div>
+        <label class="upload-box" for="ocr-file">
+          <div style="font-size:26px;margin-bottom:5px">📷</div>
+          <div style="font-size:13px;color:var(--muted)">Fotograf sec veya cek</div>
+          <input type="file" id="ocr-file" accept="image/*" capture="environment" onchange="doOCR(this)">
+        </label>
+        <div id="ocr-st" style="font-size:12px;margin-top:7px"></div>
+        <div id="ocr-pre" class="code-pre" style="display:none"></div>
+        <div id="muh-st" style="font-size:12px;margin-top:6px"></div>
+      </div>
+      <div class="card">
+        <div class="tw"><table>
+          <thead><tr><th>KOD</th><th>EKIP</th><th>MUHASEBE</th><th>FARK</th><th>DURUM</th></tr></thead>
+          <tbody id="r-tbody"></tbody>
+        </table></div>
       </div>
     </div>
 
-    <!-- PAGE: ADMIN -->
+    <!-- KATEGORİLER -->
+    <div id="page-cats" class="page">
+      <div class="ph"><div class="h1">Kategoriler</div></div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Boru kodunun parcalarini buradan tanimla. Sistem hepsini birlestirip tam kodu olusturur.</div>
+      <div class="card" style="background:var(--bg);font-family:monospace;font-size:13px;padding:14px;margin-bottom:12px">
+        <span style="color:var(--accent)">GEMI</span>-<span style="color:#60a5fa">ALAN</span>-<span style="color:#34d399">TIP</span>-<span style="color:#f87171">SISTEM</span>-<span style="color:#c084fc">ZONE</span>-<span style="color:#fbbf24">SIRA</span>-<span style="color:#94a3b8">PARCA</span>
+        <div style="margin-top:5px;color:var(--muted);font-size:12px">Ornek: M9-154-M-5510-111-001-SP02</div>
+      </div>
+      <div id="cat-lvls"></div>
+      <div class="card">
+        <div class="ct">Deger Ekle</div>
+        <div class="f"><label>Seviye</label>
+          <select id="new-lv-sel">
+            <option value="ship">Gemi (M9, M12...)</option>
+            <option value="area">Alan (154, 133...)</option>
+            <option value="type">Tip (M, N...)</option>
+            <option value="system">Sistem (5510, 5060...)</option>
+            <option value="zone">Zone (071, 082...)</option>
+            <option value="seq">Sira (001, 002...)</option>
+            <option value="part">Parca Tipi (SP01, STD9...)</option>
+          </select>
+        </div>
+        <div class="f"><label>Deger</label><input id="new-lv-val" type="text" placeholder="ornek: M9"></div>
+        <div class="f"><label>Aciklama (opsiyonel)</label><input id="new-lv-desc" type="text" placeholder="ornek: 9 Nolu Gemi"></div>
+        <button class="btn btn-a" onclick="addLV()">Ekle</button>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
     <div id="page-admin" class="page">
-      <div class="page-header"><div class="page-h1">⚙️ Yönetim</div></div>
-
-      <!-- Kategori Yönetimi -->
+      <div class="ph"><div class="h1">Yonetim</div></div>
       <div class="card">
-        <div class="card-title card-sm">🗂️ Kategoriler</div>
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-          <input id="new-cat-name" type="text" placeholder="Kategori adı (ör: DN100 Flanşlı)" style="flex:2;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;min-width:160px">
-          <input id="new-cat-zone" type="text" placeholder="Zone (ör: Güverte)" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;min-width:100px">
-          <button class="btn btn-amber btn-sm" onclick="addCategory()">+ Ekle</button>
-        </div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>AD</th><th>ZONE</th><th></th></tr></thead>
-            <tbody id="cat-tbody"></tbody>
-          </table>
-        </div>
+        <div class="ct">Ekip</div>
+        <div class="tw"><table>
+          <thead><tr><th>AD</th><th>ROL</th><th></th></tr></thead>
+          <tbody id="adm-tbody"></tbody>
+        </table></div>
       </div>
-
-      <!-- Kullanıcı Yönetimi -->
-      <div class="card">
-        <div class="card-title card-sm">👥 Ekip</div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>AD</th><th>KAYIT</th><th>ROL</th><th></th></tr></thead>
-            <tbody id="users-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Çıkış -->
-      <button class="btn btn-ghost btn-full" onclick="doLogout()" style="margin-top:8px">🚪 Çıkış Yap</button>
+      <button class="btn btn-g btn-w" onclick="doLogout()" style="margin-top:8px">Cikis Yap</button>
     </div>
+
   </div>
 
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav">
-    <button class="nav-btn active" onclick="goPage('giris',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m-8-8h16"/></svg>
-      Giriş
+  <div class="bnav">
+    <button class="nb active" onclick="goPage('giris',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m-8-8h16"/></svg>Giris
     </button>
-    <button class="nav-btn" onclick="goPage('liste',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-      Liste
+    <button class="nb" onclick="goPage('liste',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Liste
     </button>
-    <button class="nav-btn" onclick="goPage('rapor',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-      Karşılaştır
+    <button class="nb" onclick="goPage('rapor',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>Karsil.
     </button>
-    <button class="nav-btn" id="admin-nav-btn" style="display:none" onclick="goPage('admin',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
-      Admin
+    <button class="nb" onclick="goPage('cats',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Kat.
+    </button>
+    <button class="nb" id="admin-nb" style="display:none" onclick="goPage('admin',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>Admin
     </button>
   </div>
 </div>
 
-<!-- MONTH MODAL -->
-<div class="overlay" id="month-overlay">
+<div class="overlay" id="month-ov">
   <div class="modal">
-    <h3>📅 Ay Seç</h3>
-    <div class="field"><input type="month" id="month-inp" style="font-size:16px"></div>
+    <h3>Ay Sec</h3>
+    <div class="f"><input type="month" id="month-inp" style="font-size:16px"></div>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-amber" onclick="setMonth()">Seç</button>
-      <button class="btn btn-ghost" onclick="closeModal('month-overlay')">İptal</button>
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<script>
-// ═══════════════════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════════════════
-let SB_URL = localStorage.getItem('sb_url') || '';
-let SB_KEY = localStorage.getItem('sb_key') || '';
-let sb = null;
-
-document.getElementById('sb-url').value = SB_URL;
-document.getElementById('sb-key').value = SB_KEY;
-
-function saveConfig() {
-  SB_URL = document.getElementById('sb-url').value.trim();
-  SB_KEY = document.getElementById('sb-key').value.trim();
-  if (!SB_URL || !SB_KEY) { alert('URL ve Key gerekli!'); return; }
-  localStorage.setItem('sb_url', SB_URL);
-  localStorage.setItem('sb_key', SB_KEY);
-  initSupabase();
-}
-
-function initSupabase() {
-  if (!SB_URL || !SB_KEY) {
-    document.getElementById('setup-banner').style.display = 'flex';
-    return;
-  }
-  document.getElementById('setup-banner').style.display = 'none';
-  sb = supabase.createClient(SB_URL, SB_KEY);
-  checkSession();
-}
-
-// ═══════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════
-let currentUser = null;
-let currentProfile = null;
-let currentMonth = localStorage.getItem('bt_month') || new Date().toISOString().slice(0,7);
-let categories = [];
-let allEntries = [];
-let muhData = {};
-let selCat = null;
-let personFilter = null;
-let rapFilter = 'all';
-let allProfiles = [];
-
-// ═══════════════════════════════════════════════════════
-// AUTH
-// ═══════════════════════════════════════════════════════
-async function checkSession() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) { currentUser = session.user; await loadProfile(); showApp(); }
-  else showAuth();
-}
-
-function showAuth() {
-  document.getElementById('auth-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-}
-function showApp() {
-  document.getElementById('auth-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-  if (currentProfile?.role === 'admin') document.getElementById('admin-nav-btn').style.display = 'flex';
-  const initials = (currentProfile?.name || '?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('user-avatar').textContent = initials;
-  document.getElementById('user-name-lbl').textContent = currentProfile?.name || '';
-  updateMonthLabel();
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('m-tarih').value = today;
-  document.getElementById('today-lbl').textContent = today;
-  loadAll();
-}
-
-function authTab(t) {
-  document.querySelectorAll('.auth-tab button').forEach((b,i)=>b.classList.toggle('active', (i===0&&t==='login')||(i===1&&t==='register')));
-  document.getElementById('login-form').style.display = t==='login'?'block':'none';
-  document.getElementById('register-form').style.display = t==='register'?'block':'none';
-}
-
-async function doLogin() {
-  const email = document.getElementById('l-email').value.trim();
-  const pass = document.getElementById('l-pass').value;
-  document.getElementById('login-err').textContent = '';
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
-  if (error) { document.getElementById('login-err').textContent = 'Hatalı e-posta veya şifre'; return; }
-  currentUser = data.user;
-  await loadProfile();
-  showApp();
-}
-
-async function doRegister() {
-  const name = document.getElementById('r-name').value.trim();
-  const email = document.getElementById('r-email').value.trim();
-  const pass = document.getElementById('r-pass').value;
-  document.getElementById('reg-err').textContent = '';
-  if (!name || !email || !pass) { document.getElementById('reg-err').textContent = 'Tüm alanları doldur'; return; }
-  const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { name } } });
-  if (error) { document.getElementById('reg-err').textContent = error.message; return; }
-  currentUser = data.user;
-  await new Promise(r => setTimeout(r, 800));
-  await loadProfile();
-  showApp();
-}
-
-async function doLogout() {
-  await sb.auth.signOut();
-  currentUser = null; currentProfile = null;
-  showAuth();
-}
-
-async function loadProfile() {
-  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  currentProfile = data;
-}
-
-// ═══════════════════════════════════════════════════════
-// DATA LOADING
-// ═══════════════════════════════════════════════════════
-async function loadAll() {
-  await Promise.all([loadCategories(), loadEntries(), loadProfiles()]);
-  renderGiris();
-  renderListe();
-  renderRapor();
-  if (currentProfile?.role === 'admin') renderAdmin();
-}
-
-async function loadCategories() {
-  const { data } = await sb.from('categories').select('*').order('sort_order').order('name');
-  categories = data || [];
-}
-
-async function loadEntries() {
-  const { data } = await sb.from('entries')
-    .select('*, profiles(name), categories(name,zone)')
-    .eq('month', currentMonth)
-    .order('entry_date', { ascending: false });
-  allEntries = data || [];
-}
-
-async function loadProfiles() {
-  const { data } = await sb.from('profiles').select('*').order('name');
-  allProfiles = data || [];
-}
-
-// ═══════════════════════════════════════════════════════
-// MONTH
-// ═══════════════════════════════════════════════════════
-function openMonthModal() {
-  document.getElementById('month-inp').value = currentMonth;
-  document.getElementById('month-overlay').classList.add('open');
-}
-function setMonth() {
-  currentMonth = document.getElementById('month-inp').value;
-  localStorage.setItem('bt_month', currentMonth);
-  closeModal('month-overlay');
-  updateMonthLabel();
-  loadAll();
-}
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function updateMonthLabel() {
-  const [y,m] = currentMonth.split('-');
-  const names = ['','Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-  document.getElementById('month-lbl').textContent = names[+m] + ' ' + y;
-}
-
-// ═══════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════
-function goPage(name, btn) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  btn.classList.add('active');
-}
-
-// ═══════════════════════════════════════════════════════
-// GİRİŞ SAYFASI
-// ═══════════════════════════════════════════════════════
-function renderGiris() {
-  // Quick chips
-  const chips = document.getElementById('quick-chips');
-  chips.innerHTML = categories.length === 0
-    ? '<div style="color:var(--muted);font-size:12px">Kategori yok — Admin\'den eklemesini iste</div>'
-    : categories.map(c => `
-        <div class="chip ${selCat===c.id?'sel':''}" onclick="selectChip('${c.id}','${c.name.replace(/'/g,"\\'")}',this)">
-          ${c.name}${c.zone?` <span class="tag">${c.zone}</span>`:''}
-        </div>`).join('');
-  // Category select
-  const sel = document.getElementById('m-kat');
-  sel.innerHTML = '<option value="">— Seç —</option>' +
-    categories.map(c=>`<option value="${c.id}">${c.name}${c.zone?' ('+c.zone+')':''}</option>`).join('');
-  // Today
-  renderTodayList();
-}
-
-function selectChip(id, name, el) {
-  selCat = id;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  document.getElementById('sel-cat-lbl').textContent = '✓ Seçili: ' + name;
-  document.getElementById('q-adet').focus();
-}
-
-async function quickAdd() {
-  if (!selCat) { toast('Önce bir kategori seç!', true); return; }
-  const adet = parseInt(document.getElementById('q-adet').value);
-  if (!adet || adet < 1) { toast('Geçerli adet gir', true); return; }
-  const today = new Date().toISOString().split('T')[0];
-  const { error } = await sb.from('entries').insert({
-    user_id: currentUser.id,
-    category_id: selCat,
-    quantity: adet,
-    entry_date: today,
-    month: currentMonth,
-    note: document.getElementById('q-not').value.trim() || null
-  });
-  if (error) { toast('Hata: ' + error.message, true); return; }
-  document.getElementById('q-adet').value = 1;
-  document.getElementById('q-not').value = '';
-  toast('✓ Eklendi!');
-  await loadEntries();
-  renderGiris(); renderListe(); renderRapor();
-}
-
-async function manualAdd() {
-  const tarih = document.getElementById('m-tarih').value;
-  const katId = document.getElementById('m-kat').value;
-  const adet = parseInt(document.getElementById('m-adet').value);
-  if (!tarih || !katId || !adet) { toast('Tüm alanları doldur', true); return; }
-  const month = tarih.slice(0,7);
-  const { error } = await sb.from('entries').insert({
-    user_id: currentUser.id, category_id: katId,
-    quantity: adet, entry_date: tarih, month,
-    note: document.getElementById('m-not').value.trim() || null
-  });
-  if (error) { toast('Hata: ' + error.message, true); return; }
-  document.getElementById('m-adet').value = 1;
-  document.getElementById('m-not').value = '';
-  toast('✓ Eklendi!');
-  await loadEntries(); renderGiris(); renderListe(); renderRapor();
-}
-
-function renderTodayList() {
-  const today = new Date().toISOString().split('T')[0];
-  const mine = allEntries.filter(e => e.user_id === currentUser.id && e.entry_date === today);
-  const el = document.getElementById('today-list');
-  if (mine.length === 0) { el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Bugün giriş yok</div>'; return; }
-  el.innerHTML = '<div class="tbl-wrap"><table><thead><tr><th>KATEGORİ</th><th>ADET</th><th>NOT</th><th></th></tr></thead><tbody>' +
-    mine.map(e => `<tr>
-      <td>${e.categories?.name || '?'}</td>
-      <td><b>${e.quantity}</b></td>
-      <td style="color:var(--muted);font-size:12px">${e.note||'—'}</td>
-      <td><button class="btn btn-red btn-xs" onclick="deleteEntry('${e.id}')">✕</button></td>
-    </tr>`).join('') + '</tbody></table></div>';
-}
-
-async function deleteEntry(id) {
-  const { error } = await sb.from('entries').delete().eq('id', id);
-  if (error) { toast('Silinemedi', true); return; }
-  toast('Silindi');
-  await loadEntries(); renderGiris(); renderListe(); renderRapor();
-}
-
-// ═══════════════════════════════════════════════════════
-// LİSTE SAYFASI
-// ═══════════════════════════════════════════════════════
-function renderListe() {
-  // Aggregate
-  const catTotals = {}; // catId -> { name, total, byUser: {uid: {name, qty}} }
-  allEntries.forEach(e => {
-    const cid = e.category_id;
-    const cname = e.categories?.name || '?';
-    if (!catTotals[cid]) catTotals[cid] = { name: cname, total: 0, byUser: {} };
-    catTotals[cid].total += e.quantity;
-    const uid = e.user_id;
-    const uname = e.profiles?.name || '?';
-    if (!catTotals[cid].byUser[uid]) catTotals[cid].byUser[uid] = { name: uname, qty: 0 };
-    catTotals[cid].byUser[uid].qty += e.quantity;
-  });
-
-  // Person totals
-  const personTotals = {};
-  allEntries.forEach(e => {
-    const uid = e.user_id;
-    const uname = e.profiles?.name || '?';
-    if (!personTotals[uid]) personTotals[uid] = { name: uname, total: 0 };
-    personTotals[uid].total += e.quantity;
-  });
-
-  const grandTotal = allEntries.reduce((s,e)=>s+e.quantity,0);
-  const catCount = Object.keys(catTotals).length;
-  const personCount = Object.keys(personTotals).length;
-
-  document.getElementById('liste-stats').innerHTML = `
-    <div class="stat a"><div class="stat-n" style="color:var(--accent)">${grandTotal}</div><div class="stat-l">Toplam Boru</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--blue)">${catCount}</div><div class="stat-l">Kategori</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--green)">${personCount}</div><div class="stat-l">Çalışan</div></div>
-  `;
-
-  // Person filter chips
-  const pf = document.getElementById('person-filters');
-  pf.innerHTML = `<div class="fchip active" onclick="setPersonFilter(null,this)">Tümü</div>` +
-    Object.entries(personTotals).map(([uid,p])=>
-      `<div class="fchip" onclick="setPersonFilter('${uid}',this)">${p.name} <b style="opacity:.6">${p.total}</b></div>`
-    ).join('');
-
-  // Table
-  const filtered = personFilter
-    ? Object.fromEntries(Object.entries(catTotals).map(([k,v])=>[k,{...v,
-        total: v.byUser[personFilter]?.qty||0,
-        byUser: {[personFilter]: v.byUser[personFilter]||{name:'',qty:0}}
-      }]).filter(([,v])=>v.total>0))
-    : catTotals;
-
-  const tbody = document.getElementById('liste-tbody');
-  const rows = Object.values(filtered).sort((a,b)=>b.total-a.total);
-  if (rows.length === 0) { tbody.innerHTML = '<tr><td colspan="3"><div class="empty"><div class="empty-icon">📭</div>Veri yok</div></td></tr>'; return; }
-  tbody.innerHTML = rows.map(r => {
-    const persons = Object.values(r.byUser).filter(u=>u.qty>0).map(u=>`<span class="tag">${u.name}: <b>${u.qty}</b></span>`).join(' ');
-    return `<tr><td>${r.name}</td><td><b>${r.total}</b></td><td>${persons}</td></tr>`;
-  }).join('');
-}
-
-function setPersonFilter(uid, el) {
-  personFilter = uid;
-  document.querySelectorAll('#person-filters .fchip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  renderListe();
-}
-
-// ═══════════════════════════════════════════════════════
-// KARŞILAŞTIRMA
-// ═══════════════════════════════════════════════════════
-async function loadMuhasebe() {
-  const raw = document.getElementById('muh-paste').value.trim();
-  if (!raw) return;
-  const m = currentMonth;
-  const lines = raw.split('\n').filter(l=>l.trim());
-  const data = {};
-  lines.forEach(line => {
-    const p = line.split('\t');
-    if (p.length >= 2) {
-      const cat = p[0].trim(), qty = parseInt(p[1].replace(/\D/g,''));
-      if (cat && !isNaN(qty)) data[cat] = (data[cat]||0) + qty;
-    }
-  });
-  // Delete old, insert new
-  await sb.from('muhasebe').delete().eq('month', m);
-  const rows = Object.entries(data).map(([cat,qty])=>({
-    month: m, category_name: cat, quantity: qty, uploaded_by: currentUser.id
-  }));
-  if (rows.length > 0) await sb.from('muhasebe').insert(rows);
-  muhData = data;
-  document.getElementById('muh-status').innerHTML = `<span style="color:var(--green)">✅ ${Object.keys(data).length} kategori yüklendi</span>`;
-  renderRapor();
-}
-
-async function clearMuhasebe() {
-  await sb.from('muhasebe').delete().eq('month', currentMonth);
-  muhData = {};
-  document.getElementById('muh-status').textContent = '';
-  renderRapor();
-}
-
-async function loadMuhasebeData() {
-  const { data } = await sb.from('muhasebe').select('*').eq('month', currentMonth);
-  muhData = {};
-  (data||[]).forEach(r => { muhData[r.category_name] = r.quantity; });
-}
-
-async function renderRapor() {
-  await loadMuhasebeData();
-  // Aggregate eniştein
-  const enis = {};
-  allEntries.forEach(e => {
-    const name = e.categories?.name || '?';
-    enis[name] = (enis[name]||0) + e.quantity;
-  });
-  const allCats = [...new Set([...Object.keys(enis), ...Object.keys(muhData)])].sort();
-  let ok=0, miss=0, extra=0;
-  const rows = allCats.map(cat => {
-    const e = enis[cat]||0, mh = muhData[cat]||0, diff = e-mh;
-    if (diff===0) ok++; else if (diff<0) miss++; else extra++;
-    return { cat, e, mh, diff };
-  });
-  document.getElementById('rapor-stats').innerHTML = `
-    <div class="stat g"><div class="stat-n" style="color:var(--green)">${ok}</div><div class="stat-l">Eşleşen</div></div>
-    <div class="stat r"><div class="stat-n" style="color:var(--red)">${miss}</div><div class="stat-l">Eksik</div></div>
-    <div class="stat a"><div class="stat-n" style="color:var(--accent)">${extra}</div><div class="stat-l">Fazla</div></div>
-  `;
-  const filtered = rows.filter(r => {
-    if (rapFilter==='ok') return r.diff===0;
-    if (rapFilter==='miss') return r.diff<0;
-    if (rapFilter==='extra') return r.diff>0;
-    return true;
-  });
-  const tbody = document.getElementById('rapor-tbody');
-  if (filtered.length===0) { tbody.innerHTML='<tr><td colspan="5"><div class="empty"><div class="empty-icon">📊</div>Veri yok</div></td></tr>'; return; }
-  tbody.innerHTML = filtered.map(r => {
-    const cls = r.diff===0?'':r.diff<0?'row-miss':'row-extra';
-    const badge = r.diff===0
-      ? '<span class="badge b-g">EŞİT</span>'
-      : r.diff<0
-        ? `<span class="badge b-r">EKSİK ${Math.abs(r.diff)}</span>`
-        : `<span class="badge b-a">FAZLA ${r.diff}</span>`;
-    return `<tr class="${cls}">
-      <td>${r.cat}</td>
-      <td>${r.e||'—'}</td>
-      <td>${r.mh||'—'}</td>
-      <td>${r.diff>0?'+'+r.diff:r.diff===0?'—':r.diff}</td>
-      <td>${badge}</td>
-    </tr>`;
-  }).join('');
-}
-
-function setFilter(el) {
-  rapFilter = el.dataset.f;
-  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  renderRapor();
-}
-
-// ═══════════════════════════════════════════════════════
-// ADMIN
-// ═══════════════════════════════════════════════════════
-async function renderAdmin() {
-  // Categories
-  const tbody = document.getElementById('cat-tbody');
-  if (categories.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3"><div class="empty">Kategori yok</div></td></tr>';
-  } else {
-    tbody.innerHTML = categories.map(c => `<tr>
-      <td>${c.name}</td>
-      <td><span class="tag">${c.zone||'—'}</span></td>
-      <td><button class="btn btn-red btn-xs" onclick="deleteCategory('${c.id}')">Sil</button></td>
-    </tr>`).join('');
-  }
-  // Users
-  const utbody = document.getElementById('users-tbody');
-  utbody.innerHTML = allProfiles.map(p => `<tr>
-    <td>${p.name}</td>
-    <td style="color:var(--muted);font-size:12px">${p.created_at?.slice(0,10)||'—'}</td>
-    <td><span class="badge ${p.role==='admin'?'b-b':'b-g'}">${p.role==='admin'?'ADMİN':'İŞÇİ'}</span></td>
-    <td>
-      ${p.id !== currentUser.id
-        ? `<button class="btn btn-ghost btn-xs" onclick="toggleRole('${p.id}','${p.role}')">${p.role==='admin'?'İşçi Yap':'Admin Yap'}</button>`
-        : ''}
-    </td>
-  </tr>`).join('');
-}
-
-async function addCategory() {
-  const name = document.getElementById('new-cat-name').value.trim();
-  const zone = document.getElementById('new-cat-zone').value.trim();
-  if (!name) { toast('Kategori adı gir', true); return; }
-  const { error } = await sb.from('categories').insert({ name, zone: zone||null, sort_order: categories.length });
-  if (error) { toast('Hata: ' + error.message, true); return; }
-  document.getElementById('new-cat-name').value = '';
-  document.getElementById('new-cat-zone').value = '';
-  toast('✓ Kategori eklendi');
-  await loadCategories(); renderGiris(); renderAdmin();
-}
-
-async function deleteCategory(id) {
-  if (!confirm('Kategori silinsin mi? Bu kategoriye ait girişler etkilenir.')) return;
-  await sb.from('categories').delete().eq('id', id);
-  toast('Silindi');
-  await loadCategories(); renderGiris(); renderAdmin();
-}
-
-async function toggleRole(uid, curRole) {
-  const newRole = curRole === 'admin' ? 'worker' : 'admin';
-  await sb.from('profiles').update({ role: newRole }).eq('id', uid);
-  toast('Rol güncellendi');
-  await loadProfiles(); renderAdmin();
-}
-
-// ═══════════════════════════════════════════════════════
-// EXPORT
-// ═══════════════════════════════════════════════════════
-function exportCSV() {
-  const enis = {};
-  allEntries.forEach(e => {
-    const name = e.categories?.name||'?';
-    enis[name] = (enis[name]||0) + e.quantity;
-  });
-  let csv = 'Kategori,Toplam\n' + Object.entries(enis).map(([k,v])=>`${k},${v}`).join('\n');
-  dlCSV(csv, `boru-liste-${currentMonth}.csv`);
-}
-
-function exportDiffCSV() {
-  const enis = {};
-  allEntries.forEach(e => { const n=e.categories?.name||'?'; enis[n]=(enis[n]||0)+e.quantity; });
-  const allCats = [...new Set([...Object.keys(enis),...Object.keys(muhData)])].sort();
-  const rows = allCats.map(c=>{ const e=enis[c]||0,m=muhData[c]||0,d=e-m; return {c,e,m,d}; }).filter(r=>r.d!==0);
-  const csv = 'Kategori,Ekip,Muhasebe,Fark\n' + rows.map(r=>`${r.c},${r.e},${r.m},${r.d}`).join('\n');
-  dlCSV(csv, `fark-raporu-${currentMonth}.csv`);
-}
-
-function dlCSV(content, filename) {
-  const blob = new Blob(['\uFEFF'+content], {type:'text/csv;charset=utf-8;'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click();
-}
-
-function copyForExcel() {
-  const enis = {};
-  allEntries.forEach(e => { const n=e.categories?.name||'?'; enis[n]=(enis[n]||0)+e.quantity; });
-  const text = 'Kategori\tToplam\n' + Object.entries(enis).map(([k,v])=>`${k}\t${v}`).join('\n');
-  navigator.clipboard.writeText(text).then(()=>toast('✓ Kopyalandı — Excel\'e yapıştır'));
-}
-
-// ═══════════════════════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════════════════════
-let toastTimer;
-function toast(msg, err=false) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast show' + (err?' err':'');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>el.classList.remove('show'), 2200);
-}
-
-// ═══════════════════════════════════════════════════════
-// BOOT
-// ═══════════════════════════════════════════════════════
-if (SB_URL && SB_KEY) initSupabase();
-else {
-  document.getElementById('setup-banner').style.display = 'flex';
-  document.getElementById('auth-screen').style.display = 'none';
-}
-</script>
-</body>
-</html>
+      <button class="btn btn-a" onclick="setMonth()">Sec</button>
+      <button class
