@@ -110,10 +110,7 @@ tr:last-child td{border-bottom:none}
   <div class="auth-box">
     <div class="auth-logo">BORU</div>
     <div class="auth-sub">Tersane Ekip Sistemi</div>
-    <div class="auth-tabs">
-      <button type="button" class="active" id="tab-giris" onclick="authTab('giris')">Giris Yap</button>
-      <button type="button" id="tab-kayit" onclick="authTab('kayit')">Kayit Ol</button>
-    </div>
+
     <div id="form-giris">
       <div class="f"><label>E-Posta</label><input id="g-email" type="email" placeholder="ad@mail.com"></div>
       <div class="f"><label>Sifre</label><input id="g-sifre" type="password" placeholder="..."></div>
@@ -285,4 +282,6 @@ tr:last-child td{border-bottom:none}
   </div>
 </div>
 <div class="overlay" id="ay-ov">
-  <div class="modal"><h3>Yeni Ay Ekl
+  <div class="modal"><h3>Yeni Ay Ekle</h3>
+    <div class="f"><label>Ay Adi</label><input type="text" id="ay-inp" placeholder="orn: Temmuz 2026"></div>
+    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="yeniAyEkle()">Ekle</button>
