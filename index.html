@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>BoruTakip v2</title>
+<title>BoruTakip</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -11,269 +11,251 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;font-size:15px}
 input,select,textarea,button{font-family:var(--fb)}
-#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at 50% 0%,#1a1500,var(--bg) 60%)}
-.auth-box{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:380px}
-.auth-logo{font-family:var(--fh);font-size:40px;letter-spacing:2px;color:var(--accent)}
-.auth-sub{color:var(--muted);font-size:13px;margin-bottom:24px}
-.auth-tabs{display:flex;gap:4px;background:var(--s2);border-radius:8px;padding:4px;margin-bottom:18px}
-.auth-tabs button{flex:1;background:none;border:none;color:var(--muted);padding:8px;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;transition:.15s}
+/* AUTH */
+#auth-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at 50% 0%,#1a1500,var(--bg) 60%)}
+.auth-box{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:360px}
+.auth-logo{font-family:var(--fh);font-size:42px;color:var(--accent);letter-spacing:2px}
+.auth-sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+.auth-tabs{display:flex;gap:4px;background:var(--s2);border-radius:8px;padding:4px;margin-bottom:16px}
+.auth-tabs button{flex:1;background:none;border:none;color:var(--muted);padding:8px;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500}
 .auth-tabs button.active{background:var(--s3);color:var(--text)}
-.f{margin-bottom:13px}
-.f label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
-.f input,.f select,.f textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 13px;font-size:14px;outline:none;transition:.15s}
-.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--accent)}
-.f select option{background:var(--s2)}
-.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
-.btn-w{width:100%;justify-content:center}
-.btn-a{background:var(--accent);color:#000}.btn-a:hover{background:#fbbf24}
-.btn-r{background:var(--red);color:#fff}.btn-r:hover{opacity:.85}
-.btn-g{background:var(--s3);color:var(--text)}.btn-g:hover{background:var(--border)}
-.btn-bl{background:var(--blue);color:#fff}
-.btn-sm{padding:6px 11px;font-size:12px;border-radius:6px}
-.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px}
-#app{display:none;flex-direction:column;min-height:100vh}
+/* MAIN */
 .topbar{background:var(--s1);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:50}
-.topbar-logo{font-family:var(--fh);font-size:20px;color:var(--accent);letter-spacing:1px}
-.month-btn{background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--text)}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.content{flex:1;padding:14px;max-width:680px;margin:0 auto;width:100%;padding-bottom:72px}
+.topbar-logo{font-family:var(--fh);font-size:22px;color:var(--accent);letter-spacing:1px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto}
+.content{padding:14px;max-width:680px;margin:0 auto;width:100%;padding-bottom:76px}
 .page{display:none}.page.active{display:block}
 .bnav{background:var(--s1);border-top:1px solid var(--border);display:flex;position:fixed;bottom:0;left:0;right:0;z-index:50}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-weight:500;transition:.15s;border-top:2px solid transparent}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-weight:500;transition:.15s;border-top:2px solid transparent}
 .nb.active{color:var(--accent);border-top-color:var(--accent)}
-.nb svg{width:19px;height:19px}
+.nb svg{width:20px;height:20px}
+/* CARDS */
 .card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
 .ct{font-family:var(--fh);font-size:16px;letter-spacing:.5px;margin-bottom:12px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.stat{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px 10px}
-.sn{font-family:var(--fh);font-size:30px;line-height:1}
-.sl{font-size:11px;color:var(--muted);margin-top:2px}
-.stat.g{border-color:rgba(16,185,129,.4)}.stat.r{border-color:rgba(239,68,68,.4)}.stat.a{border-color:rgba(245,158,11,.4)}
-.chips{display:flex;flex-wrap:wrap;gap:7px}
-.chip{background:var(--s3);border:1px solid var(--border);border-radius:20px;padding:7px 13px;font-size:13px;cursor:pointer;transition:.1s;user-select:none}
-.chip:hover{border-color:var(--accent);color:var(--accent)}
-.chip.sel{background:var(--accent);color:#000;border-color:var(--accent)}
-.sc-chip{background:var(--s2);border:1px solid var(--blue);border-radius:20px;padding:7px 13px 7px 10px;font-size:13px;cursor:pointer;color:var(--blue);display:inline-flex;align-items:center;gap:6px;user-select:none;transition:.1s}
-.sc-chip.sel{background:var(--blue);color:#fff}
-.sc-del{background:rgba(239,68,68,.2);color:var(--red);border:none;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;flex-shrink:0}
-.tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{font-family:var(--fh);font-size:11px;letter-spacing:.5px;color:var(--muted);text-align:left;padding:7px 9px;border-bottom:1px solid var(--border)}
-td{padding:8px 9px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,.02)}
-.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
-.b-g{background:rgba(16,185,129,.15);color:var(--green)}.b-r{background:rgba(239,68,68,.15);color:var(--red)}.b-a{background:rgba(245,158,11,.15);color:var(--accent)}.b-b{background:rgba(99,102,241,.15);color:var(--blue)}
-.row-miss td{background:rgba(239,68,68,.04)}.row-miss td:nth-child(4){color:var(--red);font-weight:600}
-.row-extra td{background:rgba(245,158,11,.04)}.row-extra td:nth-child(4){color:var(--accent);font-weight:600}
-.frow{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.fc{background:var(--s3);border:1px solid var(--border);border-radius:18px;padding:5px 11px;font-size:12px;cursor:pointer;transition:.1s}
-.fc.active{background:var(--accent);color:#000;border-color:var(--accent)}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:flex-end;justify-content:center}
-.overlay.open{display:flex}
-.modal{background:var(--s1);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:22px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
-.modal h3{font-family:var(--fh);font-size:21px;margin-bottom:14px}
-@media(min-width:600px){.overlay{align-items:center}.modal{border-radius:16px;max-height:80vh}}
-.hl{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;margin-top:10px}
-.hchip{background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:monospace;transition:.1s;display:inline-block;margin:3px}
-.hchip:hover{border-color:var(--accent)}.hchip.sel{background:var(--accent);color:#000;border-color:var(--accent)}
-.empty{text-align:center;padding:28px;color:var(--muted);font-size:13px}
-.ei{font-size:30px;margin-bottom:6px}
-.divider{border:none;border-top:1px solid var(--border);margin:10px 0}
-.tag{display:inline-block;background:var(--s3);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--muted);margin-right:3px}
 .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
 .h1{font-family:var(--fh);font-size:24px;letter-spacing:.5px}
-.toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:#1a2a1a;border:1px solid var(--green);color:var(--green);padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
-.toast.err{background:#2a1a1a;border-color:var(--red);color:var(--red)}.toast.show{opacity:1}
-.upload-box{border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:.15s}
-.upload-box:hover{border-color:var(--accent)}
-.upload-box input{display:none}
-.code-pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;max-height:160px;overflow-y:auto;margin-top:8px;white-space:pre-wrap;word-break:break-all}
-.inp{background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 11px;font-size:14px;outline:none;transition:.15s}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-a{background:var(--accent);color:#000}.btn-g{background:var(--s3);color:var(--text)}.btn-r{background:var(--red);color:#fff}.btn-bl{background:var(--blue);color:#fff}
+.btn-sm{padding:6px 11px;font-size:12px;border-radius:6px}.btn-xs{padding:4px 9px;font-size:11px;border-radius:5px}
+.btn-w{width:100%;justify-content:center}
+/* FORM */
+.f{margin-bottom:13px}
+.f label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.f input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:11px 13px;font-size:16px;outline:none;transition:.15s}
+.f input:focus{border-color:var(--accent)}
+.inp{background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:14px;outline:none;transition:.15s}
 .inp:focus{border-color:var(--accent)}
+/* MISC */
+.empty{text-align:center;padding:30px 20px;color:var(--muted);font-size:14px}
+.ei{font-size:32px;margin-bottom:8px}
+.divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+.hint{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a2a1a;border:1px solid var(--green);color:var(--green);padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.err{background:#2a1a1a;border-color:var(--red);color:var(--red)}.toast.show{opacity:1}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:flex-end;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:22px;width:100%;max-width:500px}
+.modal h3{font-family:var(--fh);font-size:21px;margin-bottom:14px}
+@media(min-width:600px){.overlay{align-items:center}.modal{border-radius:16px}}
+/* KATEGORILER */
+.grp{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.grp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.grp-name{font-family:var(--fh);font-size:17px;letter-spacing:.5px;color:var(--accent)}
+.val-chip{display:inline-flex;align-items:center;gap:6px;background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-family:monospace;font-size:13px;margin:3px}
+.val-chip .x{color:var(--red);cursor:pointer;font-weight:700;font-size:15px;line-height:1}
+.add-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+/* GİRİŞ */
+.code-preview{font-family:monospace;font-size:18px;font-weight:700;color:var(--accent);min-height:28px;margin-bottom:10px;letter-spacing:1px;word-break:break-all}
+.sel-parts{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;min-height:26px}
+.part-chip{display:inline-flex;align-items:center;background:var(--accent);color:#000;border-radius:6px;padding:4px 10px;font-family:monospace;font-size:13px;font-weight:700}
+.grp-chip-wrap{margin-bottom:12px}
+.grp-chip-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.grp-chips{display:flex;flex-wrap:wrap;gap:6px}
+.grp-val{background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:7px 13px;font-family:monospace;font-size:13px;cursor:pointer;transition:.1s;user-select:none}
+.grp-val:active{background:var(--accent);color:#000}
+.sc-item{display:inline-flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--blue);border-radius:20px;padding:7px 13px;font-size:13px;cursor:pointer;color:var(--blue);margin:3px;transition:.1s;user-select:none}
+.sc-item.sel{background:var(--blue);color:#fff}
+/* TABLO */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;color:var(--muted);text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);font-weight:600;font-family:var(--fh);letter-spacing:.5px}
+td{padding:8px 9px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+/* AY SEKMELERİ */
+.ay-tab{background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;font-weight:500;transition:.1s;white-space:nowrap}
+.ay-tab.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.ay-tab.add{border-style:dashed;color:var(--muted)}
+/* STAT */
+.stat-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.stat-box{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px}
+.stat-num{font-family:var(--fh);font-size:28px;line-height:1}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+/* FİLTRE */
+.filtre{background:var(--s3);border:1px solid var(--border);border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;transition:.1s}
+.filtre.active{background:var(--accent);color:#000;border-color:var(--accent)}
+/* BADGE */
+.badge{display:inline-flex;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-g{background:rgba(16,185,129,.15);color:var(--green)}.b-r{background:rgba(239,68,68,.15);color:var(--red)}.b-a{background:rgba(245,158,11,.15);color:var(--accent)}
+.row-eksik td{background:rgba(239,68,68,.04)}.row-eksik td:first-child{color:var(--red)}
+.row-fazla td{background:rgba(245,158,11,.04)}.row-fazla td:first-child{color:var(--accent)}
+/* KULLANICI BADGE */
+.u-badge{display:inline-block;background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--muted);margin-right:3px}
 </style>
 </head>
 <body>
 
-<div id="auth-screen" style="display:flex">
+<!-- AUTH -->
+<div id="auth-wrap">
   <div class="auth-box">
     <div class="auth-logo">BORU</div>
     <div class="auth-sub">Tersane Ekip Sistemi</div>
     <div class="auth-tabs">
-      <button id="tab-login" class="active" onclick="authTab('login')">Giris Yap</button>
-      <button id="tab-register" onclick="authTab('register')">Kayit Ol</button>
+      <button class="active" onclick="authTab('giris')">Giris Yap</button>
+      <button onclick="authTab('kayit')">Kayit Ol</button>
     </div>
-    <div id="login-form">
-      <div class="f"><label>E-Posta</label><input id="l-email" type="email" placeholder="ad@mail.com"></div>
-      <div class="f"><label>Sifre</label><input id="l-pass" type="password" placeholder="..."></div>
-      <button class="btn btn-a btn-w" onclick="doLogin()">Giris Yap</button>
-      <div id="l-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
+    <div id="form-giris">
+      <div class="f"><label>E-Posta</label><input id="g-email" type="email" placeholder="ad@mail.com"></div>
+      <div class="f"><label>Sifre</label><input id="g-sifre" type="password" placeholder="..."></div>
+      <button class="btn btn-a btn-w" onclick="doGiris()">Giris Yap</button>
+      <div id="g-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
-    <div id="register-form" style="display:none">
-      <div class="f"><label>Ad Soyad</label><input id="r-name" type="text" placeholder="Mehmet Yilmaz"></div>
-      <div class="f"><label>E-Posta</label><input id="r-email" type="email" placeholder="ad@mail.com"></div>
-      <div class="f"><label>Sifre</label><input id="r-pass" type="password" placeholder="En az 6 karakter"></div>
-      <button class="btn btn-a btn-w" onclick="doRegister()">Kayit Ol</button>
-      <div id="r-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
+    <div id="form-kayit" style="display:none">
+      <div class="f"><label>Ad Soyad</label><input id="k-ad" type="text" placeholder="Ahmet Yilmaz"></div>
+      <div class="f"><label>E-Posta</label><input id="k-email" type="email" placeholder="ad@mail.com"></div>
+      <div class="f"><label>Sifre</label><input id="k-sifre" type="password" placeholder="En az 6 karakter"></div>
+      <button class="btn btn-a btn-w" onclick="doKayit()">Kayit Ol</button>
+      <div id="k-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
   </div>
 </div>
 
-<div id="app">
+<!-- APP -->
+<div id="app-wrap" style="display:none">
   <div class="topbar">
     <div class="topbar-logo">BORU</div>
-    <button class="month-btn" onclick="openOverlay('month-ov')">Ay: <span id="month-lbl">—</span></button>
-    <div class="topbar-right">
-      <span id="uname-lbl" style="font-size:12px;color:var(--muted)"></span>
-      <div class="avatar" id="uavatar" onclick="doLogout()">?</div>
-    </div>
+    <div id="tarih-lbl" style="font-size:13px;color:var(--muted)"></div>
+    <div class="avatar" id="user-avatar" onclick="doLogout()" title="Cikis Yap">?</div>
   </div>
 
   <div class="content">
-
     <!-- GİRİŞ -->
     <div id="page-giris" class="page active">
       <div class="ph"><div class="h1">Boru Girisi</div><span id="today-lbl" style="font-size:12px;color:var(--muted)"></span></div>
-
       <div class="card">
         <div class="ct">Kisayollarim</div>
-        <div id="sc-chips"></div>
-        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center">
-          <input id="q-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:16px">
-          <input id="q-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
-          <button class="btn btn-a" onclick="scAdd()">Ekle</button>
+        <div id="sc-list"><div style="color:var(--muted);font-size:12px">Kisayol yok</div></div>
+        <div id="sc-giris" style="display:none;margin-top:12px">
+          <div class="divider"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <input id="sc-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:18px">
+            <input id="sc-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
+            <button class="btn btn-a" onclick="scEkle()">+ Ekle</button>
+          </div>
+          <div id="sc-sel-lbl" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
         </div>
-        <div id="sc-sel-lbl" style="font-size:12px;color:var(--muted);margin-top:5px"></div>
       </div>
-
       <div class="card">
-        <div class="ct">Boru Sec &amp; Kisayol Olustur</div>
-        <div id="hier-sel"></div>
-        <div id="hier-preview" style="font-family:monospace;font-size:14px;color:var(--accent);margin-top:10px;min-height:20px;font-weight:700"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
-          <input id="h-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:16px">
+        <div class="ct">Boru Sec</div>
+        <div class="code-preview" id="code-prev">—</div>
+        <div class="sel-parts" id="sel-parts"></div>
+        <div id="grp-chips-wrap"></div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <button class="btn btn-g btn-sm" onclick="geriAl()">Geri Al</button>
+          <button class="btn btn-g btn-sm" onclick="temizle()">Temizle</button>
+          <button class="btn btn-bl btn-sm" onclick="scKaydet()">Kisayol Kaydet</button>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input id="h-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:18px">
           <input id="h-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
-          <button class="btn btn-a" onclick="hierAdd()">Ekle</button>
-          <button class="btn btn-bl btn-sm" onclick="saveShortcut()">Kisayol Kaydet</button>
+          <button class="btn btn-a" onclick="boruEkle()">+ Ekle</button>
         </div>
       </div>
-
       <div class="card">
-        <div class="ct">Manuel Kod Girisi</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <input id="man-code" type="text" placeholder="M9-154-M-5510-111-001-SP02" class="inp" style="flex:2;min-width:150px;font-family:monospace;font-size:13px">
-          <input id="man-adet" type="number" min="1" value="1" class="inp" style="width:70px">
-          <button class="btn btn-a" onclick="manAdd()">Ekle</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="ct">Bugunku Girislerim</div>
+        <div class="ct" style="display:flex;align-items:center;justify-content:space-between">Bugunku Girislerim<button class="btn btn-r btn-xs" onclick="bugunTemizle()">Tumunu Sil</button></div>
         <div id="today-list"></div>
       </div>
     </div>
 
     <!-- LİSTE -->
     <div id="page-liste" class="page">
-      <div class="ph">
-        <div class="h1">Ana Liste</div>
-        <div style="display:flex;gap:6px">
-          <button class="btn btn-g btn-sm" onclick="expCSV()">CSV</button>
-          <button class="btn btn-g btn-sm" onclick="cpExcel()">Excel Kopyala</button>
-        </div>
-      </div>
-      <div class="stats" id="l-stats"></div>
-      <div class="frow" id="pf-row"></div>
-      <div class="card">
-        <div class="tw"><table>
-          <thead><tr><th>BORU KODU</th><th>TOPLAM</th><th>KISILER</th></tr></thead>
-          <tbody id="l-tbody"></tbody>
-        </table></div>
-      </div>
+      <div class="ph"><div class="h1">Ana Liste</div><div style="display:flex;gap:6px"><button class="btn btn-g btn-sm" onclick="csvIndir()">CSV</button><button class="btn btn-r btn-sm" onclick="listeTemizle()">Tumunu Sil</button></div></div>
+      <div id="ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+      <div id="liste-stat"></div>
+      <div class="card"><div id="liste-wrap"></div></div>
     </div>
 
     <!-- KARŞILAŞTIRMA -->
     <div id="page-rapor" class="page">
-      <div class="ph">
-        <div class="h1">Karsilastirma</div>
-        <button class="btn btn-g btn-sm" onclick="expDiff()">Farklari indir</button>
-      </div>
-      <div class="stats" id="r-stats"></div>
-      <div class="frow">
-        <div class="fc active" data-f="all" onclick="setRF(this)">Tumunü Göster</div>
-        <div class="fc" data-f="ok" onclick="setRF(this)">Esit</div>
-        <div class="fc" data-f="miss" onclick="setRF(this)">Eksik</div>
-        <div class="fc" data-f="extra" onclick="setRF(this)">Fazla</div>
-      </div>
+      <div class="ph"><div class="h1">Karsilastirma</div><button class="btn btn-g btn-sm" onclick="csvFark()">Fark CSV</button></div>
+      <div id="rap-ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
       <div class="card">
         <div class="ct">Muhasebe Verisi Yukle</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:7px">Excel kopyala-yapistir — Kod TAB Adet</div>
-        <textarea id="muh-paste" rows="4" class="inp" style="font-family:monospace;font-size:12px;resize:vertical" placeholder="M9-154-M-5510-111-001-SP02&#9;5&#10;M9-154-M-5510-112-002-SP05&#9;3"></textarea>
-        <div style="display:flex;gap:8px;margin-top:7px">
-          <button class="btn btn-a btn-sm" onclick="loadPaste()">Yukle</button>
-          <button class="btn btn-g btn-sm" onclick="clearMuh()">Temizle</button>
-        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Kopyala-Yapistir (her satira bir kod)</div>
+        <textarea id="muh-paste" rows="4" class="inp" style="font-family:monospace;font-size:12px;resize:vertical;width:100%" placeholder="M9-154-M-5510-032-001-SP02"></textarea>
+        <button class="btn btn-a btn-sm" style="margin-top:7px" onclick="muhYukle()">Yukle</button>
         <div class="divider"></div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:7px">Fotograftan Oku (AI)</div>
-        <label class="upload-box" for="ocr-file">
-          <div style="font-size:26px;margin-bottom:5px">📷</div>
-          <div style="font-size:13px;color:var(--muted)">Fotograf sec veya cek</div>
-          <input type="file" id="ocr-file" accept="image/*" capture="environment" onchange="doOCR(this)">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Dosya Yukle (txt/csv)</div>
+        <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="file" id="muh-file" accept=".txt,.csv" onchange="muhDosya(this)" style="display:none">
+          <div class="btn btn-g btn-sm">Dosya Sec</div>
+          <span id="dosya-adi" style="font-size:12px;color:var(--muted)">Secilmedi</span>
         </label>
-        <div id="ocr-st" style="font-size:12px;margin-top:7px"></div>
-        <div id="ocr-pre" class="code-pre" style="display:none"></div>
-        <div id="muh-st" style="font-size:12px;margin-top:6px"></div>
+        <div class="divider"></div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Fotograftan Oku (AI)</div>
+        <label style="display:block;border:2px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer">
+          <input type="file" id="muh-foto" accept="image/*" multiple onchange="muhFoto(this)" style="display:none">
+          <div style="font-size:26px;margin-bottom:4px">📷</div>
+          <div style="font-size:13px;color:var(--muted)">Tek veya birden fazla fotograf sec</div>
+        </label>
+        <div id="ocr-durum" style="font-size:12px;margin-top:7px"></div>
+        <div id="ocr-preview" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;max-height:120px;overflow-y:auto;margin-top:6px;white-space:pre-wrap;word-break:break-all"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+          <div id="muh-yuklu" style="font-size:12px;color:var(--green);flex:1"></div>
+          <button class="btn btn-r btn-xs" onclick="muhTemizle()">Yuklenen Veriyi Sil</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <div class="filtre active" data-f="hepsi" onclick="setFiltre(this)">Hepsi</div>
+        <div class="filtre" data-f="esit" onclick="setFiltre(this)">Esit</div>
+        <div class="filtre" data-f="eksik" onclick="setFiltre(this)">Eksik</div>
+        <div class="filtre" data-f="fazla" onclick="setFiltre(this)">Fazla</div>
       </div>
       <div class="card">
-        <div class="tw"><table>
-          <thead><tr><th>KOD</th><th>EKIP</th><th>MUHASEBE</th><th>FARK</th><th>DURUM</th></tr></thead>
-          <tbody id="r-tbody"></tbody>
-        </table></div>
+        <div id="rap-stat" style="margin-bottom:10px"></div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="btn btn-bl btn-sm" onclick="sonucuKaydet()">Sonucu Kaydet</button>
+          <button class="btn btn-r btn-sm" onclick="karsilastirmaTemizle()">Sifirla</button>
+        </div>
+        <div id="rap-wrap"></div>
+      </div>
+      <div class="card">
+        <div class="ct">Kayitli Sonuclar</div>
+        <div id="kayitli-sonuclar"></div>
       </div>
     </div>
 
     <!-- KATEGORİLER -->
     <div id="page-cats" class="page">
-      <div class="ph"><div class="h1">Kategoriler</div></div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Boru kodunun parcalarini buradan tanimla. Sistem hepsini birlestirip tam kodu olusturur.</div>
-      <div class="card" style="background:var(--bg);font-family:monospace;font-size:13px;padding:14px;margin-bottom:12px">
-        <span style="color:var(--accent)">GEMI</span>-<span style="color:#60a5fa">ALAN</span>-<span style="color:#34d399">TIP</span>-<span style="color:#f87171">SISTEM</span>-<span style="color:#c084fc">ZONE</span>-<span style="color:#fbbf24">SIRA</span>-<span style="color:#94a3b8">PARCA</span>
-        <div style="margin-top:5px;color:var(--muted);font-size:12px">Ornek: M9-154-M-5510-111-001-SP02</div>
-      </div>
-      <div id="cat-lvls"></div>
-      <div class="card">
-        <div class="ct">Deger Ekle</div>
-        <div class="f"><label>Seviye</label>
-          <select id="new-lv-sel">
-            <option value="ship">Gemi (M9, M12...)</option>
-            <option value="area">Alan (154, 133...)</option>
-            <option value="type">Tip (M, N...)</option>
-            <option value="system">Sistem (5510, 5060...)</option>
-            <option value="zone">Zone (071, 082...)</option>
-            <option value="seq">Sira (001, 002...)</option>
-            <option value="part">Parca Tipi (SP01, STD9...)</option>
-          </select>
-        </div>
-        <div class="f"><label>Deger</label><input id="new-lv-val" type="text" placeholder="ornek: M9"></div>
-        <div class="f"><label>Aciklama (opsiyonel)</label><input id="new-lv-desc" type="text" placeholder="ornek: 9 Nolu Gemi"></div>
-        <button class="btn btn-a" onclick="addLV()">Ekle</button>
-      </div>
+      <div class="ph"><div class="h1">Kategoriler</div><button class="btn btn-a btn-sm" onclick="openOv('grp-ov')">+ Grup Ekle</button></div>
+      <div class="hint">Gruplar olustur, degerler ekle. Giris ekraninda bunlara tiklayarak boru kodunu olusturursun.</div>
+      <div id="grp-list"></div>
     </div>
 
-    <!-- ADMIN -->
-    <div id="page-admin" class="page">
-      <div class="ph"><div class="h1">Yonetim</div></div>
+    <!-- EKIP (Admin) -->
+    <div id="page-ekip" class="page">
+      <div class="ph"><div class="h1">Ekip</div></div>
       <div class="card">
-        <div class="ct">Ekip</div>
-        <div class="tw"><table>
-          <thead><tr><th>AD</th><th>ROL</th><th></th></tr></thead>
-          <tbody id="adm-tbody"></tbody>
-        </table></div>
+        <div class="ct">Ekip Uyeleri</div>
+        <div id="ekip-list"></div>
       </div>
-      <button class="btn btn-g btn-w" onclick="doLogout()" style="margin-top:8px">Cikis Yap</button>
+      <div class="card">
+        <div class="ct">Hesabim</div>
+        <div id="hesap-bilgi" style="font-size:14px;color:var(--muted);margin-bottom:12px"></div>
+        <button class="btn btn-r btn-w" onclick="doLogout()">Cikis Yap</button>
+      </div>
     </div>
-
   </div>
 
   <div class="bnav">
@@ -289,15 +271,24 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <button class="nb" onclick="goPage('cats',this)">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Kat.
     </button>
-    <button class="nb" id="admin-nb" style="display:none" onclick="goPage('admin',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>Admin
+    <button class="nb" onclick="goPage('ekip',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>Ekip
     </button>
   </div>
 </div>
 
-<div class="overlay" id="month-ov">
-  <div class="modal">
-    <h3>Ay Sec</h3>
-    <div class="f"><input type="month" id="month-inp" style="font-size:16px"></div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-a" onclick="setMonth()"
+<!-- MODALS -->
+<div class="overlay" id="grp-ov">
+  <div class="modal"><h3>Yeni Grup</h3>
+    <div class="f"><label>Grup Adi</label><input type="text" id="grp-inp" placeholder="orn: Gemi, Sistem"></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-a" onclick="addGroup()">Ekle</button><button class="btn btn-g" onclick="closeOv('grp-ov')">Iptal</button></div>
+  </div>
+</div>
+<div class="overlay" id="ay-ov">
+  <div class="modal"><h3>Yeni Ay Ekle</h3>
+    <div class="f"><label>Ay Adi</label><input type="text" id="ay-inp" placeholder="orn: Temmuz 2026"></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-a" onclick="yeniAyEkle()">Ekle</button><button class="btn btn-g" onclick="closeOv('ay-ov')">Iptal</button></div>
+  </div>
+</div>
+<div class="overlay" id="onay-ov">
+  <div class="modal"><h3 id="onay-title">Emin misin?<
