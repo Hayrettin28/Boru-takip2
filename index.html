@@ -111,20 +111,20 @@ tr:last-child td{border-bottom:none}
     <div class="auth-logo">BORU</div>
     <div class="auth-sub">Tersane Ekip Sistemi</div>
     <div class="auth-tabs">
-      <button class="active" onclick="authTab('giris')">Giris Yap</button>
-      <button onclick="authTab('kayit')">Kayit Ol</button>
+      <button type="button" class="active" id="tab-giris" onclick="authTab('giris')">Giris Yap</button>
+      <button type="button" id="tab-kayit" onclick="authTab('kayit')">Kayit Ol</button>
     </div>
     <div id="form-giris">
       <div class="f"><label>E-Posta</label><input id="g-email" type="email" placeholder="ad@mail.com"></div>
       <div class="f"><label>Sifre</label><input id="g-sifre" type="password" placeholder="..."></div>
-      <button class="btn btn-a btn-w" onclick="doGiris()">Giris Yap</button>
+      <button type="button" class="btn btn-a btn-w" onclick="doGiris()">Giris Yap</button>
       <div id="g-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
     <div id="form-kayit" style="display:none">
       <div class="f"><label>Ad Soyad</label><input id="k-ad" type="text" placeholder="Ahmet Yilmaz"></div>
       <div class="f"><label>E-Posta</label><input id="k-email" type="email" placeholder="ad@mail.com"></div>
       <div class="f"><label>Sifre</label><input id="k-sifre" type="password" placeholder="En az 6 karakter"></div>
-      <button class="btn btn-a btn-w" onclick="doKayit()">Kayit Ol</button>
+      <button type="button" class="btn btn-a btn-w" onclick="doKayit()">Kayit Ol</button>
       <div id="k-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
   </div>
@@ -150,7 +150,7 @@ tr:last-child td{border-bottom:none}
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <input id="sc-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:18px">
             <input id="sc-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
-            <button class="btn btn-a" onclick="scEkle()">+ Ekle</button>
+            <button type="button" class="btn btn-a" onclick="scEkle()">+ Ekle</button>
           </div>
           <div id="sc-sel-lbl" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
         </div>
@@ -161,26 +161,26 @@ tr:last-child td{border-bottom:none}
         <div class="sel-parts" id="sel-parts"></div>
         <div id="grp-chips-wrap"></div>
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-          <button class="btn btn-g btn-sm" onclick="geriAl()">Geri Al</button>
-          <button class="btn btn-g btn-sm" onclick="temizle()">Temizle</button>
-          <button class="btn btn-bl btn-sm" onclick="scKaydet()">Kisayol Kaydet</button>
+          <button type="button" class="btn btn-g btn-sm" onclick="geriAl()">Geri Al</button>
+          <button type="button" class="btn btn-g btn-sm" onclick="temizle()">Temizle</button>
+          <button type="button" class="btn btn-bl btn-sm" onclick="scKaydet()">Kisayol Kaydet</button>
         </div>
         <div class="divider"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <input id="h-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:18px">
           <input id="h-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
-          <button class="btn btn-a" onclick="boruEkle()">+ Ekle</button>
+          <button type="button" class="btn btn-a" onclick="boruEkle()">+ Ekle</button>
         </div>
       </div>
       <div class="card">
-        <div class="ct" style="display:flex;align-items:center;justify-content:space-between">Bugunku Girislerim<button class="btn btn-r btn-xs" onclick="bugunTemizle()">Tumunu Sil</button></div>
+        <div class="ct" style="display:flex;align-items:center;justify-content:space-between">Bugunku Girislerim<button type="button" class="btn btn-r btn-xs" onclick="bugunTemizle()">Tumunu Sil</button></div>
         <div id="today-list"></div>
       </div>
     </div>
 
     <!-- LİSTE -->
     <div id="page-liste" class="page">
-      <div class="ph"><div class="h1">Ana Liste</div><div style="display:flex;gap:6px"><button class="btn btn-g btn-sm" onclick="csvIndir()">CSV</button><button class="btn btn-r btn-sm" onclick="listeTemizle()">Tumunu Sil</button></div></div>
+      <div class="ph"><div class="h1">Ana Liste</div><div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-sm" onclick="csvIndir()">CSV</button><button type="button" class="btn btn-r btn-sm" onclick="listeTemizle()">Tumunu Sil</button></div></div>
       <div id="ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
       <div id="liste-stat"></div>
       <div class="card"><div id="liste-wrap"></div></div>
@@ -188,13 +188,13 @@ tr:last-child td{border-bottom:none}
 
     <!-- KARŞILAŞTIRMA -->
     <div id="page-rapor" class="page">
-      <div class="ph"><div class="h1">Karsilastirma</div><button class="btn btn-g btn-sm" onclick="csvFark()">Fark CSV</button></div>
+      <div class="ph"><div class="h1">Karsilastirma</div><button type="button" class="btn btn-g btn-sm" onclick="csvFark()">Fark CSV</button></div>
       <div id="rap-ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
       <div class="card">
         <div class="ct">Muhasebe Verisi Yukle</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Kopyala-Yapistir (her satira bir kod)</div>
         <textarea id="muh-paste" rows="4" class="inp" style="font-family:monospace;font-size:12px;resize:vertical;width:100%" placeholder="M9-154-M-5510-032-001-SP02"></textarea>
-        <button class="btn btn-a btn-sm" style="margin-top:7px" onclick="muhYukle()">Yukle</button>
+        <button type="button" class="btn btn-a btn-sm" style="margin-top:7px" onclick="muhYukle()">Yukle</button>
         <div class="divider"></div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Dosya Yukle (txt/csv)</div>
         <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
@@ -213,7 +213,7 @@ tr:last-child td{border-bottom:none}
         <div id="ocr-preview" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;max-height:120px;overflow-y:auto;margin-top:6px;white-space:pre-wrap;word-break:break-all"></div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
           <div id="muh-yuklu" style="font-size:12px;color:var(--green);flex:1"></div>
-          <button class="btn btn-r btn-xs" onclick="muhTemizle()">Yuklenen Veriyi Sil</button>
+          <button type="button" class="btn btn-r btn-xs" onclick="muhTemizle()">Yuklenen Veriyi Sil</button>
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
@@ -225,8 +225,8 @@ tr:last-child td{border-bottom:none}
       <div class="card">
         <div id="rap-stat" style="margin-bottom:10px"></div>
         <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-          <button class="btn btn-bl btn-sm" onclick="sonucuKaydet()">Sonucu Kaydet</button>
-          <button class="btn btn-r btn-sm" onclick="karsilastirmaTemizle()">Sifirla</button>
+          <button type="button" class="btn btn-bl btn-sm" onclick="sonucuKaydet()">Sonucu Kaydet</button>
+          <button type="button" class="btn btn-r btn-sm" onclick="karsilastirmaTemizle()">Sifirla</button>
         </div>
         <div id="rap-wrap"></div>
       </div>
@@ -238,7 +238,7 @@ tr:last-child td{border-bottom:none}
 
     <!-- KATEGORİLER -->
     <div id="page-cats" class="page">
-      <div class="ph"><div class="h1">Kategoriler</div><button class="btn btn-a btn-sm" onclick="openOv('grp-ov')">+ Grup Ekle</button></div>
+      <div class="ph"><div class="h1">Kategoriler</div><button type="button" class="btn btn-a btn-sm" onclick="openOv('grp-ov')">+ Grup Ekle</button></div>
       <div class="hint">Gruplar olustur, degerler ekle. Giris ekraninda bunlara tiklayarak boru kodunu olusturursun.</div>
       <div id="grp-list"></div>
     </div>
@@ -253,25 +253,25 @@ tr:last-child td{border-bottom:none}
       <div class="card">
         <div class="ct">Hesabim</div>
         <div id="hesap-bilgi" style="font-size:14px;color:var(--muted);margin-bottom:12px"></div>
-        <button class="btn btn-r btn-w" onclick="doLogout()">Cikis Yap</button>
+        <button type="button" class="btn btn-r btn-w" onclick="doLogout()">Cikis Yap</button>
       </div>
     </div>
   </div>
 
   <div class="bnav">
-    <button class="nb active" onclick="goPage('giris',this)">
+    <button type="button" class="nb active" onclick="goPage('giris',this)">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m-8-8h16"/></svg>Giris
     </button>
-    <button class="nb" onclick="goPage('liste',this)">
+    <button type="button" class="nb" onclick="goPage('liste',this)">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Liste
     </button>
-    <button class="nb" onclick="goPage('rapor',this)">
+    <button type="button" class="nb" onclick="goPage('rapor',this)">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>Karsil.
     </button>
-    <button class="nb" onclick="goPage('cats',this)">
+    <button type="button" class="nb" onclick="goPage('cats',this)">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Kat.
     </button>
-    <button class="nb" onclick="goPage('ekip',this)">
+    <button type="button" class="nb" onclick="goPage('ekip',this)">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>Ekip
     </button>
   </div>
@@ -281,14 +281,8 @@ tr:last-child td{border-bottom:none}
 <div class="overlay" id="grp-ov">
   <div class="modal"><h3>Yeni Grup</h3>
     <div class="f"><label>Grup Adi</label><input type="text" id="grp-inp" placeholder="orn: Gemi, Sistem"></div>
-    <div style="display:flex;gap:8px"><button class="btn btn-a" onclick="addGroup()">Ekle</button><button class="btn btn-g" onclick="closeOv('grp-ov')">Iptal</button></div>
+    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="addGroup()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('grp-ov')">Iptal</button></div>
   </div>
 </div>
 <div class="overlay" id="ay-ov">
-  <div class="modal"><h3>Yeni Ay Ekle</h3>
-    <div class="f"><label>Ay Adi</label><input type="text" id="ay-inp" placeholder="orn: Temmuz 2026"></div>
-    <div style="display:flex;gap:8px"><button class="btn btn-a" onclick="yeniAyEkle()">Ekle</button><button class="btn btn-g" onclick="closeOv('ay-ov')">Iptal</button></div>
-  </div>
-</div>
-<div class="overlay" id="onay-ov">
-  <div class="modal"><h3 id="onay-title">Emin misin?<
+  <div class="modal"><h3>Yeni Ay Ekl
