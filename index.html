@@ -1,287 +1,42 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>BoruTakip</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#0a0c0f;--s1:#111318;--s2:#181c23;--s3:#1e2330;--border:#252d3d;--accent:#f59e0b;--green:#10b981;--red:#ef4444;--blue:#6366f1;--text:#e2e8f0;--muted:#5a6580;--fh:'Bebas Neue',sans-serif;--fb:'DM Sans',sans-serif;--r:10px}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;font-size:15px}
-input,select,textarea,button{font-family:var(--fb)}
-/* AUTH */
-#auth-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at 50% 0%,#1a1500,var(--bg) 60%)}
-.auth-box{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:360px}
-.auth-logo{font-family:var(--fh);font-size:42px;color:var(--accent);letter-spacing:2px}
-.auth-sub{color:var(--muted);font-size:13px;margin-bottom:20px}
-.auth-tabs{display:flex;gap:4px;background:var(--s2);border-radius:8px;padding:4px;margin-bottom:16px}
-.auth-tabs button{flex:1;background:none;border:none;color:var(--muted);padding:8px;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500}
-.auth-tabs button.active{background:var(--s3);color:var(--text)}
-/* MAIN */
-.topbar{background:var(--s1);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:50}
-.topbar-logo{font-family:var(--fh);font-size:22px;color:var(--accent);letter-spacing:1px}
-.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto}
-.content{padding:14px;max-width:680px;margin:0 auto;width:100%;padding-bottom:76px}
-.page{display:none}.page.active{display:block}
-.bnav{background:var(--s1);border-top:1px solid var(--border);display:flex;position:fixed;bottom:0;left:0;right:0;z-index:50}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-weight:500;transition:.15s;border-top:2px solid transparent}
-.nb.active{color:var(--accent);border-top-color:var(--accent)}
-.nb svg{width:20px;height:20px}
-/* CARDS */
-.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
-.ct{font-family:var(--fh);font-size:16px;letter-spacing:.5px;margin-bottom:12px}
-.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.h1{font-family:var(--fh);font-size:24px;letter-spacing:.5px}
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
-.btn-a{background:var(--accent);color:#000}.btn-g{background:var(--s3);color:var(--text)}.btn-r{background:var(--red);color:#fff}.btn-bl{background:var(--blue);color:#fff}
-.btn-sm{padding:6px 11px;font-size:12px;border-radius:6px}.btn-xs{padding:4px 9px;font-size:11px;border-radius:5px}
-.btn-w{width:100%;justify-content:center}
-/* FORM */
-.f{margin-bottom:13px}
-.f label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
-.f input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:11px 13px;font-size:16px;outline:none;transition:.15s}
-.f input:focus{border-color:var(--accent)}
-.inp{background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:14px;outline:none;transition:.15s}
-.inp:focus{border-color:var(--accent)}
-/* MISC */
-.empty{text-align:center;padding:30px 20px;color:var(--muted);font-size:14px}
-.ei{font-size:32px;margin-bottom:8px}
-.divider{border:none;border-top:1px solid var(--border);margin:12px 0}
-.hint{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a2a1a;border:1px solid var(--green);color:var(--green);padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
-.toast.err{background:#2a1a1a;border-color:var(--red);color:var(--red)}.toast.show{opacity:1}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:flex-end;justify-content:center}
-.overlay.open{display:flex}
-.modal{background:var(--s1);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:22px;width:100%;max-width:500px}
-.modal h3{font-family:var(--fh);font-size:21px;margin-bottom:14px}
-@media(min-width:600px){.overlay{align-items:center}.modal{border-radius:16px}}
-/* KATEGORILER */
-.grp{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px}
-.grp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.grp-name{font-family:var(--fh);font-size:17px;letter-spacing:.5px;color:var(--accent)}
-.val-chip{display:inline-flex;align-items:center;gap:6px;background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-family:monospace;font-size:13px;margin:3px}
-.val-chip .x{color:var(--red);cursor:pointer;font-weight:700;font-size:15px;line-height:1}
-.add-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-/* GİRİŞ */
-.code-preview{font-family:monospace;font-size:18px;font-weight:700;color:var(--accent);min-height:28px;margin-bottom:10px;letter-spacing:1px;word-break:break-all}
-.sel-parts{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;min-height:26px}
-.part-chip{display:inline-flex;align-items:center;background:var(--accent);color:#000;border-radius:6px;padding:4px 10px;font-family:monospace;font-size:13px;font-weight:700}
-.grp-chip-wrap{margin-bottom:12px}
-.grp-chip-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
-.grp-chips{display:flex;flex-wrap:wrap;gap:6px}
-.grp-val{background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:7px 13px;font-family:monospace;font-size:13px;cursor:pointer;transition:.1s;user-select:none}
-.grp-val:active{background:var(--accent);color:#000}
-.sc-item{display:inline-flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--blue);border-radius:20px;padding:7px 13px;font-size:13px;cursor:pointer;color:var(--blue);margin:3px;transition:.1s;user-select:none}
-.sc-item.sel{background:var(--blue);color:#fff}
-/* TABLO */
-.tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{font-size:11px;color:var(--muted);text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);font-weight:600;font-family:var(--fh);letter-spacing:.5px}
-td{padding:8px 9px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
-tr:last-child td{border-bottom:none}
-/* AY SEKMELERİ */
-.ay-tab{background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;font-weight:500;transition:.1s;white-space:nowrap}
-.ay-tab.active{background:var(--accent);color:#000;border-color:var(--accent)}
-.ay-tab.add{border-style:dashed;color:var(--muted)}
-/* STAT */
-.stat-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
-.stat-box{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px}
-.stat-num{font-family:var(--fh);font-size:28px;line-height:1}
-.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
-/* FİLTRE */
-.filtre{background:var(--s3);border:1px solid var(--border);border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;transition:.1s}
-.filtre.active{background:var(--accent);color:#000;border-color:var(--accent)}
-/* BADGE */
-.badge{display:inline-flex;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
-.b-g{background:rgba(16,185,129,.15);color:var(--green)}.b-r{background:rgba(239,68,68,.15);color:var(--red)}.b-a{background:rgba(245,158,11,.15);color:var(--accent)}
-.row-eksik td{background:rgba(239,68,68,.04)}.row-eksik td:first-child{color:var(--red)}
-.row-fazla td{background:rgba(245,158,11,.04)}.row-fazla td:first-child{color:var(--accent)}
-/* KULLANICI BADGE */
-.u-badge{display:inline-block;background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--muted);margin-right:3px}
-</style>
 </head>
-<body>
+<body style="background:#111;color:#fff;padding:20px;font-family:sans-serif">
+<h2>Test Giris</h2>
+<input id="email" type="email" placeholder="email" style="display:block;width:100%;padding:10px;margin:8px 0;font-size:16px;background:#222;color:#fff;border:1px solid #444;border-radius:6px">
+<input id="sifre" type="password" placeholder="sifre" style="display:block;width:100%;padding:10px;margin:8px 0;font-size:16px;background:#222;color:#fff;border:1px solid #444;border-radius:6px">
+<button onclick="giris()" style="background:orange;color:#000;padding:14px;font-size:18px;border:none;border-radius:8px;width:100%;margin-top:8px">GİRİŞ YAP</button>
+<div id="msg" style="margin-top:16px;font-size:13px;color:yellow;word-break:break-all;white-space:pre-wrap"></div>
 
-<!-- AUTH -->
-<div id="auth-wrap">
-  <div class="auth-box">
-    <div class="auth-logo">BORU</div>
-    <div class="auth-sub">Tersane Ekip Sistemi</div>
+<script>
+var sb = supabase.createClient(
+  'https://vdkhbhalekogrwabmknn.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZka2hiaGFsZWtvZ3J3YWJta25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0NzU0MTcsImV4cCI6MjA5NjA1MTQxN30.wthgax016okxpwUGUwNQlY_IJ132uAebCjV0YLNCHs0'
+);
 
-    <div id="form-giris">
-      <div class="f"><label>E-Posta</label><input id="g-email" type="email" placeholder="ad@mail.com"></div>
-      <div class="f"><label>Sifre</label><input id="g-sifre" type="password" placeholder="..."></div>
-      <button type="button" class="btn btn-a btn-w" onclick="doGiris()">Giris Yap</button>
-      <div id="g-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
-    </div>
-    <div id="form-kayit" style="display:none">
-      <div class="f"><label>Ad Soyad</label><input id="k-ad" type="text" placeholder="Ahmet Yilmaz"></div>
-      <div class="f"><label>E-Posta</label><input id="k-email" type="email" placeholder="ad@mail.com"></div>
-      <div class="f"><label>Sifre</label><input id="k-sifre" type="password" placeholder="En az 6 karakter"></div>
-      <button type="button" class="btn btn-a btn-w" onclick="doKayit()">Kayit Ol</button>
-      <div id="k-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
-    </div>
-  </div>
-</div>
+function log(txt){ document.getElementById('msg').textContent = txt; }
 
-<!-- APP -->
-<div id="app-wrap" style="display:none">
-  <div class="topbar">
-    <div class="topbar-logo">BORU</div>
-    <div id="tarih-lbl" style="font-size:13px;color:var(--muted)"></div>
-    <div class="avatar" id="user-avatar" onclick="doLogout()" title="Cikis Yap">?</div>
-  </div>
-
-  <div class="content">
-    <!-- GİRİŞ -->
-    <div id="page-giris" class="page active">
-      <div class="ph"><div class="h1">Boru Girisi</div><span id="today-lbl" style="font-size:12px;color:var(--muted)"></span></div>
-      <div class="card">
-        <div class="ct">Kisayollarim</div>
-        <div id="sc-list"><div style="color:var(--muted);font-size:12px">Kisayol yok</div></div>
-        <div id="sc-giris" style="display:none;margin-top:12px">
-          <div class="divider"></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <input id="sc-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:18px">
-            <input id="sc-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
-            <button type="button" class="btn btn-a" onclick="scEkle()">+ Ekle</button>
-          </div>
-          <div id="sc-sel-lbl" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="ct">Boru Sec</div>
-        <div class="code-preview" id="code-prev">—</div>
-        <div class="sel-parts" id="sel-parts"></div>
-        <div id="grp-chips-wrap"></div>
-        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-          <button type="button" class="btn btn-g btn-sm" onclick="geriAl()">Geri Al</button>
-          <button type="button" class="btn btn-g btn-sm" onclick="temizle()">Temizle</button>
-          <button type="button" class="btn btn-bl btn-sm" onclick="scKaydet()">Kisayol Kaydet</button>
-        </div>
-        <div class="divider"></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <input id="h-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:18px">
-          <input id="h-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
-          <button type="button" class="btn btn-a" onclick="boruEkle()">+ Ekle</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="ct" style="display:flex;align-items:center;justify-content:space-between">Bugunku Girislerim<button type="button" class="btn btn-r btn-xs" onclick="bugunTemizle()">Tumunu Sil</button></div>
-        <div id="today-list"></div>
-      </div>
-    </div>
-
-    <!-- LİSTE -->
-    <div id="page-liste" class="page">
-      <div class="ph"><div class="h1">Ana Liste</div><div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-sm" onclick="csvIndir()">CSV</button><button type="button" class="btn btn-r btn-sm" onclick="listeTemizle()">Tumunu Sil</button></div></div>
-      <div id="ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
-      <div id="liste-stat"></div>
-      <div class="card"><div id="liste-wrap"></div></div>
-    </div>
-
-    <!-- KARŞILAŞTIRMA -->
-    <div id="page-rapor" class="page">
-      <div class="ph"><div class="h1">Karsilastirma</div><button type="button" class="btn btn-g btn-sm" onclick="csvFark()">Fark CSV</button></div>
-      <div id="rap-ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
-      <div class="card">
-        <div class="ct">Muhasebe Verisi Yukle</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Kopyala-Yapistir (her satira bir kod)</div>
-        <textarea id="muh-paste" rows="4" class="inp" style="font-family:monospace;font-size:12px;resize:vertical;width:100%" placeholder="M9-154-M-5510-032-001-SP02"></textarea>
-        <button type="button" class="btn btn-a btn-sm" style="margin-top:7px" onclick="muhYukle()">Yukle</button>
-        <div class="divider"></div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Dosya Yukle (txt/csv)</div>
-        <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
-          <input type="file" id="muh-file" accept=".txt,.csv" onchange="muhDosya(this)" style="display:none">
-          <div class="btn btn-g btn-sm">Dosya Sec</div>
-          <span id="dosya-adi" style="font-size:12px;color:var(--muted)">Secilmedi</span>
-        </label>
-        <div class="divider"></div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Fotograftan Oku (AI)</div>
-        <label style="display:block;border:2px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer">
-          <input type="file" id="muh-foto" accept="image/*" multiple onchange="muhFoto(this)" style="display:none">
-          <div style="font-size:26px;margin-bottom:4px">📷</div>
-          <div style="font-size:13px;color:var(--muted)">Tek veya birden fazla fotograf sec</div>
-        </label>
-        <div id="ocr-durum" style="font-size:12px;margin-top:7px"></div>
-        <div id="ocr-preview" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;max-height:120px;overflow-y:auto;margin-top:6px;white-space:pre-wrap;word-break:break-all"></div>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
-          <div id="muh-yuklu" style="font-size:12px;color:var(--green);flex:1"></div>
-          <button type="button" class="btn btn-r btn-xs" onclick="muhTemizle()">Yuklenen Veriyi Sil</button>
-        </div>
-      </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-        <div class="filtre active" data-f="hepsi" onclick="setFiltre(this)">Hepsi</div>
-        <div class="filtre" data-f="esit" onclick="setFiltre(this)">Esit</div>
-        <div class="filtre" data-f="eksik" onclick="setFiltre(this)">Eksik</div>
-        <div class="filtre" data-f="fazla" onclick="setFiltre(this)">Fazla</div>
-      </div>
-      <div class="card">
-        <div id="rap-stat" style="margin-bottom:10px"></div>
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-          <button type="button" class="btn btn-bl btn-sm" onclick="sonucuKaydet()">Sonucu Kaydet</button>
-          <button type="button" class="btn btn-r btn-sm" onclick="karsilastirmaTemizle()">Sifirla</button>
-        </div>
-        <div id="rap-wrap"></div>
-      </div>
-      <div class="card">
-        <div class="ct">Kayitli Sonuclar</div>
-        <div id="kayitli-sonuclar"></div>
-      </div>
-    </div>
-
-    <!-- KATEGORİLER -->
-    <div id="page-cats" class="page">
-      <div class="ph"><div class="h1">Kategoriler</div><button type="button" class="btn btn-a btn-sm" onclick="openOv('grp-ov')">+ Grup Ekle</button></div>
-      <div class="hint">Gruplar olustur, degerler ekle. Giris ekraninda bunlara tiklayarak boru kodunu olusturursun.</div>
-      <div id="grp-list"></div>
-    </div>
-
-    <!-- EKIP (Admin) -->
-    <div id="page-ekip" class="page">
-      <div class="ph"><div class="h1">Ekip</div></div>
-      <div class="card">
-        <div class="ct">Ekip Uyeleri</div>
-        <div id="ekip-list"></div>
-      </div>
-      <div class="card">
-        <div class="ct">Hesabim</div>
-        <div id="hesap-bilgi" style="font-size:14px;color:var(--muted);margin-bottom:12px"></div>
-        <button type="button" class="btn btn-r btn-w" onclick="doLogout()">Cikis Yap</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="bnav">
-    <button type="button" class="nb active" onclick="goPage('giris',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m-8-8h16"/></svg>Giris
-    </button>
-    <button type="button" class="nb" onclick="goPage('liste',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Liste
-    </button>
-    <button type="button" class="nb" onclick="goPage('rapor',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>Karsil.
-    </button>
-    <button type="button" class="nb" onclick="goPage('cats',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Kat.
-    </button>
-    <button type="button" class="nb" onclick="goPage('ekip',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>Ekip
-    </button>
-  </div>
-</div>
-
-<!-- MODALS -->
-<div class="overlay" id="grp-ov">
-  <div class="modal"><h3>Yeni Grup</h3>
-    <div class="f"><label>Grup Adi</label><input type="text" id="grp-inp" placeholder="orn: Gemi, Sistem"></div>
-    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="addGroup()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('grp-ov')">Iptal</button></div>
-  </div>
-</div>
-<div class="overlay" id="ay-ov">
-  <div class="modal"><h3>Yeni Ay Ekle</h3>
-    <div class="f"><label>Ay Adi</label><input type="text" id="ay-inp" placeholder="orn: Temmuz 2026"></div>
-    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="y
+async function giris(){
+  log('1) Baslatiliyor...');
+  var email = document.getElementById('email').value.trim();
+  var sifre = document.getElementById('sifre').value;
+  if(!email||!sifre){ log('Email ve sifre gir!'); return; }
+  log('2) Supabase cagiriliyor...\nemail: '+email);
+  try {
+    var r = await sb.auth.signInWithPassword({email:email, password:sifre});
+    if(r.error){
+      log('HATA:\n' + JSON.stringify(r.error, null, 2));
+    } else {
+      log('BASARILI!\nKullanici: ' + r.data.user.email);
+    }
+  } catch(e) {
+    log('EXCEPTION: ' + e.message);
+  }
+}
+</script>
+</body>
+</html>
