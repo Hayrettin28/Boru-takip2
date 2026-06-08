@@ -164,10 +164,12 @@ tr:last-child td{border-bottom:none}
         </div>
         <div class="divider"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <input id="h-adet" type="number" min="1" value="1" class="inp" style="width:75px;font-size:18px">
+          <input id="h-adet" type="number" min="1" value="1" class="inp" style="width:65px;font-size:18px">
+          <input id="h-ek" type="text" placeholder="Ek (SP,S...)" class="inp" style="width:90px;font-size:13px;font-family:monospace">
           <input id="h-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
           <button type="button" class="btn btn-a" onclick="boruEkle()">+ Ekle</button>
         </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">Ek bos: kod-1,2,3 | Ek SP: kod-SP1,SP2,SP3</div>
       </div>
       <div class="card">
         <div class="ct" style="display:flex;align-items:center;justify-content:space-between">Bugunku Girislerim<button type="button" class="btn btn-r btn-xs" onclick="bugunTemizle()">Tumunu Sil</button></div>
@@ -524,9 +526,23 @@ function updCodePrev(){
   for(var i=0; i<selParts.length; i++) html += '<span class="part-chip">'+(i>0?'<span style="opacity:.4;margin:0 2px">-</span>':'')+selParts[i]+'</span>';
   document.getElementById('sel-parts').innerHTML = html;
 }
-function getSiraNo(baseCode){
+function getSiraNo(baseCode, ek){
+  // Ayni baseCode ve ayni ek ile kac kayit var
+  var prefix = ek ? ek : '';
   var count = 0;
-  for(var i=0; i<entries.length; i++) if(entries[i].base_code===baseCode && entries[i].ay_id===aktifAy) count++;
+  for(var i=0; i<entries.length; i++){
+    if(entries[i].base_code===baseCode && entries[i].ay_id===aktifAy){
+      var code = entries[i].code;
+      var suffix = code.replace(baseCode+'-','');
+      // Ayni ek ile mi?
+      if(ek){
+        if(suffix.startsWith(ek)) count++;
+      } else {
+        // Ek yok - sadece rakam ile bitenler
+        if(/^\d+$/.test(suffix)) count++;
+      }
+    }
+  }
   return count+1;
 }
 async function boruEkle(){
@@ -534,15 +550,18 @@ async function boruEkle(){
   if(!code){ toast('Boru sec', true); return; }
   var adet = parseInt(document.getElementById('h-adet').value);
   if(!adet||adet<1){ toast('Gecerli adet gir', true); return; }
+  var ek = document.getElementById('h-ek').value.trim().toUpperCase();
   var not = document.getElementById('h-not').value.trim();
   var today = new Date().toISOString().split('T')[0];
-  var sira = getSiraNo(code);
+  var sira = getSiraNo(code, ek);
   for(var i=0; i<adet; i++){
-    var e = {id:'e'+Date.now()+i, baseCode:code, base_code:code, code:code+'-'+(sira+i), not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy, user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
+    var suffix = ek ? (ek+(sira+i)) : (sira+i).toString();
+    var fullCode = code+'-'+suffix;
+    var e = {id:'e'+Date.now()+i, baseCode:code, base_code:code, code:fullCode, not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy, user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
     entries.push(e);
     await saveEntry(e);
   }
-  document.getElementById('h-adet').value=1; document.getElementById('h-not').value='';
+  document.getElementById('h-adet').value=1; document.getElementById('h-ek').value=''; document.getElementById('h-not').value='';
   temizle(); toast('Eklendi!'); renderToday();
 }
 async function scKaydet(){
@@ -583,15 +602,18 @@ async function scEkle(){
   var sc = shortcuts.filter(function(x){ return x.id===selSC; })[0];
   var adet = parseInt(document.getElementById('sc-adet').value);
   if(!adet||adet<1){ toast('Gecerli adet gir', true); return; }
+  var ek = document.getElementById('sc-ek').value.trim().toUpperCase();
   var not = document.getElementById('sc-not').value.trim();
   var today = new Date().toISOString().split('T')[0];
-  var sira = getSiraNo(sc.code);
+  var sira = getSiraNo(sc.code, ek);
   for(var i=0; i<adet; i++){
-    var e = {id:'e'+Date.now()+i, baseCode:sc.code, base_code:sc.code, code:sc.code+'-'+(sira+i), not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy, user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
+    var suffix = ek ? (ek+(sira+i)) : (sira+i).toString();
+    var fullCode = sc.code+'-'+suffix;
+    var e = {id:'e'+Date.now()+i, baseCode:sc.code, base_code:sc.code, code:fullCode, not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy, user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
     entries.push(e);
     await saveEntry(e);
   }
-  document.getElementById('sc-adet').value=1; document.getElementById('sc-not').value='';
+  document.getElementById('sc-adet').value=1; document.getElementById('sc-ek').value=''; document.getElementById('sc-not').value='';
   toast('Eklendi!'); renderToday();
 }
 
