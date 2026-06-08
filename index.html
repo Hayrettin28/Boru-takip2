@@ -876,13 +876,13 @@ function parseRaw(raw){
 }
 function muhTemizle(){
   if(!muhListesi.length){ toast('Yuklu veri yok', true); return; }
-  onay('Muhasebe verisini sil?', muhListesi.length+' kayit silinecek', async function(){
+  onay('Yuklenen muhasebe verisini sil?', 'Karsilastirma sonucu etkilenmez.', async function(){
     muhListesi = [];
     await saveMuhToDB();
     document.getElementById('muh-yuklu').textContent='';
     document.getElementById('muh-paste').value='';
     document.getElementById('dosya-adi').textContent='Secilmedi';
-    toast('Temizlendi'); karsilastir();
+    toast('Muhasebe verisi silindi');
   });
 }
 function karsilastirmaTemizle(){
