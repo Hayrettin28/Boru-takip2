@@ -557,7 +557,8 @@ async function boruEkle(){
   var today = new Date().toISOString().split('T')[0];
   var sira = getSiraNo(code, ek);
   for(var i=0; i<adet; i++){
-    var suffix = ek ? (ek+(sira+i)) : (sira+i).toString();
+    var num = sira+i; var numStr = ek ? (num < 10 ? '0'+num : ''+num) : ''+num;
+    var suffix = ek ? (ek+numStr) : numStr;
     var fullCode = code+'-'+suffix;
     var e = {id:'e'+Date.now()+i, baseCode:code, base_code:code, code:fullCode, not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy, user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
     entries.push(e);
@@ -609,7 +610,8 @@ async function scEkle(){
   var today = new Date().toISOString().split('T')[0];
   var sira = getSiraNo(sc.code, ek);
   for(var i=0; i<adet; i++){
-    var suffix = ek ? (ek+(sira+i)) : (sira+i).toString();
+    var num = sira+i; var numStr = ek ? (num < 10 ? '0'+num : ''+num) : ''+num;
+    var suffix = ek ? (ek+numStr) : numStr;
     var fullCode = sc.code+'-'+suffix;
     var e = {id:'e'+Date.now()+i, baseCode:sc.code, base_code:sc.code, code:fullCode, not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy, user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
     entries.push(e);
