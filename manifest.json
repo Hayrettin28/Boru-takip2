@@ -2,7 +2,7 @@
   "name": "Boru Takip",
   "short_name": "BoruTakip",
   "description": "Tersane Boru Takip Sistemi",
-  "start_url": "/Boru-takip2/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0c0f",
   "theme_color": "#f59e0b",
