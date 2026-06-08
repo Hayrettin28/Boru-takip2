@@ -329,7 +329,10 @@ var kaydedilenSonuclar = JSON.parse(localStorage.getItem('bt_sonuclar') || '{}')
 var OR_KEY = '';
 var ocrQueue = [];
 
-function saveGroups(){ localStorage.setItem('bt_groups', JSON.stringify(groups)); }
+function saveGroups(){
+  localStorage.setItem('bt_groups', JSON.stringify(groups));
+  sb.from('ayarlar').upsert({key:'groups', value:JSON.stringify(groups)}).then(function(){});
+}
 function saveKaydedilenSonuclar(){ localStorage.setItem('bt_sonuclar', JSON.stringify(kaydedilenSonuclar)); }
 
 // ── AUTH ──
@@ -390,10 +393,19 @@ function showApp(){
   loadAll();
 }
 async function loadAll(){
-  await Promise.all([loadAylar(), loadShortcuts(), loadORKey()]);
+  await Promise.all([loadAylar(), loadShortcuts(), loadORKey(), loadGroups()]);
   initAylar();
   await loadEntries();
   renderSC(); renderGrpChips(); renderToday();
+}
+async function loadGroups(){
+  var r = await sb.from('ayarlar').select('value').eq('key','groups').maybeSingle();
+  if(r.data && r.data.value){
+    try {
+      var g = JSON.parse(r.data.value);
+      if(g && g.length) { groups = g; localStorage.setItem('bt_groups', JSON.stringify(groups)); }
+    } catch(e){}
+  }
 }
 async function loadORKey(){
   var r = await sb.from('ayarlar').select('value').eq('key','or_key').single();
@@ -886,12 +898,10 @@ function muhTemizle(){
   });
 }
 function karsilastirmaTemizle(){
-  if(!muhListesi.length){ toast('Temizlenecek veri yok', true); return; }
-  onay('Karsilastirmayi sifirla?', 'Muhasebe verisi silinir, liste etkilenmez', async function(){
-    muhListesi = [];
-    await saveMuhToDB();
-    document.getElementById('muh-yuklu').textContent='';
-    toast('Sifirlandi'); karsilastir();
+  onay('Karsilastirma sonucunu sifirla?', 'Tablo temizlenecek, liste etkilenmez', function(){
+    document.getElementById('rap-wrap').innerHTML='<div class="empty"><div class="ei">📊</div>Once muhasebe verisi yukle</div>';
+    document.getElementById('rap-stat').innerHTML='';
+    toast('Sifirlandi');
   });
 }
 function setFiltre(el){
