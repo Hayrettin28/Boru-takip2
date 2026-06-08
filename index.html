@@ -322,7 +322,7 @@ var muhListesi = [];
 var aktifRapAy = '';
 var aktifFiltre = 'hepsi';
 var kaydedilenSonuclar = JSON.parse(localStorage.getItem('bt_sonuclar') || '{}');
-var OR_KEY = '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';
+var OR_KEY = '';
 var ocrQueue = [];
 
 function saveGroups(){ localStorage.setItem('bt_groups', JSON.stringify(groups)); }
@@ -386,10 +386,14 @@ function showApp(){
   loadAll();
 }
 async function loadAll(){
-  await Promise.all([loadAylar(), loadShortcuts()]);
+  await Promise.all([loadAylar(), loadShortcuts(), loadORKey()]);
   initAylar();
   await loadEntries();
   renderSC(); renderGrpChips(); renderToday();
+}
+async function loadORKey(){
+  var r = await sb.from('ayarlar').select('value').eq('key','or_key').single();
+  if(r.data) OR_KEY = r.data.value;
 }
 
 // ── LOCAL DATA ──
@@ -790,6 +794,7 @@ function muhFoto(input){
   isleQueue(0, durumEl, previewEl); input.value='';
 }
 function isleQueue(idx, durumEl, previewEl){
+  if(!OR_KEY){ durumEl.innerHTML='<span style="color:var(--red)">AI Key yuklenemedi, sayfayi yenile</span>'; return; }
   if(idx>=ocrQueue.length){
     saveMuhToDB();
     durumEl.innerHTML = '<span style="color:var(--green)">Toplam '+muhListesi.length+' kod okundu</span>';
