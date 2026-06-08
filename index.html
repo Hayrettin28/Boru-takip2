@@ -182,8 +182,14 @@ tr:last-child td{border-bottom:none}
     <!-- LİSTE -->
     <div id="page-liste" class="page">
       <div class="ph"><div class="h1">Ana Liste</div><div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-sm" onclick="csvIndir()">CSV</button><button type="button" class="btn btn-r btn-sm" onclick="listeTemizle()">Tumunu Sil</button></div></div>
-      <div id="ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+      <div id="ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
       <div id="liste-stat"></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px" id="kisi-filtre-row"></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="tarih-filtre-row">
+        <div class="filtre active" data-t="hepsi" onclick="setTarihFiltre(this)">Tum Tarihler</div>
+        <div class="filtre" data-t="bugun" onclick="setTarihFiltre(this)">Bugun</div>
+        <div class="filtre" data-t="buhafta" onclick="setTarihFiltre(this)">Bu Hafta</div>
+      </div>
       <div class="card"><div id="liste-wrap"></div></div>
     </div>
 
