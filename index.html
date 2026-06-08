@@ -704,7 +704,10 @@ function renderListe(){
   for(var i=0; i<aylar.length; i++){
     var a = aylar[i];
     var isActive = aktifAy===a.id?' active':'';
-    tabHtml += '<div class="ay-tab'+isActive+'" onclick="secAy(\''+a.id+'\')">' + a.name + '</div>';
+    tabHtml += '<div class="ay-tab'+isActive+'" style="display:inline-flex;align-items:center;gap:6px">';
+    tabHtml += '<span onclick="secAy(\''+a.id+'\')" style="cursor:pointer">'+a.name+'</span>';
+    tabHtml += '<span onclick="ayiSil(\''+a.id+'\')" style="color:rgba(239,68,68,.8);cursor:pointer;font-weight:700;font-size:14px">×</span>';
+    tabHtml += '</div>';
   }
   tabHtml += '<div class="ay-tab add" onclick="openOv(\'ay-ov\')">+ Yeni Ay</div>';
   tabsEl.innerHTML = tabHtml;
