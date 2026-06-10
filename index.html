@@ -335,12 +335,24 @@ tr:last-child td{border-bottom:none}
 <div class="overlay" id="sifre-ov">
   <div class="modal">
     <h3>Sifre Degistir</h3>
+    <div class="f"><label>Mevcut Sifre</label><input type="password" id="eski-sifre" placeholder="Mevcut sifrenizi girin"></div>
     <div class="f"><label>Yeni Sifre</label><input type="password" id="yeni-sifre" placeholder="En az 6 karakter"></div>
     <div class="f"><label>Yeni Sifre (Tekrar)</label><input type="password" id="yeni-sifre2" placeholder="Tekrar gir"></div>
     <div id="sifre-err" style="color:var(--red);font-size:12px;margin-bottom:10px"></div>
     <div style="display:flex;gap:8px">
       <button type="button" class="btn btn-a" style="flex:1;justify-content:center" onclick="sifreDegistir()">Degistir</button>
       <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sifre-ov')">Iptal</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ekle-ov">
+  <div class="modal">
+    <h3>Onay</h3>
+    <div id="ekle-ozet" style="font-family:monospace;font-size:13px;color:var(--accent);background:var(--bg);border-radius:8px;padding:12px;margin-bottom:16px;word-break:break-all"></div>
+    <div style="display:flex;gap:8px">
+      <button type="button" class="btn btn-a" id="ekle-evet" style="flex:1;justify-content:center">Evet, Ekle</button>
+      <button type="button" class="btn btn-g" onclick="closeOv('ekle-ov')" style="flex:1;justify-content:center">Iptal</button>
     </div>
   </div>
 </div>
@@ -1329,16 +1341,23 @@ function openStats(){
 }
 
 async function sifreDegistir(){
+  var eski = document.getElementById('eski-sifre').value;
   var yeni = document.getElementById('yeni-sifre').value;
   var yeni2 = document.getElementById('yeni-sifre2').value;
   var errEl = document.getElementById('sifre-err');
   errEl.textContent = '';
-  if(!yeni || yeni.length < 6){ errEl.textContent = 'En az 6 karakter olmali'; return; }
-  if(yeni !== yeni2){ errEl.textContent = 'Sifreler eslesmiyor'; return; }
+  if(!eski){ errEl.textContent = 'Mevcut sifreyi gir'; return; }
+  if(!yeni || yeni.length < 6){ errEl.textContent = 'Yeni sifre en az 6 karakter olmali'; return; }
+  if(yeni !== yeni2){ errEl.textContent = 'Yeni sifreler eslesmiyor'; return; }
   errEl.style.color = 'var(--accent)';
+  errEl.textContent = 'Kontrol ediliyor...';
+  // Eski sifreyi dogrula
+  var kontrol = await sb.auth.signInWithPassword({email: me.email, password: eski});
+  if(kontrol.error){ errEl.style.color='var(--red)'; errEl.textContent = 'Mevcut sifre yanlis!'; return; }
   errEl.textContent = 'Degistiriliyor...';
   var r = await sb.auth.updateUser({password: yeni});
   if(r.error){ errEl.style.color='var(--red)'; errEl.textContent = 'Hata: '+r.error.message; return; }
+  document.getElementById('eski-sifre').value = '';
   document.getElementById('yeni-sifre').value = '';
   document.getElementById('yeni-sifre2').value = '';
   errEl.textContent = '';
