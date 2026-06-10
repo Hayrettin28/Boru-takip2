@@ -1057,8 +1057,7 @@ async function scEkle(){
   var ek = document.getElementById('sc-ek').value.trim().toUpperCase();
   var sira = getSiraNo(sc.code, ek);
   var ornekNum = sira < 10 ? '0'+sira : ''+sira;
-  var ornekSuffix = ek ? (ek+ornekNum) : ''+sira;
-  var ornekKod = sc.code+'-'+ornekSuffix;
+  var ornekKod = sc.code+'-'+(ek ? ek+ornekNum : ''+sira);
   document.getElementById('ekle-ozet').innerHTML =
     '<b style="color:var(--accent)">'+sc.code+'</b>' +
     (ek ? '<br>Ek: <b>'+ek+'</b>' : '') +
@@ -1067,28 +1066,636 @@ async function scEkle(){
   var evetBtn = document.getElementById('ekle-evet');
   evetBtn.onclick = null;
   evetBtn.onclick = async function(){
-    closeOv('ekle-ov');
-    var not = document.getElementById('sc-not').value.trim();
-    var today = new Date().toISOString().split('T')[0];
-    var s2 = getSiraNo(sc.code, ek);
-    for(var i=0; i<adet; i++){
-      var num = s2+i;
-      var numStr = ek ? (num < 10 ? '0'+num : ''+num) : ''+num;
-      var suffix = ek ? (ek+numStr) : numStr;
-      var fullCode = sc.code+'-'+suffix;
-      var e = {id:'e'+Date.now()+Math.random(), baseCode:sc.code, base_code:sc.code, code:fullCode,
-               not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy,
-               user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
-      entries.push(e);
-      await saveEntry(e);
-    }
-    document.getElementById('sc-adet').value=1;
-    document.getElementById('sc-ek').value='';
-    document.getElementById('sc-not').value='';
-    toast('Eklendi!'); renderToday();
+  closeOv('ekle-ov');    
+  var not = document.getElementById('sc-not').value.trim();
+  var today = new Date().toISOString().split('T')[0];
+  var sira = getSiraNo(sc.code, ek);
+  for(var i=0; i<adet; i++){
+    var num = sira+i; var numStr = ek ? (num < 10 ? '0'+num : ''+num) : ''+num;
+    var suffix = ek ? (ek+numStr) : numStr;
+    var fullCode = sc.code+'-'+suffix;
+    var e = {id:'e'+Date.now()+i, baseCode:sc.code, base_code:sc.code, code:fullCode, not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy, user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
+    entries.push(e);
+    await saveEntry(e);
+  }
+  document.getElementById('sc-adet').value=1; document.getElementById('sc-ek').value=''; document.getElementById('sc-not').value='';
+  toast('Eklendi!'); renderToday();
   };
   openOv('ekle-ov');
 }
+
+// ── BUGÜN LİSTESİ ──
+function renderToday(){
+  var today = new Date().toISOString().split('T')[0];
+  var list = entries.filter(function(e){ return e.tarih===today && e.user_id===me.id; });
+  var el = document.getElementById('today-list');
+  if(!list.length){ el.innerHTML='<div class="empty" style="padding:16px"><div class="ei" style="font-size:22px">📋</div>Bugun giris yok</div>'; return; }
+  var rows = '';
+  for(var i=0; i<list.length; i++){
+    var e = list[i];
+    rows += '<tr><td style="font-family:monospace;font-size:12px">'+e.code+'</td><td style="font-size:12px;color:var(--muted)">'+e.tarih+'</td><td style="font-size:12px;color:var(--muted)">'+(e.not_field||e.not||'—')+'</td><td><button type="button" class="btn btn-r btn-xs" onclick="entrySil(\''+e.id+'\')">Sil</button></td></tr>';
+  }
+  el.innerHTML='<div class="tw"><table><thead><tr><th>KOD</th><th>TARIH</th><th>NOT</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+function entrySil(id){
+  var e = entries.filter(function(x){ return x.id===id; })[0];
+  onay('Bu kaydi sil?', e.code, async function(){
+    await deleteEntry(id);
+    var baseCode = e.base_code||e.baseCode;
+    entries = entries.filter(function(x){ return x.id!==id; });
+    await yenidenNumaralandir(baseCode, aktifAy);
+    toast('Silindi'); renderToday(); renderListe();
+  });
+}
+async function yenidenNumaralandir(baseCode, ayId){
+  var list = entries.filter(function(e){ return (e.base_code||e.baseCode)===baseCode && (e.ay_id||e.ayId)===ayId; });
+  for(var i=0; i<list.length; i++){
+    var newCode = baseCode+'-'+(i+1);
+    list[i].code = newCode;
+    await sb.from('entries').update({code:newCode}).eq('id',list[i].id);
+  }
+}
+function bugunTemizle(){
+  var today = new Date().toISOString().split('T')[0];
+  var list = entries.filter(function(e){ return e.tarih===today && e.user_id===me.id; });
+  if(!list.length){ toast('Bugun giris yok', true); return; }
+  onay('Bugunun girislerini sil?', list.length+' kayit silinecek', async function(){
+    for(var i=0;i<list.length;i++) await deleteEntry(list[i].id);
+    entries = entries.filter(function(e){ return !(e.tarih===today && e.user_id===me.id); });
+    toast('Silindi'); renderToday(); renderListe();
+  });
+}
+
+// ── LİSTE ──
+function renderListe(){
+  initAylar();
+  var tabsEl = document.getElementById('ay-tabs');
+  var tabHtml = '';
+  for(var i=0; i<aylar.length; i++){
+    var a = aylar[i];
+    var isActive = aktifAy===a.id?' active':'';
+    tabHtml += '<div class="ay-tab'+isActive+'" style="display:inline-flex;align-items:center;gap:6px">';
+    tabHtml += '<span onclick="secAy(\''+a.id+'\')" style="cursor:pointer">'+a.name+'</span>';
+    tabHtml += '<span onclick="ayiSil(\''+a.id+'\')" style="color:rgba(239,68,68,.8);cursor:pointer;font-weight:700;font-size:14px">×</span>';
+    tabHtml += '</div>';
+  }
+  tabHtml += '<div class="ay-tab add" onclick="openOv(\'ay-ov\')">+ Yeni Ay</div>';
+  tabsEl.innerHTML = tabHtml;
+  // Kisi filtresi
+  var kisiRow = document.getElementById('kisi-filtre-row');
+  if(kisiRow){
+    var kullanicilar = {};
+    entries.forEach(function(e){ if(e.profiles) kullanicilar[e.user_id]=e.profiles.name; });
+    var kisiHtml = '<div class="filtre'+(kisiFiltre==='hepsi'?' active':'')+'" data-k="hepsi" onclick="setKisiFiltre(this)">Herkes</div>';
+    for(var uid in kullanicilar){
+      kisiHtml += '<div class="filtre'+(kisiFiltre===uid?' active':'')+'" data-k="'+uid+'" onclick="setKisiFiltre(this)">'+kullanicilar[uid]+'</div>';
+    }
+    kisiRow.innerHTML = kisiHtml;
+  }
+
+  // Tum entryleri filtrele
+  var today = new Date().toISOString().split('T')[0];
+  var weekAgo = new Date(Date.now()-7*24*60*60*1000).toISOString().split('T')[0];
+  var list = entries.filter(function(e){
+    if(kisiFiltre!=='hepsi' && e.user_id!==kisiFiltre) return false;
+    if(tarihFiltre==='bugun' && e.tarih!==today) return false;
+    if(tarihFiltre==='buhafta' && e.tarih<weekAgo) return false;
+    return true;
+  });
+  var baseCodes = {};
+  for(var i=0; i<list.length; i++) baseCodes[list[i].base_code||list[i].baseCode||list[i].code]=true;
+  document.getElementById('liste-stat').innerHTML = '<div class="stat-row"><div class="stat-box"><div class="stat-num" style="color:var(--accent)">'+list.length+'</div><div class="stat-lbl">Toplam</div></div><div class="stat-box"><div class="stat-num" style="color:var(--blue)">'+Object.keys(baseCodes).length+'</div><div class="stat-lbl">Farkli Boru</div></div></div>';
+  var wrap = document.getElementById('liste-wrap');
+  if(!list.length){ wrap.innerHTML='<div class="empty"><div class="ei">📭</div>Bu ayda giris yok</div>'; return; }
+  var rows = '';
+  for(var i=0; i<list.length; i++){
+    var e = list[i];
+    var uname = e.profiles ? e.profiles.name : '?';
+    rows += '<tr><td style="font-family:monospace;font-size:11px">'+e.code+'</td><td style="font-size:11px;color:var(--muted)">'+e.tarih+'</td><td><span class="u-badge">'+uname+'</span></td><td><button type="button" class="btn btn-r btn-xs" onclick="entrySil(\''+e.id+'\')">Sil</button></td></tr>';
+  }
+  wrap.innerHTML='<div class="tw"><table><thead><tr><th>KOD</th><th>TARIH</th><th>KIM</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+function listeTemizle(){
+  var list = entries.filter(function(e){ return e.ay_id===aktifAy; });
+  if(!list.length){ toast('Bu ayda veri yok', true); return; }
+  onay('Bu ayin tum listesini sil?', list.length+' kayit silinecek', async function(){
+    await sb.from('entries').delete().eq('ay_id',aktifAy);
+    entries = entries.filter(function(e){ return e.ay_id!==aktifAy; });
+    toast('Liste temizlendi'); renderListe(); renderToday();
+  });
+}
+function csvIndir(){
+  var list = entries.filter(function(e){ return e.ay_id===aktifAy; });
+  if(!list.length){ toast('Veri yok', true); return; }
+  var ay = aylar.filter(function(a){ return a.id===aktifAy; })[0];
+  var csv = 'Kod,Tarih,Kim,Not\n';
+  for(var i=0; i<list.length; i++){
+    var e = list[i];
+    var uname = e.profiles ? e.profiles.name : '?';
+    csv += e.code+','+e.tarih+','+uname+','+(e.not_field||e.not||'')+'\n';
+  }
+  var blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  var a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='boru-'+(ay?ay.name:'liste')+'.csv'; a.click();
+}
+
+// ── KATEGORİLER ──
+function renderGroups(){
+  var el = document.getElementById('grp-list');
+  if(!groups.length){ el.innerHTML='<div class="card"><div class="empty"><div class="ei">🗂</div>Grup yok</div></div>'; return; }
+  var html = '';
+  for(var i=0; i<groups.length; i++){
+    var g = groups[i];
+    var vals = '';
+    for(var j=0; j<g.values.length; j++) vals += '<span class="val-chip">'+g.values[j]+'<span class="x" onclick="valSil(\''+g.id+'\','+j+')">×</span></span>';
+    if(!g.values.length) vals = '<span style="color:var(--muted);font-size:12px">Deger yok</span>';
+    html += '<div class="grp"><div class="grp-head"><div class="grp-name">'+g.name+'</div><button type="button" class="btn btn-r btn-xs" onclick="grpSil(\''+g.id+'\')">Sil</button></div><div>'+vals+'</div><div class="add-row"><input class="inp" id="vi-'+g.id+'" type="text" placeholder="Deger ekle..." style="flex:1;min-width:120px" onkeydown="if(event.key===\'Enter\')valEkle(\''+g.id+'\')"><button type="button" class="btn btn-a btn-sm" onclick="valEkle(\''+g.id+'\')">+ Ekle</button></div></div>';
+  }
+  el.innerHTML = html;
+}
+function addGroup(){
+  var name = document.getElementById('grp-inp').value.trim();
+  if(!name){ toast('Grup adi gir', true); return; }
+  groups.push({id:'g'+Date.now(), name:name, values:[]});
+  saveGroups(); closeOv('grp-ov'); document.getElementById('grp-inp').value='';
+  toast('Grup eklendi'); renderGroups(); renderGrpChips();
+}
+function grpSil(id){
+  var g = groups.filter(function(x){ return x.id===id; })[0];
+  onay('"'+g.name+'" grubunu sil?', g.values.length+' deger silinecek', function(){
+    groups = groups.filter(function(x){ return x.id!==id; });
+    saveGroups(); toast('Silindi'); renderGroups(); renderGrpChips();
+  });
+}
+function valEkle(gid){
+  var inp = document.getElementById('vi-'+gid);
+  var val = inp.value.trim().toUpperCase();
+  if(!val){ toast('Deger gir', true); return; }
+  var g = groups.filter(function(x){ return x.id===gid; })[0];
+  if(g.values.indexOf(val)!==-1){ toast('Zaten var', true); return; }
+  g.values.push(val); saveGroups(); inp.value='';
+  renderGroups(); renderGrpChips();
+  setTimeout(function(){ var el=document.getElementById('vi-'+gid); if(el) el.focus(); },50);
+}
+function valSil(gid, idx){
+  var g = groups.filter(function(x){ return x.id===gid; })[0];
+  onay('"'+g.values[idx]+'" degerini sil?', '', function(){
+    g.values.splice(idx,1); saveGroups(); toast('Silindi'); renderGroups(); renderGrpChips();
+  });
+}
+
+// ── EKİP ──
+async function renderEkip(){
+  var r = await sb.from('profiles').select('*').order('name');
+  var profiles = r.data || [];
+  var html = '';
+  for(var i=0; i<profiles.length; i++){
+    var p = profiles[i];
+    var isMe = p.id === me.id;
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">';
+    html += '<div><div style="font-weight:600">'+p.name+(isMe?' (Sen)':'')+'</div><div style="font-size:12px;color:var(--muted)">'+p.role+'</div></div>';
+    html += '<span class="badge '+(p.role==='admin'?'b-b':'b-g')+'">'+p.role.toUpperCase()+'</span></div>';
+  }
+  document.getElementById('ekip-list').innerHTML = html || '<div class="empty">Ekip uyeleri yuklenemiyor</div>';
+  if(meProfile) document.getElementById('hesap-bilgi').innerHTML = '<b>'+meProfile.name+'</b><br>'+me.email;
+}
+
+// ── KARŞILAŞTIRMA ──
+async function renderRapor(){
+  initAylar();
+  var tabsEl = document.getElementById('rap-ay-tabs');
+  var tabHtml = '';
+  for(var i=0; i<aylar.length; i++){
+    var a = aylar[i];
+    var isActive = aktifRapAy===a.id?' active':'';
+    tabHtml += '<div class="ay-tab'+isActive+'" onclick="secRapAy(\''+a.id+'\')">' + a.name + '</div>';
+  }
+  tabsEl.innerHTML = tabHtml;
+  if(!muhListesi.length) await loadMuhFromDB();
+  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayit yuklu' : '';
+  karsilastir();
+  renderKaydedilenSonuclar();
+}
+async function muhYukle(){
+  var raw = document.getElementById('muh-paste').value.trim();
+  if(!raw){ toast('Once veri yapistir', true); return; }
+  muhListesi = parseRaw(raw);
+  await saveMuhToDB();
+  document.getElementById('muh-yuklu').textContent = muhListesi.length+' kayit yuklendi';
+  toast('Yuklendi!'); karsilastir();
+}
+function muhDosya(input){
+  var file = input.files[0]; if(!file) return;
+  document.getElementById('dosya-adi').textContent = file.name;
+  var reader = new FileReader();
+  reader.onload = async function(e){
+    muhListesi = parseRaw(e.target.result);
+    if(!muhListesi.length){ toast('Hic kayit okunamadi', true); return; }
+    await saveMuhToDB();
+    document.getElementById('muh-yuklu').textContent = muhListesi.length+' kayit yuklendi';
+    toast('Yuklendi!'); karsilastir();
+  };
+  reader.readAsText(file,'UTF-8');
+}
+function muhFoto(input){
+  var files = Array.from(input.files); if(!files.length) return;
+  var durumEl = document.getElementById('ocr-durum');
+  var previewEl = document.getElementById('ocr-preview');
+  durumEl.innerHTML = '<span style="color:var(--accent)">'+files.length+' fotograf isleniyor...</span>';
+  previewEl.style.display = 'none';
+  ocrQueue = files.slice(); muhListesi = [];
+  isleQueue(0, durumEl, previewEl); input.value='';
+}
+function isleQueue(idx, durumEl, previewEl){
+  if(!OR_KEY){ durumEl.innerHTML='<span style="color:var(--red)">AI Key yuklenemedi, sayfayi yenile</span>'; return; }
+  if(idx>=ocrQueue.length){
+    saveMuhToDB();
+    durumEl.innerHTML = '<span style="color:var(--green)">Toplam '+muhListesi.length+' kod okundu</span>';
+    document.getElementById('muh-yuklu').textContent = muhListesi.length+' kayit yuklendi';
+    karsilastir(); return;
+  }
+  var file = ocrQueue[idx];
+  durumEl.innerHTML = '<span style="color:var(--accent)">Fotograf '+(idx+1)+'/'+ocrQueue.length+' okunuyor...</span>';
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var b64 = e.target.result.split(',')[1];
+    var mimeType = file.type||'image/jpeg';
+    var dataUrl = 'data:'+mimeType+';base64,'+b64;
+    fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY,'HTTP-Referer':'https://borutakip.app','X-Title':'Boru Takip'},
+      body:JSON.stringify({
+        model:'nvidia/nemotron-nano-12b-v2-vl:free',
+        messages:[{role:'user',content:[
+          {type:'text',text:'Bu fotograftaki tabloda boru kodlari var. Sadece boru kodlarini listele, her satira bir kod yaz. Baska hicbir sey yazma. Satirlardaki numara oneklerini ekleme. Ornek: M9-154-M-5510-032-001-SP02'},
+          {type:'image_url',image_url:{url:dataUrl}}
+        ]}],
+        temperature:0,max_tokens:2000
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.error) throw new Error(data.error.message||JSON.stringify(data.error));
+      var text = data.choices&&data.choices[0] ? data.choices[0].message.content : '';
+      var yeniKodlar = parseRaw(text);
+      for(var i=0; i<yeniKodlar.length; i++) if(muhListesi.indexOf(yeniKodlar[i])===-1) muhListesi.push(yeniKodlar[i]);
+      previewEl.textContent = 'Fotograf '+(idx+1)+': '+yeniKodlar.length+' kod okudu';
+      previewEl.style.display='block';
+      isleQueue(idx+1, durumEl, previewEl);
+    })
+    .catch(function(err){
+      durumEl.innerHTML = '<span style="color:var(--red)">Fotograf '+(idx+1)+' hatasi: '+err.message+'</span>';
+    });
+  };
+  reader.readAsDataURL(file);
+}
+function parseRaw(raw){
+  var lines = raw.replace(/\r/g,'').split('\n');
+  var result = [];
+  for(var i=0; i<lines.length; i++){
+    var line = lines[i].trim(); if(!line) continue;
+    var parts = line.indexOf('\t')!==-1 ? line.split('\t') : line.split(',');
+    var kod = parts[0].trim().toUpperCase();
+    if(!kod||kod==='BORU KODU'||kod==='KOD'||kod==='CODE') continue;
+    result.push(kod);
+  }
+  return result;
+}
+function muhTemizle(){
+  if(!muhListesi.length){ toast('Yuklu veri yok', true); return; }
+  onay('Yuklenen muhasebe verisini sil?', 'Karsilastirma sonucu etkilenmez.', async function(){
+    muhListesi = [];
+    await saveMuhToDB();
+    document.getElementById('muh-yuklu').textContent='';
+    document.getElementById('muh-paste').value='';
+    document.getElementById('dosya-adi').textContent='Secilmedi';
+    toast('Muhasebe verisi silindi');
+  });
+}
+function karsilastirmaTemizle(){
+  onay('Karsilastirma sonucunu sifirla?', 'Tablo temizlenecek, liste etkilenmez', function(){
+    document.getElementById('rap-wrap').innerHTML='<div class="empty"><div class="ei">📊</div>Once muhasebe verisi yukle</div>';
+    document.getElementById('rap-stat').innerHTML='';
+    toast('Sifirlandi');
+  });
+}
+function setFiltre(el){
+  aktifFiltre = el.dataset.f;
+  document.querySelectorAll('.filtre').forEach(function(f){ f.classList.remove('active'); });
+  el.classList.add('active'); karsilastir();
+}
+function karsilastir(){
+  var wrap = document.getElementById('rap-wrap');
+  var statEl = document.getElementById('rap-stat');
+  if(!muhListesi.length){ statEl.innerHTML=''; wrap.innerHTML='<div class="empty"><div class="ei">📊</div>Once muhasebe verisi yukle</div>'; return; }
+  var rapEntries = entries.filter(function(e){ return e.ay_id===aktifRapAy; });
+  var ekipList = rapEntries.map(function(e){ return e.code.toUpperCase(); });
+  var muhSet = {}; for(var i=0;i<muhListesi.length;i++) muhSet[muhListesi[i]]=true;
+  var ekipSet = {}; for(var i=0;i<ekipList.length;i++) ekipSet[ekipList[i]]=true;
+  var allCodes = {};
+  for(var i=0;i<ekipList.length;i++) allCodes[ekipList[i]]=true;
+  for(var i=0;i<muhListesi.length;i++) allCodes[muhListesi[i]]=true;
+  var esit=0,eksik=0,fazla=0,satirlar=[];
+  for(var kod in allCodes){
+    var bizde=ekipSet[kod]?true:false, muhde=muhSet[kod]?true:false, durum;
+    if(bizde&&muhde) durum='esit'; else if(bizde&&!muhde) durum='fazla'; else durum='eksik';
+    if(durum==='esit') esit++; else if(durum==='eksik') eksik++; else fazla++;
+    satirlar.push({kod:kod,bizde:bizde,muhde:muhde,durum:durum});
+  }
+  satirlar.sort(function(a,b){ return a.kod>b.kod?1:-1; });
+  var sH='<div class="stat-row">';
+  sH+='<div class="stat-box"><div class="stat-num" style="color:var(--green)">'+esit+'</div><div class="stat-lbl">Esit</div></div>';
+  sH+='<div class="stat-box"><div class="stat-num" style="color:var(--red)">'+eksik+'</div><div class="stat-lbl">Bizde Yok</div></div>';
+  sH+='<div class="stat-box" style="grid-column:span 2"><div class="stat-num" style="color:var(--accent)">'+fazla+'</div><div class="stat-lbl">Muhasebeye Yok</div></div>';
+  sH+='</div>'; statEl.innerHTML=sH;
+  var filtreli=satirlar.filter(function(s){ return aktifFiltre==='hepsi'||s.durum===aktifFiltre; });
+  if(!filtreli.length){ wrap.innerHTML='<div class="empty">Secili filtrede kayit yok</div>'; return; }
+  var rows='';
+  for(var i=0;i<filtreli.length;i++){
+    var s=filtreli[i];
+    var cls=s.durum==='eksik'?'row-eksik':s.durum==='fazla'?'row-fazla':'';
+    var badge=s.durum==='esit'?'<span class="badge b-g">ESIT</span>':s.durum==='eksik'?'<span class="badge b-r">EKSIK</span>':'<span class="badge b-a">FAZLA</span>';
+    rows+='<tr class="'+cls+'"><td style="font-family:monospace;font-size:11px">'+s.kod+'</td><td>'+(s.bizde?'✓':'—')+'</td><td>'+(s.muhde?'✓':'—')+'</td><td>'+badge+'</td></tr>';
+  }
+  wrap.innerHTML='<div class="tw"><table><thead><tr><th>KOD</th><th>EKIP</th><th>MUHASEBE</th><th>DURUM</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+function sonucuKaydet(){
+  if(!muhListesi.length){ toast('Once muhasebe yukle', true); return; }
+  var ay=aylar.filter(function(a){ return a.id===aktifRapAy; })[0];
+  var ayAdi=ay?ay.name:aktifRapAy;
+  var rapEntries=entries.filter(function(e){ return e.ay_id===aktifRapAy; });
+  var ekipList=rapEntries.map(function(e){ return e.code.toUpperCase(); });
+  var allCodes={}, muhSet={};
+  for(var i=0;i<muhListesi.length;i++){ muhSet[muhListesi[i]]=true; allCodes[muhListesi[i]]=true; }
+  for(var i=0;i<ekipList.length;i++) allCodes[ekipList[i]]=true;
+  var satirlar=[];
+  for(var kod in allCodes){
+    var bizde=ekipList.indexOf(kod)!==-1, muhde=muhSet[kod]?true:false;
+    var durum=(bizde&&muhde)?'esit':(bizde?'fazla':'eksik');
+    satirlar.push({kod:kod,bizde:bizde,muhde:muhde,durum:durum});
+  }
+  kaydedilenSonuclar[aktifRapAy]={ayAdi:ayAdi,tarih:new Date().toLocaleDateString('tr-TR'),satirlar:satirlar};
+  saveKaydedilenSonuclar(); toast('Sonuc kaydedildi'); renderKaydedilenSonuclar();
+}
+function renderKaydedilenSonuclar(){
+  var el=document.getElementById('kayitli-sonuclar'); if(!el) return;
+  var keys=Object.keys(kaydedilenSonuclar);
+  // Sadece aktif rap ayina ait sonuclari goster
+  var filtered = keys.filter(function(k){ return k === aktifRapAy; });
+  if(!filtered.length){ el.innerHTML='<div style="color:var(--muted);font-size:12px">Bu ay icin kayitli sonuc yok</div>'; return; }
+  keys = filtered;
+  var html='';
+  for(var i=0;i<keys.length;i++){
+    var k=keys[i], s=kaydedilenSonuclar[k], esit=0,eksik=0,fazla=0;
+    for(var j=0;j<s.satirlar.length;j++){ if(s.satirlar[j].durum==='esit') esit++; else if(s.satirlar[j].durum==='eksik') eksik++; else fazla++; }
+    html+='<div style="background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px">';
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    html+='<div><div style="font-family:var(--fh);font-size:15px;color:var(--accent)">'+s.ayAdi+'</div><div style="font-size:11px;color:var(--muted)">'+s.tarih+'</div></div>';
+    html+='<div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-xs" onclick="sonucuGoster(\''+k+'\')">Goster</button><button type="button" class="btn btn-r btn-xs" onclick="sonucuSil(\''+k+'\')">Sil</button></div>';
+    html+='</div><div style="display:flex;gap:8px;font-size:12px"><span style="color:var(--green)">'+esit+' Esit</span><span style="color:var(--red)">'+eksik+' Eksik</span><span style="color:var(--accent)">'+fazla+' Fazla</span></div></div>';
+  }
+  el.innerHTML=html;
+}
+function sonucuGoster(ayId){
+  var s=kaydedilenSonuclar[ayId]; if(!s) return;
+  var filtreli=s.satirlar.filter(function(x){ return aktifFiltre==='hepsi'||x.durum===aktifFiltre; });
+  var wrap=document.getElementById('rap-wrap');
+  if(!filtreli.length){ wrap.innerHTML='<div class="empty">Secili filtrede kayit yok</div>'; return; }
+  var rows='';
+  for(var i=0;i<filtreli.length;i++){
+    var x=filtreli[i],cls=x.durum==='eksik'?'row-eksik':x.durum==='fazla'?'row-fazla':'';
+    var badge=x.durum==='esit'?'<span class="badge b-g">ESIT</span>':x.durum==='eksik'?'<span class="badge b-r">EKSIK</span>':'<span class="badge b-a">FAZLA</span>';
+    rows+='<tr class="'+cls+'"><td style="font-family:monospace;font-size:11px">'+x.kod+'</td><td>'+(x.bizde?'✓':'—')+'</td><td>'+(x.muhde?'✓':'—')+'</td><td>'+badge+'</td></tr>';
+  }
+  wrap.innerHTML='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Kayitli: '+s.ayAdi+'</div><div class="tw"><table><thead><tr><th>KOD</th><th>EKIP</th><th>MUHASEBE</th><th>DURUM</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+function sonucuSil(ayId){
+  var s=kaydedilenSonuclar[ayId];
+  onay('"'+s.ayAdi+'" sonucunu sil?','Geri alinamaz',function(){ delete kaydedilenSonuclar[ayId]; saveKaydedilenSonuclar(); toast('Silindi'); renderKaydedilenSonuclar(); });
+}
+function csvFark(){
+  if(!muhListesi.length){ toast('Muhasebe verisi yok', true); return; }
+  var ay=aylar.filter(function(a){ return a.id===aktifRapAy; })[0];
+  var rapEntries=entries.filter(function(e){ return e.ay_id===aktifRapAy; });
+  var ekipList=rapEntries.map(function(e){ return e.code.toUpperCase(); });
+  var allCodes={},muhSet={};
+  for(var i=0;i<muhListesi.length;i++){ muhSet[muhListesi[i]]=true; allCodes[muhListesi[i]]=true; }
+  for(var i=0;i<ekipList.length;i++) allCodes[ekipList[i]]=true;
+  var csv='Kod,Ekip,Muhasebe,Durum\n';
+  for(var kod in allCodes){
+    var bizde=ekipList.indexOf(kod)!==-1?'VAR':'YOK', muhde=muhSet[kod]?'VAR':'YOK';
+    var durum=(ekipList.indexOf(kod)!==-1&&muhSet[kod])?'ESIT':(!muhSet[kod]?'FAZLA':'EKSIK');
+    csv+=kod+','+bizde+','+muhde+','+durum+'\n';
+  }
+  var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='fark-'+(ay?ay.name:'rapor')+'.csv'; a.click();
+}
+
+async function ayiSil(id){
+  var ay = aylar.filter(function(a){ return a.id===id; })[0];
+  var count = 0;
+  var r = await sb.from('entries').select('id', {count:'exact'}).eq('ay_id',id);
+  count = r.count || 0;
+  onay('"'+ay.name+'" ayini sil?', count+' giris de silinecek!', async function(){
+    await sb.from('entries').delete().eq('ay_id',id);
+    await sb.from('aylar').delete().eq('id',id);
+    aylar = aylar.filter(function(a){ return a.id!==id; });
+    if(aktifAy===id) aktifAy = aylar.length ? aylar[0].id : '';
+    await loadEntries();
+    renderListe();
+    toast(ay.name+' silindi');
+  });
+}
+
+function setKisiFiltre(el){
+  kisiFiltre = el.dataset.k;
+  document.querySelectorAll('#kisi-filtre-row .filtre').forEach(function(f){ f.classList.remove('active'); });
+  el.classList.add('active');
+  renderListe();
+}
+function setTarihFiltre(el){
+  tarihFiltre = el.dataset.t;
+  document.querySelectorAll('#tarih-filtre-row .filtre').forEach(function(f){ f.classList.remove('active'); });
+  el.classList.add('active');
+  renderListe();
+}
+
+function goPageByName(name){
+  var btns = document.querySelectorAll('.nb');
+  for(var i=0;i<btns.length;i++){
+    var oc = btns[i].getAttribute('onclick')||'';
+    if(oc.indexOf("'"+name+"'")!==-1){ goPage(name, btns[i]); return; }
+  }
+}
+
+function renderStats(){
+  // Ay sekmeleri
+  initAylar();
+  var tabsEl = document.getElementById('stats-ay-tabs');
+  if(!tabsEl) return;
+  var tabHtml = '';
+  for(var i=0;i<aylar.length;i++){
+    var a=aylar[i];
+    var isActive = aktifAy===a.id?' active':'';
+    tabHtml += '<div class="ay-tab'+isActive+'" onclick="secAyStats(\''+a.id+'\')">' + a.name + '</div>';
+  }
+  tabsEl.innerHTML = tabHtml;
+  buildStats();
+}
+async function secAyStats(id){
+  aktifAy = id;
+  await loadEntries();
+  renderStats();
+}
+function buildStats(){
+  var el = document.getElementById('stats-content');
+  if(!el) return;
+  var list = entries.filter(function(e){ return e.ay_id===aktifAy; });
+  if(!list.length){ el.innerHTML='<div class="empty"><div class="ei">📊</div>Bu ayda veri yok</div>'; return; }
+
+  // Temel istatistikler
+  var total = list.length;
+  var gunler = {};
+  list.forEach(function(e){ gunler[e.tarih]=(gunler[e.tarih]||0)+1; });
+  var gunSayisi = Object.keys(gunler).length;
+  var ort = gunSayisi ? (total/gunSayisi).toFixed(1) : 0;
+  var maxGun = '', maxVal = 0;
+  for(var g in gunler){ if(gunler[g]>maxVal){maxVal=gunler[g];maxGun=g;} }
+
+  // Son 7 gun
+  var son7 = [];
+  for(var i=6;i>=0;i--){
+    var d = new Date(); d.setDate(d.getDate()-i);
+    var ds = d.toISOString().split('T')[0];
+    var gun = d.getDate()+'.'+(d.getMonth()+1);
+    son7.push({ds:ds, lbl:gun, val:gunler[ds]||0});
+  }
+  var maxBar = Math.max.apply(null, son7.map(function(x){return x.val;})) || 1;
+
+  // En cok kullanilan boru kodlari (base_code)
+  var kodlar = {};
+  list.forEach(function(e){ var k=e.base_code||e.code; kodlar[k]=(kodlar[k]||0)+1; });
+  var topKodlar = Object.entries(kodlar).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+
+  // Renkler
+  var renkler = ['#f59e0b','#6366f1','#10b981','#ef4444','#3b82f6'];
+
+  var html = '';
+
+  // Ozet istatistikler
+  html += '<div class="stat-row" style="margin-bottom:12px">';
+  html += '<div class="stat-box"><div class="stat-big">'+total+'</div><div class="stat-desc">Toplam Giris</div></div>';
+  html += '<div class="stat-box"><div class="stat-big">'+ort+'</div><div class="stat-desc">Gunluk Ort.</div></div>';
+  html += '<div class="stat-box"><div class="stat-big">'+maxVal+'</div><div class="stat-desc">En Yogun Gun</div></div>';
+  html += '<div class="stat-box"><div class="stat-big">'+gunSayisi+'</div><div class="stat-desc">Aktif Gun</div></div>';
+  html += '</div>';
+
+  // En yogun gun
+  if(maxGun){
+    html += '<div class="card" style="margin-bottom:12px">';
+    html += '<div style="font-size:12px;color:var(--muted);margin-bottom:4px">EN YOGUN GUN</div>';
+    html += '<div style="font-family:var(--fh);font-size:20px;color:var(--accent)">'+maxGun+'</div>';
+    html += '<div style="font-size:13px;color:var(--muted)">'+maxVal+' giris yapildi</div>';
+    html += '</div>';
+  }
+
+  // Son 7 gun grafigi
+  html += '<div class="card" style="margin-bottom:12px">';
+  html += '<div class="ct">Son 7 Gun</div>';
+  html += '<div class="bar-wrap">';
+  son7.forEach(function(g){
+    var h = Math.round((g.val/maxBar)*100);
+    html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center">';
+    html += '<div style="width:100%;display:flex;align-items:flex-end;justify-content:center;height:120px">';
+    html += '<div class="bar" style="width:80%;height:'+h+'%;background:'+(g.val>0?'var(--accent)':'var(--s3)')+'">';
+    if(g.val>0) html += '<div class="bar-val">'+g.val+'</div>';
+    html += '</div></div>';
+    html += '<div class="bar-lbl">'+g.lbl+'</div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+
+  // En cok kullanilan borular
+  if(topKodlar.length){
+    var topToplam = topKodlar.reduce(function(s,x){return s+x[1];},0);
+    html += '<div class="card" style="margin-bottom:12px">';
+    html += '<div class="ct">En Cok Kullanilan Borular</div>';
+    topKodlar.forEach(function(kv, i){
+      var pct = Math.round((kv[1]/total)*100);
+      var renk = renkler[i%renkler.length];
+      html += '<div style="margin-bottom:10px">';
+      html += '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">';
+      html += '<span style="font-family:monospace;color:var(--text)">'+kv[0]+'</span>';
+      html += '<span style="color:var(--muted)">'+kv[1]+' ('+pct+'%)</span>';
+      html += '</div>';
+      html += '<div style="height:6px;background:var(--s3);border-radius:3px">';
+      html += '<div style="height:100%;width:'+pct+'%;background:'+renk+';border-radius:3px;transition:.3s"></div>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+  }
+
+  // Aylar arasi karsilastirma
+  if(aylar.length > 1){
+    html += '<div class="card">';
+    html += '<div class="ct">Aylar Arasi</div>';
+    html += '<div class="bar-wrap">';
+    var allAylar = JSON.parse(localStorage.getItem('bt_entries')||'[]');
+    var ayTotals = {};
+    aylar.forEach(function(a){ ayTotals[a.id]=0; });
+    allAylar.forEach(function(e){ if(ayTotals[e.ay_id]!==undefined) ayTotals[e.ay_id]++; });
+    var maxAy = Math.max.apply(null, Object.values(ayTotals)) || 1;
+    aylar.forEach(function(a){
+      var val = ayTotals[a.id]||0;
+      var h = Math.round((val/maxAy)*100);
+      html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center">';
+      html += '<div style="width:100%;display:flex;align-items:flex-end;justify-content:center;height:120px">';
+      html += '<div class="bar" style="width:80%;height:'+h+'%;background:'+(a.id===aktifAy?'var(--accent)':'var(--blue)')+'">';
+      if(val>0) html += '<div class="bar-val">'+val+'</div>';
+      html += '</div></div>';
+      html += '<div class="bar-lbl">'+a.name.split(' ')[0]+'</div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  el.innerHTML = html;
+}
+
+function openStats(){
+  buildStats();
+  openOv('stats-ov');
+}
+
+async function sifreDegistir(){
+  var eski = document.getElementById('eski-sifre').value;
+  var yeni = document.getElementById('yeni-sifre').value;
+  var yeni2 = document.getElementById('yeni-sifre2').value;
+  var errEl = document.getElementById('sifre-err');
+  errEl.textContent = '';
+  if(!eski){ errEl.textContent = 'Mevcut sifreyi gir'; return; }
+  if(!yeni || yeni.length < 6){ errEl.textContent = 'Yeni sifre en az 6 karakter olmali'; return; }
+  if(yeni !== yeni2){ errEl.textContent = 'Yeni sifreler eslesmiyor'; return; }
+  errEl.style.color = 'var(--accent)';
+  errEl.textContent = 'Kontrol ediliyor...';
+  // Eski sifreyi dogrula
+  var kontrol = await sb.auth.signInWithPassword({email: me.email, password: eski});
+  if(kontrol.error){ errEl.style.color='var(--red)'; errEl.textContent = 'Mevcut sifre yanlis!'; return; }
+  errEl.textContent = 'Degistiriliyor...';
+  var r = await sb.auth.updateUser({password: yeni});
+  if(r.error){ errEl.style.color='var(--red)'; errEl.textContent = 'Hata: '+r.error.message; return; }
+  document.getElementById('eski-sifre').value = '';
+  document.getElementById('yeni-sifre').value = '';
+  document.getElementById('yeni-sifre2').value = '';
+  errEl.textContent = '';
+  closeOv('sifre-ov');
+  toast('Sifre degistirildi!');
+}
+
+// ── BOOT ──
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+init();
 </script>
 </body>
 </html>
