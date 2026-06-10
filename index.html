@@ -106,6 +106,16 @@ tr:last-child td{border-bottom:none}
 .badge{display:inline-flex;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
 .b-g{background:rgba(16,185,129,.15);color:var(--green)}.b-r{background:rgba(239,68,68,.15);color:var(--red)}.b-a{background:rgba(245,158,11,.15);color:var(--accent)}
 .row-eksik td{background:rgba(239,68,68,.04)}.row-eksik td:first-child{color:var(--red)}
+.bar-wrap{display:flex;align-items:flex-end;gap:4px;height:120px;padding:8px 0}
+.bar{flex:1;background:var(--accent);border-radius:4px 4px 0 0;min-height:4px;transition:.3s;position:relative;cursor:default}
+.bar:hover{opacity:.8}
+.bar-lbl{font-size:9px;color:var(--muted);text-align:center;margin-top:4px;white-space:nowrap}
+.bar-val{font-size:9px;color:var(--text);text-align:center;position:absolute;top:-16px;left:50%;transform:translateX(-50%);white-space:nowrap}
+.pie-wrap{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.pie-item{display:flex;align-items:center;gap:6px;font-size:12px}
+.pie-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.stat-big{font-family:var(--fh);font-size:42px;color:var(--accent);line-height:1}
+.stat-desc{font-size:12px;color:var(--muted);margin-top:2px}
 .row-fazla td{background:rgba(245,158,11,.04)}.row-fazla td:first-child{color:var(--accent)}
 /* KULLANICI BADGE */
 .u-badge{display:inline-block;background:var(--s3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--muted);margin-right:3px}
@@ -522,6 +532,7 @@ function goPage(name, btn){
   if(name==='liste') renderListe();
   if(name==='rapor') renderRapor();
   if(name==='ekip') renderEkip();
+  if(name==='stats') renderStats();
 }
 
 // ── OVERLAY ──
@@ -1140,6 +1151,140 @@ function goPageByName(name){
     var oc = btns[i].getAttribute('onclick')||'';
     if(oc.indexOf("'"+name+"'")!==-1){ goPage(name, btns[i]); return; }
   }
+}
+
+function renderStats(){
+  // Ay sekmeleri
+  initAylar();
+  var tabsEl = document.getElementById('stats-ay-tabs');
+  if(!tabsEl) return;
+  var tabHtml = '';
+  for(var i=0;i<aylar.length;i++){
+    var a=aylar[i];
+    var isActive = aktifAy===a.id?' active':'';
+    tabHtml += '<div class="ay-tab'+isActive+'" onclick="secAyStats(\''+a.id+'\')">' + a.name + '</div>';
+  }
+  tabsEl.innerHTML = tabHtml;
+  buildStats();
+}
+async function secAyStats(id){
+  aktifAy = id;
+  await loadEntries();
+  renderStats();
+}
+function buildStats(){
+  var el = document.getElementById('stats-content');
+  if(!el) return;
+  var list = entries.filter(function(e){ return e.ay_id===aktifAy; });
+  if(!list.length){ el.innerHTML='<div class="empty"><div class="ei">📊</div>Bu ayda veri yok</div>'; return; }
+
+  // Temel istatistikler
+  var total = list.length;
+  var gunler = {};
+  list.forEach(function(e){ gunler[e.tarih]=(gunler[e.tarih]||0)+1; });
+  var gunSayisi = Object.keys(gunler).length;
+  var ort = gunSayisi ? (total/gunSayisi).toFixed(1) : 0;
+  var maxGun = '', maxVal = 0;
+  for(var g in gunler){ if(gunler[g]>maxVal){maxVal=gunler[g];maxGun=g;} }
+
+  // Son 7 gun
+  var son7 = [];
+  for(var i=6;i>=0;i--){
+    var d = new Date(); d.setDate(d.getDate()-i);
+    var ds = d.toISOString().split('T')[0];
+    var gun = d.getDate()+'.'+(d.getMonth()+1);
+    son7.push({ds:ds, lbl:gun, val:gunler[ds]||0});
+  }
+  var maxBar = Math.max.apply(null, son7.map(function(x){return x.val;})) || 1;
+
+  // En cok kullanilan boru kodlari (base_code)
+  var kodlar = {};
+  list.forEach(function(e){ var k=e.base_code||e.code; kodlar[k]=(kodlar[k]||0)+1; });
+  var topKodlar = Object.entries(kodlar).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+
+  // Renkler
+  var renkler = ['#f59e0b','#6366f1','#10b981','#ef4444','#3b82f6'];
+
+  var html = '';
+
+  // Ozet istatistikler
+  html += '<div class="stat-row" style="margin-bottom:12px">';
+  html += '<div class="stat-box"><div class="stat-big">'+total+'</div><div class="stat-desc">Toplam Giris</div></div>';
+  html += '<div class="stat-box"><div class="stat-big">'+ort+'</div><div class="stat-desc">Gunluk Ort.</div></div>';
+  html += '<div class="stat-box"><div class="stat-big">'+maxVal+'</div><div class="stat-desc">En Yogun Gun</div></div>';
+  html += '<div class="stat-box"><div class="stat-big">'+gunSayisi+'</div><div class="stat-desc">Aktif Gun</div></div>';
+  html += '</div>';
+
+  // En yogun gun
+  if(maxGun){
+    html += '<div class="card" style="margin-bottom:12px">';
+    html += '<div style="font-size:12px;color:var(--muted);margin-bottom:4px">EN YOGUN GUN</div>';
+    html += '<div style="font-family:var(--fh);font-size:20px;color:var(--accent)">'+maxGun+'</div>';
+    html += '<div style="font-size:13px;color:var(--muted)">'+maxVal+' giris yapildi</div>';
+    html += '</div>';
+  }
+
+  // Son 7 gun grafigi
+  html += '<div class="card" style="margin-bottom:12px">';
+  html += '<div class="ct">Son 7 Gun</div>';
+  html += '<div class="bar-wrap">';
+  son7.forEach(function(g){
+    var h = Math.round((g.val/maxBar)*100);
+    html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center">';
+    html += '<div style="width:100%;display:flex;align-items:flex-end;justify-content:center;height:120px">';
+    html += '<div class="bar" style="width:80%;height:'+h+'%;background:'+(g.val>0?'var(--accent)':'var(--s3)')+'">';
+    if(g.val>0) html += '<div class="bar-val">'+g.val+'</div>';
+    html += '</div></div>';
+    html += '<div class="bar-lbl">'+g.lbl+'</div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+
+  // En cok kullanilan borular
+  if(topKodlar.length){
+    var topToplam = topKodlar.reduce(function(s,x){return s+x[1];},0);
+    html += '<div class="card" style="margin-bottom:12px">';
+    html += '<div class="ct">En Cok Kullanilan Borular</div>';
+    topKodlar.forEach(function(kv, i){
+      var pct = Math.round((kv[1]/total)*100);
+      var renk = renkler[i%renkler.length];
+      html += '<div style="margin-bottom:10px">';
+      html += '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">';
+      html += '<span style="font-family:monospace;color:var(--text)">'+kv[0]+'</span>';
+      html += '<span style="color:var(--muted)">'+kv[1]+' ('+pct+'%)</span>';
+      html += '</div>';
+      html += '<div style="height:6px;background:var(--s3);border-radius:3px">';
+      html += '<div style="height:100%;width:'+pct+'%;background:'+renk+';border-radius:3px;transition:.3s"></div>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+  }
+
+  // Aylar arasi karsilastirma
+  if(aylar.length > 1){
+    html += '<div class="card">';
+    html += '<div class="ct">Aylar Arasi</div>';
+    html += '<div class="bar-wrap">';
+    var allAylar = JSON.parse(localStorage.getItem('bt_entries')||'[]');
+    var ayTotals = {};
+    aylar.forEach(function(a){ ayTotals[a.id]=0; });
+    allAylar.forEach(function(e){ if(ayTotals[e.ay_id]!==undefined) ayTotals[e.ay_id]++; });
+    var maxAy = Math.max.apply(null, Object.values(ayTotals)) || 1;
+    aylar.forEach(function(a){
+      var val = ayTotals[a.id]||0;
+      var h = Math.round((val/maxAy)*100);
+      html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center">';
+      html += '<div style="width:100%;display:flex;align-items:flex-end;justify-content:center;height:120px">';
+      html += '<div class="bar" style="width:80%;height:'+h+'%;background:'+(a.id===aktifAy?'var(--accent)':'var(--blue)')+'">';
+      if(val>0) html += '<div class="bar-val">'+val+'</div>';
+      html += '</div></div>';
+      html += '<div class="bar-lbl">'+a.name.split(' ')[0]+'</div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  el.innerHTML = html;
 }
 
 // ── BOOT ──
