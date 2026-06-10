@@ -83,7 +83,8 @@ input,select,textarea,button{font-family:var(--fb)}
 .sc-item{display:inline-flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--blue);border-radius:20px;padding:7px 13px;font-size:13px;cursor:pointer;color:var(--blue);margin:3px;transition:.1s;user-select:none}
 .sc-item.sel{background:var(--blue);color:#fff}
 /* TABLO */
-.tw{overflow-x:auto}
+.tw{overflow-x:auto;overflow-y:auto;max-height:350px}
+.tw table thead th{position:sticky;top:0;background:var(--s1);z-index:1}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{font-size:11px;color:var(--muted);text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);font-weight:600;font-family:var(--fh);letter-spacing:.5px}
 td{padding:8px 9px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
@@ -138,7 +139,7 @@ tr:last-child td{border-bottom:none}
   <div class="topbar">
     <div class="topbar-logo">BORU</div>
     <div id="tarih-lbl" style="font-size:13px;color:var(--muted)"></div>
-    <div class="avatar" id="user-avatar" onclick="doLogout()" title="Cikis Yap">?</div>
+    <div class="avatar" id="user-avatar" onclick="goPageByName('ekip')" title="Ekip">?</div>
   </div>
 
   <div class="content">
@@ -347,7 +348,10 @@ function saveGroups(){
   localStorage.setItem('bt_groups', JSON.stringify(groups));
   sb.from('ayarlar').upsert({key:'groups', value:JSON.stringify(groups)}).then(function(){});
 }
-function saveKaydedilenSonuclar(){ localStorage.setItem('bt_sonuclar', JSON.stringify(kaydedilenSonuclar)); }
+function saveKaydedilenSonuclar(){
+  localStorage.setItem('bt_sonuclar', JSON.stringify(kaydedilenSonuclar));
+  sb.from('ayarlar').upsert({key:'sonuclar', value:JSON.stringify(kaydedilenSonuclar)}).then(function(){});
+}
 
 // ── AUTH ──
 async function init(){
@@ -419,6 +423,15 @@ function setupRealtime(){
     })
     .subscribe();
 
+  sb.channel('sonuclar-changes')
+    .on('postgres_changes', {event:'UPDATE', schema:'public', table:'ayarlar', filter:'key=eq.sonuclar'}, function(payload){
+      try {
+        var s = JSON.parse(payload.new.value);
+        if(s){ kaydedilenSonuclar = s; localStorage.setItem('bt_sonuclar', JSON.stringify(s)); renderKaydedilenSonuclar(); }
+      } catch(e){}
+    })
+    .subscribe();
+
   sb.channel('ayarlar-changes')
     .on('postgres_changes', {event:'UPDATE', schema:'public', table:'ayarlar', filter:'key=eq.groups'}, function(payload){
       try {
@@ -435,7 +448,7 @@ function setupRealtime(){
     .subscribe();
 }
 async function loadAll(){
-  await Promise.all([loadAylar(), loadShortcuts(), loadORKey(), loadGroups()]);
+  await Promise.all([loadAylar(), loadShortcuts(), loadORKey(), loadGroups(), loadSonuclar()]);
   initAylar();
   await loadEntries();
   renderSC(); renderGrpChips(); renderToday();
@@ -446,6 +459,15 @@ async function loadGroups(){
     try {
       var g = JSON.parse(r.data.value);
       if(g && g.length) { groups = g; localStorage.setItem('bt_groups', JSON.stringify(groups)); }
+    } catch(e){}
+  }
+}
+async function loadSonuclar(){
+  var r = await sb.from('ayarlar').select('value').eq('key','sonuclar').maybeSingle();
+  if(r.data && r.data.value){
+    try {
+      var s = JSON.parse(r.data.value);
+      if(s) { kaydedilenSonuclar = s; localStorage.setItem('bt_sonuclar', JSON.stringify(s)); }
     } catch(e){}
   }
 }
@@ -1030,7 +1052,10 @@ function sonucuKaydet(){
 function renderKaydedilenSonuclar(){
   var el=document.getElementById('kayitli-sonuclar'); if(!el) return;
   var keys=Object.keys(kaydedilenSonuclar);
-  if(!keys.length){ el.innerHTML='<div style="color:var(--muted);font-size:12px">Kayitli sonuc yok</div>'; return; }
+  // Sadece aktif rap ayina ait sonuclari goster
+  var filtered = keys.filter(function(k){ return k === aktifRapAy; });
+  if(!filtered.length){ el.innerHTML='<div style="color:var(--muted);font-size:12px">Bu ay icin kayitli sonuc yok</div>'; return; }
+  keys = filtered;
   var html='';
   for(var i=0;i<keys.length;i++){
     var k=keys[i], s=kaydedilenSonuclar[k], esit=0,eksik=0,fazla=0;
@@ -1105,6 +1130,14 @@ function setTarihFiltre(el){
   document.querySelectorAll('#tarih-filtre-row .filtre').forEach(function(f){ f.classList.remove('active'); });
   el.classList.add('active');
   renderListe();
+}
+
+function goPageByName(name){
+  var btns = document.querySelectorAll('.nb');
+  for(var i=0;i<btns.length;i++){
+    var oc = btns[i].getAttribute('onclick')||'';
+    if(oc.indexOf("'"+name+"'")!==-1){ goPage(name, btns[i]); return; }
+  }
 }
 
 // ── BOOT ──
