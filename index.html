@@ -315,6 +315,17 @@ tr:last-child td{border-bottom:none}
     <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="yeniAyEkle()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('ay-ov')">Iptal</button></div>
   </div>
 </div>
+<div class="overlay" id="stats-ov">
+  <div class="modal" style="max-height:85vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h3 style="margin:0">Istatistik</h3>
+      <button type="button" class="btn btn-g btn-sm" onclick="closeOv('stats-ov')">Kapat</button>
+    </div>
+    <div id="stats-ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+    <div id="stats-content"></div>
+  </div>
+</div>
+
 <div class="overlay" id="onay-ov">
   <div class="modal"><h3 id="onay-title">Emin misin?</h3>
     <p id="onay-msg" style="color:var(--muted);font-size:13px;margin-bottom:18px"></p>
@@ -1285,6 +1296,11 @@ function buildStats(){
   }
 
   el.innerHTML = html;
+}
+
+function openStats(){
+  buildStats();
+  openOv('stats-ov');
 }
 
 // ── BOOT ──
