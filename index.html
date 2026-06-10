@@ -346,10 +346,22 @@ tr:last-child td{border-bottom:none}
   </div>
 </div>
 
+<div class="overlay" id="sc-kaydet-ov">
+  <div class="modal">
+    <h3>Kisayol Kaydet</h3>
+    <div style="font-family:monospace;font-size:13px;color:var(--accent);margin-bottom:12px" id="sc-kaydet-kod"></div>
+    <div class="f"><label>Kisayol Adi</label><input type="text" id="sc-kaydet-inp" placeholder="Bos biraksan kod kullanilir"></div>
+    <div style="display:flex;gap:8px">
+      <button type="button" class="btn btn-a" style="flex:1;justify-content:center" onclick="scKaydetOnayla()">Kaydet</button>
+      <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sc-kaydet-ov')">Iptal</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="ekle-ov">
   <div class="modal">
     <h3>Onay</h3>
-    <div id="ekle-ozet" style="font-family:monospace;font-size:13px;color:var(--accent);background:var(--bg);border-radius:8px;padding:12px;margin-bottom:16px;word-break:break-all"></div>
+    <div id="ekle-ozet" style="font-size:13px;background:var(--bg);border-radius:8px;padding:12px;margin-bottom:16px;line-height:1.8"></div>
     <div style="display:flex;gap:8px">
       <button type="button" class="btn btn-a" id="ekle-evet" style="flex:1;justify-content:center">Evet, Ekle</button>
       <button type="button" class="btn btn-g" onclick="closeOv('ekle-ov')" style="flex:1;justify-content:center">Iptal</button>
@@ -959,29 +971,55 @@ async function boruEkle(){
   var adet = parseInt(document.getElementById('h-adet').value);
   if(!adet||adet<1){ toast('Gecerli adet gir', true); return; }
   var ek = document.getElementById('h-ek').value.trim().toUpperCase();
-  var ornekSuffix = ek ? (ek+'01') : '1';
-  var ornekKod = code+'-'+ornekSuffix;
-  if(!confirm('Eklenecek: '+sc.code+' | Adet: '+adet+(ek?' | Ek: '+ek:''))) return;
-  var ek = document.getElementById('h-ek').value.trim().toUpperCase();
-  var not = document.getElementById('h-not').value.trim();
-  var today = new Date().toISOString().split('T')[0];
   var sira = getSiraNo(code, ek);
-  for(var i=0; i<adet; i++){
-    var num = sira+i; var numStr = ek ? (num < 10 ? '0'+num : ''+num) : ''+num;
-    var suffix = ek ? (ek+numStr) : numStr;
-    var fullCode = code+'-'+suffix;
-    var e = {id:'e'+Date.now()+i, baseCode:code, base_code:code, code:fullCode, not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy, user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
-    entries.push(e);
-    await saveEntry(e);
-  }
-  document.getElementById('h-adet').value=1; document.getElementById('h-ek').value=''; document.getElementById('h-not').value='';
-  temizle(); toast('Eklendi!'); renderToday();
+  var ornekNum = sira < 10 ? '0'+sira : ''+sira;
+  var ornekSuffix = ek ? (ek+ornekNum) : ''+sira;
+  var ornekKod = code+'-'+ornekSuffix;
+  document.getElementById('ekle-ozet').innerHTML =
+    '<b style="color:var(--accent)">'+code+'</b>' +
+    (ek ? '<br>Ek: <b>'+ek+'</b>' : '') +
+    '<br>Adet: <b>'+adet+'</b>' +
+    '<br>Ornek: <b style="color:var(--green)">'+ornekKod+'</b>';
+  // evet butonuna yeni fonksiyon ata
+  var evetBtn = document.getElementById('ekle-evet');
+  evetBtn.onclick = null;
+  evetBtn.onclick = async function(){
+    closeOv('ekle-ov');
+    var not = document.getElementById('h-not').value.trim();
+    var today = new Date().toISOString().split('T')[0];
+    var s2 = getSiraNo(code, ek);
+    for(var i=0; i<adet; i++){
+      var num = s2+i;
+      var numStr = ek ? (num < 10 ? '0'+num : ''+num) : ''+num;
+      var suffix = ek ? (ek+numStr) : numStr;
+      var fullCode = code+'-'+suffix;
+      var e = {id:'e'+Date.now()+Math.random(), baseCode:code, base_code:code, code:fullCode,
+               not:not, not_field:not, tarih:today, ay_id:aktifAy, ayId:aktifAy,
+               user_id:me.id, profiles:{name:meProfile?meProfile.name:'?'}};
+      entries.push(e);
+      await saveEntry(e);
+    }
+    document.getElementById('h-adet').value=1;
+    document.getElementById('h-ek').value='';
+    document.getElementById('h-not').value='';
+    temizle(); toast('Eklendi!'); renderToday();
+  };
+  openOv('ekle-ov');
 }
+
+
 async function scKaydet(){
   var code = selParts.join('-');
   if(!code){ toast('Once boru sec', true); return; }
   if(shortcuts.length >= 10){ toast('Max 10 kisayol eklenebilir!', true); return; }
-  var label = prompt('Kisayol adi:')||code;
+  document.getElementById('sc-kaydet-kod').textContent = code;
+  document.getElementById('sc-kaydet-inp').value = code;
+  openOv('sc-kaydet-ov');
+}
+async function scKaydetOnayla(){
+  var code = document.getElementById('sc-kaydet-kod').textContent;
+  var label = document.getElementById('sc-kaydet-inp').value.trim() || code;
+  closeOv('sc-kaydet-ov');
   var sc = {id:'sc'+Date.now(), user_id:me.id, code:code, label:label};
   var r = await sb.from('shortcuts').insert(sc);
   if(!r.error){ shortcuts.push(sc); toast('Kisayol kaydedildi!'); renderSC(); }
