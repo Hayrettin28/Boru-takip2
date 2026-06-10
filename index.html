@@ -677,6 +677,282 @@ function getSiraNo(baseCode, ek){
   }
   return count+1;
 }
+function saveKaydedilenSonuclar(){
+  localStorage.setItem('bt_sonuclar', JSON.stringify(kaydedilenSonuclar));
+  sb.from('ayarlar').upsert({key:'sonuclar', value:JSON.stringify(kaydedilenSonuclar)}).then(function(){});
+}
+
+// ── AUTH ──
+async function init(){
+  try {
+    var s = await sb.auth.getSession();
+    if(s.data && s.data.session){ me = s.data.session.user; await loadProfile(); showApp(); return; }
+  } catch(e){ console.log('Session error:', e); }
+  document.getElementById('auth-wrap').style.display='flex';
+}
+
+async function doGiris(){
+  var email = document.getElementById('g-email').value.trim();
+  var sifre = document.getElementById('g-sifre').value;
+  var errEl = document.getElementById('g-err');
+  errEl.style.color = '#f59e0b';
+  if(!email||!sifre){ errEl.style.color='#ef4444'; errEl.textContent='Email ve sifre gir'; return; }
+  errEl.textContent = 'Giris yapiliyor...';
+  try {
+    var r = await sb.auth.signInWithPassword({email:email, password:sifre});
+    if(r.error){ errEl.style.color='#ef4444'; errEl.textContent='Hata: '+r.error.message; return; }
+    me = r.data.user;
+    errEl.textContent = 'Yukleniyor...';
+    await loadProfile();
+    errEl.textContent = '';
+    showApp();
+  } catch(e){
+    errEl.style.color='#ef4444';
+    errEl.textContent = 'Baglanti hatasi: '+(e.message||e);
+  }
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  me = null; meProfile = null;
+  document.getElementById('app-wrap').style.display = 'none';
+  document.getElementById('auth-wrap').style.display = 'flex';
+}
+async function loadProfile(){
+  var r = await sb.from('profiles').select('*').eq('id',me.id).maybeSingle();
+  if(r.data){ meProfile = r.data; }
+  else {
+    var ad = (me.user_metadata&&me.user_metadata.name)?me.user_metadata.name:me.email.split('@')[0];
+    await sb.from('profiles').insert({id:me.id, name:ad});
+    meProfile = {id:me.id, name:ad, role:'worker'};
+  }
+}
+function showApp(){
+  document.getElementById('auth-wrap').style.display = 'none';
+  document.getElementById('app-wrap').style.display = 'block';
+  var ini = (meProfile&&meProfile.name) ? meProfile.name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase() : '?';
+  document.getElementById('user-avatar').textContent = ini;
+  var now = new Date();
+  var months = ['Ocak','Subat','Mart','Nisan','Mayis','Haziran','Temmuz','Agustos','Eylul','Ekim','Kasim','Aralik'];
+  var ds = now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  document.getElementById('tarih-lbl').textContent = ds;
+  document.getElementById('today-lbl').textContent = ds;
+  loadAll();
+  setupRealtime();
+}
+function setupRealtime(){
+  sb.channel('entries-changes')
+    .on('postgres_changes', {event:'INSERT', schema:'public', table:'entries'}, function(payload){
+      if(payload.new.user_id !== me.id && payload.new.ay_id === aktifAy){
+        loadEntries().then(function(){
+          renderListe();
+          toast('Yeni giris: '+payload.new.code);
+        });
+      }
+    })
+    .subscribe();
+
+  sb.channel('sonuclar-changes')
+    .on('postgres_changes', {event:'UPDATE', schema:'public', table:'ayarlar', filter:'key=eq.sonuclar'}, function(payload){
+      try {
+        var s = JSON.parse(payload.new.value);
+        if(s){ kaydedilenSonuclar = s; localStorage.setItem('bt_sonuclar', JSON.stringify(s)); renderKaydedilenSonuclar(); }
+      } catch(e){}
+    })
+    .subscribe();
+
+  sb.channel('ayarlar-changes')
+    .on('postgres_changes', {event:'UPDATE', schema:'public', table:'ayarlar', filter:'key=eq.groups'}, function(payload){
+      try {
+        var g = JSON.parse(payload.new.value);
+        if(g && g.length){
+          groups = g;
+          localStorage.setItem('bt_groups', JSON.stringify(groups));
+          renderGroups();
+          renderGrpChips();
+          toast('Kategoriler guncellendi');
+        }
+      } catch(e){}
+    })
+    .subscribe();
+}
+async function loadAll(){
+  await Promise.all([loadAylar(), loadShortcuts(), loadORKey(), loadGroups(), loadSonuclar()]);
+  initAylar();
+  await loadEntries();
+  renderSC(); renderGrpChips(); renderToday();
+}
+async function loadGroups(){
+  var r = await sb.from('ayarlar').select('value').eq('key','groups').maybeSingle();
+  if(r.data && r.data.value){
+    try {
+      var g = JSON.parse(r.data.value);
+      if(g && g.length) { groups = g; localStorage.setItem('bt_groups', JSON.stringify(groups)); }
+    } catch(e){}
+  }
+}
+async function loadSonuclar(){
+  var r = await sb.from('ayarlar').select('value').eq('key','sonuclar').maybeSingle();
+  if(r.data && r.data.value){
+    try {
+      var s = JSON.parse(r.data.value);
+      if(s) { kaydedilenSonuclar = s; localStorage.setItem('bt_sonuclar', JSON.stringify(s)); }
+    } catch(e){}
+  }
+}
+async function loadORKey(){
+  var r = await sb.from('ayarlar').select('value').eq('key','or_key').single();
+  if(r.data) OR_KEY = r.data.value;
+}
+
+// ── LOCAL DATA ──
+async function loadAylar(){
+  var r = await sb.from('aylar').select('*').order('created_at');
+  aylar = r.data || [];
+}
+async function loadShortcuts(){
+  var r = await sb.from('shortcuts').select('*').eq('user_id',me.id).order('created_at');
+  shortcuts = r.data || [];
+}
+async function loadEntries(){
+  if(!aktifAy) return;
+  var r = await sb.from('entries').select('*, profiles(name)').eq('ay_id',aktifAy).order('created_at');
+  entries = r.data || [];
+}
+async function saveAy(ay){
+  await sb.from('aylar').upsert({id:ay.id, name:ay.name, created_by:me.id});
+}
+async function saveEntry(e){
+  await sb.from('entries').insert({id:e.id, user_id:me.id, base_code:e.base_code||e.baseCode, code:e.code, not_field:e.not||null, tarih:e.tarih, ay_id:e.ay_id||e.ayId});
+}
+async function deleteEntry(id){
+  await sb.from('entries').delete().eq('id',id);
+}
+async function loadMuhFromDB(){
+  var r = await sb.from('muhasebe').select('code').eq('ay_id',aktifRapAy);
+  muhListesi = (r.data||[]).map(function(x){ return x.code; });
+}
+async function saveMuhToDB(){
+  await sb.from('muhasebe').delete().eq('ay_id',aktifRapAy);
+  if(!muhListesi.length) return;
+  var rows = muhListesi.map(function(c){ return {id:'m'+Date.now()+Math.random(), ay_id:aktifRapAy, code:c, uploaded_by:me.id}; });
+  await sb.from('muhasebe').insert(rows);
+}
+
+// ── NAVİGATİON ──
+function goPage(name, btn){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('page-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='giris'){ renderSC(); renderGrpChips(); renderToday(); }
+  if(name==='cats') renderGroups();
+  if(name==='liste') renderListe();
+  if(name==='rapor') renderRapor();
+  if(name==='ekip') renderEkip();
+  if(name==='stats') renderStats();
+}
+
+// ── OVERLAY ──
+function openOv(id){ document.getElementById(id).classList.add('open'); }
+function closeOv(id){ document.getElementById(id).classList.remove('open'); }
+function onay(title, msg, cb){
+  document.getElementById('onay-title').textContent = title;
+  document.getElementById('onay-msg').textContent = msg;
+  document.getElementById('onay-evet').onclick = function(){ closeOv('onay-ov'); cb(); };
+  openOv('onay-ov');
+}
+
+// ── TOAST ──
+var tt;
+function toast(msg, err){
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'toast show'+(err?' err':'');
+  clearTimeout(tt); tt = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+}
+
+// ── AY YÖNETİMİ ──
+function initAylar(){
+  if(!aylar.length){
+    var now = new Date();
+    var months = ['Ocak','Subat','Mart','Nisan','Mayis','Haziran','Temmuz','Agustos','Eylul','Ekim','Kasim','Aralik'];
+    var name = months[now.getMonth()]+' '+now.getFullYear();
+    var id = 'ay'+Date.now();
+    var ay = {id:id, name:name};
+    aylar.push(ay);
+    saveAy(ay);
+  }
+  if(!aktifAy) aktifAy = aylar[0].id;
+  if(!aktifRapAy) aktifRapAy = aylar[0].id;
+}
+async function yeniAyEkle(){
+  var name = document.getElementById('ay-inp').value.trim();
+  if(!name){ toast('Ay adi gir', true); return; }
+  var id = 'ay'+Date.now();
+  var ay = {id:id, name:name};
+  aylar.push(ay);
+  await saveAy(ay);
+  closeOv('ay-ov');
+  document.getElementById('ay-inp').value = '';
+  aktifAy = id;
+  await loadEntries();
+  renderListe();
+  toast('Yeni ay: '+name);
+}
+async function secAy(id){
+  aktifAy = id;
+  await loadEntries();
+  renderListe();
+}
+async function secRapAy(id){
+  aktifRapAy = id;
+  await loadMuhFromDB();
+  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayit yuklu' : '';
+  renderRapor();
+}
+
+// ── GİRİŞ SAYFASI ──
+function renderGrpChips(){
+  var el = document.getElementById('grp-chips-wrap');
+  if(!groups.length){ el.innerHTML='<div style="color:var(--muted);font-size:12px">Once Kategoriler sekmesinden grup olustur</div>'; return; }
+  var html = '';
+  for(var i=0; i<groups.length; i++){
+    var g = groups[i];
+    var chips = '';
+    for(var j=0; j<g.values.length; j++) chips += '<div class="grp-val" onclick="partEkle(\''+g.values[j]+'\')">'+g.values[j]+'</div>';
+    html += '<div class="grp-chip-wrap"><div class="grp-chip-label">'+g.name+'</div><div class="grp-chips">'+chips+'</div></div>';
+  }
+  el.innerHTML = html;
+}
+function partEkle(v){ selParts.push(v); updCodePrev(); }
+function geriAl(){ if(selParts.length){ selParts.pop(); updCodePrev(); } }
+function temizle(){ selParts=[]; updCodePrev(); }
+function updCodePrev(){
+  var code = selParts.join('-');
+  document.getElementById('code-prev').textContent = code||'—';
+  var html = '';
+  for(var i=0; i<selParts.length; i++) html += '<span class="part-chip">'+(i>0?'<span style="opacity:.4;margin:0 2px">-</span>':'')+selParts[i]+'</span>';
+  document.getElementById('sel-parts').innerHTML = html;
+}
+function getSiraNo(baseCode, ek){
+  // Ayni baseCode ve ayni ek ile kac kayit var
+  var prefix = ek ? ek : '';
+  var count = 0;
+  for(var i=0; i<entries.length; i++){
+    if(entries[i].base_code===baseCode && entries[i].ay_id===aktifAy){
+      var code = entries[i].code;
+      var suffix = code.replace(baseCode+'-','');
+      // Ayni ek ile mi?
+      if(ek){
+        if(suffix.startsWith(ek)) count++;
+      } else {
+        // Ek yok - sadece rakam ile bitenler
+        if(/^\d+$/.test(suffix)) count++;
+      }
+    }
+  }
+  return count+1;
+}
 async function boruEkle(){
   var code = selParts.join('-');
   if(!code){ toast('Boru sec', true); return; }
