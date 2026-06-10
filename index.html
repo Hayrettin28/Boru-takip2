@@ -77,10 +77,11 @@ input,select,textarea,button{font-family:var(--fb)}
 .part-chip{display:inline-flex;align-items:center;background:var(--accent);color:#000;border-radius:6px;padding:4px 10px;font-family:monospace;font-size:13px;font-weight:700}
 .grp-chip-wrap{margin-bottom:12px}
 .grp-chip-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
-.grp-chips{display:flex;flex-wrap:wrap;gap:6px}
+.grp-chips{display:flex;flex-wrap:wrap;gap:6px;max-height:120px;overflow-y:auto}
 .grp-val{background:var(--s3);border:1px solid var(--border);border-radius:6px;padding:7px 13px;font-family:monospace;font-size:13px;cursor:pointer;transition:.1s;user-select:none}
 .grp-val:active{background:var(--accent);color:#000}
-.sc-item{display:inline-flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--blue);border-radius:20px;padding:7px 13px;font-size:13px;cursor:pointer;color:var(--blue);margin:3px;transition:.1s;user-select:none}
+.sc-wrap{display:flex;flex-wrap:wrap;gap:6px;max-height:110px;overflow-y:auto;overflow-x:hidden;padding-bottom:4px}
+.sc-item{display:inline-flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--blue);border-radius:20px;padding:7px 13px;font-size:13px;cursor:pointer;color:var(--blue);transition:.1s;user-select:none;white-space:nowrap}
 .sc-item.sel{background:var(--blue);color:#fff}
 /* TABLO */
 .tw{overflow-x:auto;overflow-y:auto;max-height:350px}
@@ -646,6 +647,7 @@ async function boruEkle(){
 async function scKaydet(){
   var code = selParts.join('-');
   if(!code){ toast('Once boru sec', true); return; }
+  if(shortcuts.length >= 10){ toast('Max 10 kisayol eklenebilir!', true); return; }
   var label = prompt('Kisayol adi:')||code;
   var sc = {id:'sc'+Date.now(), user_id:me.id, code:code, label:label};
   var r = await sb.from('shortcuts').insert(sc);
