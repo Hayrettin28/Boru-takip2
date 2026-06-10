@@ -418,6 +418,21 @@ function setupRealtime(){
       }
     })
     .subscribe();
+
+  sb.channel('ayarlar-changes')
+    .on('postgres_changes', {event:'UPDATE', schema:'public', table:'ayarlar', filter:'key=eq.groups'}, function(payload){
+      try {
+        var g = JSON.parse(payload.new.value);
+        if(g && g.length){
+          groups = g;
+          localStorage.setItem('bt_groups', JSON.stringify(groups));
+          renderGroups();
+          renderGrpChips();
+          toast('Kategoriler guncellendi');
+        }
+      } catch(e){}
+    })
+    .subscribe();
 }
 async function loadAll(){
   await Promise.all([loadAylar(), loadShortcuts(), loadORKey(), loadGroups()]);
