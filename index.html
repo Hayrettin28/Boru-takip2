@@ -1392,6 +1392,16 @@ function setFiltre(el){
   document.querySelectorAll('.filtre').forEach(function(f){ f.classList.remove('active'); });
   el.classList.add('active'); karsilastir();
 }
+function filtreyiSec(tip){
+  aktifFiltre = tip;
+  document.querySelectorAll('.filtre').forEach(function(f){ f.classList.remove('active'); });
+  var hedef = document.querySelector('.filtre[data-f="'+tip+'"]');
+  if(hedef) hedef.classList.add('active');
+  karsilastir();
+  // Tabloya kaydır
+  var wrap = document.getElementById('rap-wrap');
+  if(wrap) wrap.scrollIntoView({behavior:'smooth', block:'start'});
+}
 function karsilastir(){
   var wrap = document.getElementById('rap-wrap');
   var statEl = document.getElementById('rap-stat');
@@ -1412,9 +1422,12 @@ function karsilastir(){
   }
   satirlar.sort(function(a,b){ return a.kod>b.kod?1:-1; });
   var sH='<div class="stat-row">';
-  sH+='<div class="stat-box"><div class="stat-num" style="color:var(--green)">'+esit+'</div><div class="stat-lbl">Esit</div></div>';
-  sH+='<div class="stat-box"><div class="stat-num" style="color:var(--red)">'+eksik+'</div><div class="stat-lbl">Bizde Yok</div></div>';
-  sH+='<div class="stat-box" style="grid-column:span 2"><div class="stat-num" style="color:var(--accent)">'+fazla+'</div><div class="stat-lbl">Muhasebeye Yok</div></div>';
+  sH+='<div class="stat-box" onclick="filtreyiSec(\'esit\')" style="cursor:pointer;transition:.15s" onmouseover="this.style.borderColor=\'var(--green)\'" onmouseout="this.style.borderColor=\'\'">';
+  sH+='<div class="stat-num" style="color:var(--green)">'+esit+'</div><div class="stat-lbl">Eşit</div></div>';
+  sH+='<div class="stat-box" onclick="filtreyiSec(\'eksik\')" style="cursor:pointer;transition:.15s" onmouseover="this.style.borderColor=\'var(--red)\'" onmouseout="this.style.borderColor=\'\'">';
+  sH+='<div class="stat-num" style="color:var(--red)">'+eksik+'</div><div class="stat-lbl">Bizde Yok</div></div>';
+  sH+='<div class="stat-box" onclick="filtreyiSec(\'fazla\')" style="cursor:pointer;transition:.15s;grid-column:span 2" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'\'">';
+  sH+='<div class="stat-num" style="color:var(--accent)">'+fazla+'</div><div class="stat-lbl">Muhasebede Yok</div></div>';
   sH+='</div>'; statEl.innerHTML=sH;
   var filtreli=satirlar.filter(function(s){ return aktifFiltre==='hepsi'||s.durum===aktifFiltre; });
   if(!filtreli.length){ wrap.innerHTML='<div class="empty">Secili filtrede kayit yok</div>'; return; }
