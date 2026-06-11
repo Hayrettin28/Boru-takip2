@@ -131,14 +131,14 @@ tr:last-child td{border-bottom:none}
 
     <div id="form-giris">
       <div class="f"><label>E-Posta</label><input id="g-email" type="email" placeholder="ad@mail.com"></div>
-      <div class="f"><label>Şifre</label><input id="g-sifre" type="password" placeholder="..."></div>
-      <button type="button" class="btn btn-a btn-w" onclick="doGiris()">Giriş Yap</button>
+      <div class="f"><label>Sifre</label><input id="g-sifre" type="password" placeholder="..."></div>
+      <button type="button" class="btn btn-a btn-w" onclick="doGiris()">Giris Yap</button>
       <div id="g-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
     <div id="form-kayit" style="display:none">
       <div class="f"><label>Ad Soyad</label><input id="k-ad" type="text" placeholder="Ahmet Yilmaz"></div>
       <div class="f"><label>E-Posta</label><input id="k-email" type="email" placeholder="ad@mail.com"></div>
-      <div class="f"><label>Şifre</label><input id="k-sifre" type="password" placeholder="En az 6 karakter"></div>
+      <div class="f"><label>Sifre</label><input id="k-sifre" type="password" placeholder="En az 6 karakter"></div>
       <button type="button" class="btn btn-a btn-w" onclick="doKayit()">Kayit Ol</button>
       <div id="k-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
@@ -148,7 +148,7 @@ tr:last-child td{border-bottom:none}
 <!-- APP -->
 <div id="app-wrap" style="display:none">
   <div class="topbar">
-    <div class="topbar-logo">BORU TAKİP</div>
+    <div class="topbar-logo">BORU</div>
     <div id="tarih-lbl" style="font-size:13px;color:var(--muted)"></div>
     <div class="avatar" id="user-avatar" onclick="goPageByName('ekip')" title="Ekip">?</div>
   </div>
@@ -156,9 +156,9 @@ tr:last-child td{border-bottom:none}
   <div class="content">
     <!-- GİRİŞ -->
     <div id="page-giris" class="page active">
-      <div class="ph"><div class="h1">Boru Girişi</div><span id="today-lbl" style="font-size:12px;color:var(--muted)"></span></div>
+      <div class="ph"><div class="h1">Boru Girisi</div><span id="today-lbl" style="font-size:12px;color:var(--muted)"></span></div>
       <div class="card">
-        <div class="ct">Kısayollarım</div>
+        <div class="ct">Kisayollarim</div>
         <div id="sc-list" style="max-height:110px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:6px"><div style="color:var(--muted);font-size:12px">Kisayol yok — boru sec, Kisayol Kaydet'e bas</div></div>
         <div id="sc-giris" style="display:none;margin-top:12px">
           <div class="divider"></div>
@@ -168,19 +168,19 @@ tr:last-child td{border-bottom:none}
             <input id="sc-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
             <button type="button" class="btn btn-a" onclick="scEkle()">+ Ekle</button>
           </div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Ek boş: -1,-2,-3 | Ek SP: -SP01,-SP02,-SP03</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Ek bos: -1,-2,-3 | Ek SP: -SP1,-SP2,-SP3</div>
           <div id="sc-sel-lbl" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
         </div>
       </div>
       <div class="card">
-        <div class="ct">Boru Seç</div>
+        <div class="ct">Boru Sec</div>
         <div class="code-preview" id="code-prev">—</div>
         <div class="sel-parts" id="sel-parts"></div>
         <div id="grp-chips-wrap"></div>
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
           <button type="button" class="btn btn-g btn-sm" onclick="geriAl()">Geri Al</button>
           <button type="button" class="btn btn-g btn-sm" onclick="temizle()">Temizle</button>
-          <button type="button" class="btn btn-bl btn-sm" onclick="scKaydet()">Kısayol Kaydet</button>
+          <button type="button" class="btn btn-bl btn-sm" onclick="scKaydet()">Kisayol Kaydet</button>
         </div>
         <div class="divider"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -189,22 +189,22 @@ tr:last-child td{border-bottom:none}
           <input id="h-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
           <button type="button" class="btn btn-a" onclick="boruEkle()">+ Ekle</button>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px">Ek boş: kod-1,2,3 | Ek SP: kod-SP01,SP02,SP03</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">Ek bos: kod-1,2,3 | Ek SP: kod-SP1,SP2,SP3</div>
       </div>
       <div class="card">
-        <div class="ct" style="display:flex;align-items:center;justify-content:space-between">Bugünkü Girişlerim<button type="button" class="btn btn-r btn-xs" onclick="bugunTemizle()">Tümünü Sil</button></div>
+        <div class="ct" style="display:flex;align-items:center;justify-content:space-between">Bugunku Girislerim<button type="button" class="btn btn-r btn-xs" onclick="bugunTemizle()">Tumunu Sil</button></div>
         <div id="today-list"></div>
       </div>
     </div>
 
     <!-- LİSTE -->
     <div id="page-liste" class="page">
-      <div class="ph"><div class="h1">Ana Liste</div><div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-sm" onclick="csvIndir()">CSV</button><button type="button" class="btn btn-r btn-sm" onclick="listeTemizle()">Tümünü Sil</button></div></div>
+      <div class="ph"><div class="h1">Ana Liste</div><div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-sm" onclick="csvIndir()">CSV</button><button type="button" class="btn btn-r btn-sm" onclick="listeTemizle()">Tumunu Sil</button></div></div>
       <div id="ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
       <div id="liste-stat"></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px" id="kisi-filtre-row"></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="tarih-filtre-row">
-        <div class="filtre active" data-t="hepsi" onclick="setTarihFiltre(this)">Tüm Tarihler</div>
+        <div class="filtre active" data-t="hepsi" onclick="setTarihFiltre(this)">Tum Tarihler</div>
         <div class="filtre" data-t="bugun" onclick="setTarihFiltre(this)">Bugun</div>
         <div class="filtre" data-t="buhafta" onclick="setTarihFiltre(this)">Bu Hafta</div>
       </div>
@@ -213,37 +213,37 @@ tr:last-child td{border-bottom:none}
 
     <!-- KARŞILAŞTIRMA -->
     <div id="page-rapor" class="page">
-      <div class="ph"><div class="h1">Karşılaştırma</div><button type="button" class="btn btn-g btn-sm" onclick="csvFark()">Fark CSV</button></div>
+      <div class="ph"><div class="h1">Karsilastirma</div><button type="button" class="btn btn-g btn-sm" onclick="csvFark()">Fark CSV</button></div>
       <div id="rap-ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
       <div class="card">
-        <div class="ct">Muhasebe Verisi Yükle</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Kopyala-Yapıştır (her satıra bir kod)</div>
+        <div class="ct">Muhasebe Verisi Yukle</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Kopyala-Yapistir (her satira bir kod)</div>
         <textarea id="muh-paste" rows="4" class="inp" style="font-family:monospace;font-size:12px;resize:vertical;width:100%" placeholder="M9-154-M-5510-032-001-SP02"></textarea>
-        <button type="button" class="btn btn-a btn-sm" style="margin-top:7px" onclick="muhYukle()">Yükle</button>
+        <button type="button" class="btn btn-a btn-sm" style="margin-top:7px" onclick="muhYukle()">Yukle</button>
         <div class="divider"></div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Dosya Yükle (txt/csv)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Dosya Yukle (txt/csv)</div>
         <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
           <input type="file" id="muh-file" accept=".txt,.csv" onchange="muhDosya(this)" style="display:none">
-          <div class="btn btn-g btn-sm">Dosya Seç</div>
-          <span id="dosya-adi" style="font-size:12px;color:var(--muted)">Seçilmedi</span>
+          <div class="btn btn-g btn-sm">Dosya Sec</div>
+          <span id="dosya-adi" style="font-size:12px;color:var(--muted)">Secilmedi</span>
         </label>
         <div class="divider"></div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Fotoğraftan Oku (AI)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Fotograftan Oku (AI)</div>
         <label style="display:block;border:2px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer">
           <input type="file" id="muh-foto" accept="image/*" multiple onchange="muhFoto(this)" style="display:none">
           <div style="font-size:26px;margin-bottom:4px">📷</div>
-          <div style="font-size:13px;color:var(--muted)">Tek veya birden fazla fotoğraf seç</div>
+          <div style="font-size:13px;color:var(--muted)">Tek veya birden fazla fotograf sec</div>
         </label>
         <div id="ocr-durum" style="font-size:12px;margin-top:7px"></div>
         <div id="ocr-preview" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;max-height:120px;overflow-y:auto;margin-top:6px;white-space:pre-wrap;word-break:break-all"></div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
           <div id="muh-yuklu" style="font-size:12px;color:var(--green);flex:1"></div>
-          <button type="button" class="btn btn-r btn-xs" onclick="muhTemizle()">Yüklenen Veriyi Sil</button>
+          <button type="button" class="btn btn-r btn-xs" onclick="muhTemizle()">Yuklenen Veriyi Sil</button>
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
         <div class="filtre active" data-f="hepsi" onclick="setFiltre(this)">Hepsi</div>
-        <div class="filtre" data-f="esit" onclick="setFiltre(this)">Eşit</div>
+        <div class="filtre" data-f="esit" onclick="setFiltre(this)">Esit</div>
         <div class="filtre" data-f="eksik" onclick="setFiltre(this)">Eksik</div>
         <div class="filtre" data-f="fazla" onclick="setFiltre(this)">Fazla</div>
       </div>
@@ -251,12 +251,12 @@ tr:last-child td{border-bottom:none}
         <div id="rap-stat" style="margin-bottom:10px"></div>
         <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
           <button type="button" class="btn btn-bl btn-sm" onclick="sonucuKaydet()">Sonucu Kaydet</button>
-          <button type="button" class="btn btn-r btn-sm" onclick="karsilastirmaTemizle()">Sıfırla</button>
+          <button type="button" class="btn btn-r btn-sm" onclick="karsilastirmaTemizle()">Sifirla</button>
         </div>
         <div id="rap-wrap"></div>
       </div>
       <div class="card">
-        <div class="ct">Kayıtlı Sonuçlar</div>
+        <div class="ct">Kayitli Sonuclar</div>
         <div id="kayitli-sonuclar"></div>
       </div>
     </div>
@@ -264,7 +264,7 @@ tr:last-child td{border-bottom:none}
     <!-- KATEGORİLER -->
     <div id="page-cats" class="page">
       <div class="ph"><div class="h1">Kategoriler</div><button type="button" class="btn btn-a btn-sm" onclick="openOv('grp-ov')">+ Grup Ekle</button></div>
-      <div class="hint">Gruplar oluştur, değerler ekle. Giriş ekranında bunlara tıklayarak boru kodunu oluşturursun.</div>
+      <div class="hint">Gruplar olustur, degerler ekle. Giris ekraninda bunlara tiklayarak boru kodunu olusturursun.</div>
       <div id="grp-list"></div>
     </div>
 
@@ -272,26 +272,26 @@ tr:last-child td{border-bottom:none}
     <div id="page-ekip" class="page">
       <div class="ph"><div class="h1">Ekip</div></div>
       <div class="card">
-        <div class="ct">Ekip Üyeleri</div>
+        <div class="ct">Ekip Uyeleri</div>
         <div id="ekip-list"></div>
       </div>
       <div class="card">
-        <div class="ct">İstatistik</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Bu ayın giriş istatistiklerini görüntüle</div>
-        <button type="button" class="btn btn-bl btn-w" onclick="openStats()">İstatistikleri Göster</button>
+        <div class="ct">Istatistik</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Bu ayin giris istatistiklerini goruntule</div>
+        <button type="button" class="btn btn-bl btn-w" onclick="openStats()">Istatistikleri Goster</button>
       </div>
       <div class="card">
-        <div class="ct">Hesabım</div>
+        <div class="ct">Hesabim</div>
         <div id="hesap-bilgi" style="font-size:14px;color:var(--muted);margin-bottom:16px"></div>
-        <button type="button" class="btn btn-g btn-w" style="margin-bottom:8px" onclick="openOv('sifre-ov')">Şifre Değiştir</button>
-        <button type="button" class="btn btn-r btn-w" onclick="doLogout()">Çıkış Yap</button>
+        <button type="button" class="btn btn-g btn-w" style="margin-bottom:8px" onclick="openOv('sifre-ov')">Sifre Degistir</button>
+        <button type="button" class="btn btn-r btn-w" onclick="doLogout()">Cikis Yap</button>
       </div>
     </div>
   </div>
 
   <div class="bnav">
     <button type="button" class="nb active" onclick="goPage('giris',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m-8-8h16"/></svg>Giriş
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m-8-8h16"/></svg>Giris
     </button>
     <button type="button" class="nb" onclick="goPage('liste',this)">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Liste
@@ -311,20 +311,20 @@ tr:last-child td{border-bottom:none}
 <!-- MODALS -->
 <div class="overlay" id="grp-ov">
   <div class="modal"><h3>Yeni Grup</h3>
-    <div class="f"><label>Grup Adı</label><input type="text" id="grp-inp" placeholder="örn: Gemi, Sistem"></div>
-    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="addGroup()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('grp-ov')">İptal</button></div>
+    <div class="f"><label>Grup Adi</label><input type="text" id="grp-inp" placeholder="orn: Gemi, Sistem"></div>
+    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="addGroup()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('grp-ov')">Iptal</button></div>
   </div>
 </div>
 <div class="overlay" id="ay-ov">
   <div class="modal"><h3>Yeni Ay Ekle</h3>
-    <div class="f"><label>Ay Adı</label><input type="text" id="ay-inp" placeholder="örn: Temmuz 2026"></div>
-    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="yeniAyEkle()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('ay-ov')">İptal</button></div>
+    <div class="f"><label>Ay Adi</label><input type="text" id="ay-inp" placeholder="orn: Temmuz 2026"></div>
+    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="yeniAyEkle()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('ay-ov')">Iptal</button></div>
   </div>
 </div>
 <div class="overlay" id="stats-ov">
   <div class="modal" style="max-height:85vh;overflow-y:auto">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <h3 style="margin:0">İstatistik</h3>
+      <h3 style="margin:0">Istatistik</h3>
       <button type="button" class="btn btn-g btn-sm" onclick="closeOv('stats-ov')">Kapat</button>
     </div>
     <div id="stats-ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
@@ -334,26 +334,26 @@ tr:last-child td{border-bottom:none}
 
 <div class="overlay" id="sifre-ov">
   <div class="modal">
-    <h3>Şifre Değiştir</h3>
-    <div class="f"><label>Mevcut Şifre</label><input type="password" id="eski-sifre" placeholder="Mevcut şifrenizi girin"></div>
-    <div class="f"><label>Yeni Şifre</label><input type="password" id="yeni-sifre" placeholder="En az 6 karakter"></div>
-    <div class="f"><label>Yeni Şifre (Tekrar)</label><input type="password" id="yeni-sifre2" placeholder="Tekrar gir"></div>
+    <h3>Sifre Degistir</h3>
+    <div class="f"><label>Mevcut Sifre</label><input type="password" id="eski-sifre" placeholder="Mevcut sifrenizi girin"></div>
+    <div class="f"><label>Yeni Sifre</label><input type="password" id="yeni-sifre" placeholder="En az 6 karakter"></div>
+    <div class="f"><label>Yeni Sifre (Tekrar)</label><input type="password" id="yeni-sifre2" placeholder="Tekrar gir"></div>
     <div id="sifre-err" style="color:var(--red);font-size:12px;margin-bottom:10px"></div>
     <div style="display:flex;gap:8px">
-      <button type="button" class="btn btn-a" style="flex:1;justify-content:center" onclick="sifreDegistir()">Değiştir</button>
-      <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sifre-ov')">İptal</button>
+      <button type="button" class="btn btn-a" style="flex:1;justify-content:center" onclick="sifreDegistir()">Degistir</button>
+      <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sifre-ov')">Iptal</button>
     </div>
   </div>
 </div>
 
 <div class="overlay" id="sc-kaydet-ov">
   <div class="modal">
-    <h3>Kısayol Kaydet</h3>
+    <h3>Kisayol Kaydet</h3>
     <div style="font-family:monospace;font-size:13px;color:var(--accent);margin-bottom:12px" id="sc-kaydet-kod"></div>
-    <div class="f"><label>Kısayol Adı</label><input type="text" id="sc-kaydet-inp" placeholder="Boş bıraksan kod kullanılır"></div>
+    <div class="f"><label>Kisayol Adi</label><input type="text" id="sc-kaydet-inp" placeholder="Bos biraksan kod kullanilir"></div>
     <div style="display:flex;gap:8px">
       <button type="button" class="btn btn-a" style="flex:1;justify-content:center" onclick="scKaydetOnayla()">Kaydet</button>
-      <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sc-kaydet-ov')">İptal</button>
+      <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sc-kaydet-ov')">Iptal</button>
     </div>
   </div>
 </div>
@@ -364,8 +364,21 @@ tr:last-child td{border-bottom:none}
     <div id="ekle-ozet" style="font-size:13px;background:var(--bg);border-radius:8px;padding:12px;margin-bottom:16px;line-height:1.8"></div>
     <div style="display:flex;gap:8px">
       <button type="button" class="btn btn-a" id="ekle-evet" style="flex:1;justify-content:center">Evet, Ekle</button>
-      <button type="button" class="btn btn-g" onclick="closeOv('ekle-ov')" style="flex:1;justify-content:center">İptal</button>
+      <button type="button" class="btn btn-g" onclick="closeOv('ekle-ov')" style="flex:1;justify-content:center">Iptal</button>
     </div>
+  </div>
+</div>
+
+<div class="overlay" id="ekle-kullanici-ov">
+  <div class="modal">
+    <h3>Yeni Kullanıcı</h3>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">
+      Yeni kullanıcı eklemek için:<br>
+      <b style="color:var(--text)">Supabase → Authentication → Users → Add user</b><br><br>
+      Email ve şifre gir, <b>Auto Confirm User</b> işaretle, Create'e bas.<br>
+      Kullanıcı otomatik olarak listeye eklenir.
+    </div>
+    <button type="button" class="btn btn-g btn-w" onclick="closeOv('ekle-kullanici-ov')">Tamam</button>
   </div>
 </div>
 
@@ -374,7 +387,7 @@ tr:last-child td{border-bottom:none}
     <p id="onay-msg" style="color:var(--muted);font-size:13px;margin-bottom:18px"></p>
     <div style="display:flex;gap:8px">
       <button class="btn btn-r" id="onay-evet" style="flex:1;justify-content:center">Evet, Sil</button>
-      <button type="button" class="btn btn-g" onclick="closeOv('onay-ov')" style="flex:1;justify-content:center">İptal</button>
+      <button type="button" class="btn btn-g" onclick="closeOv('onay-ov')" style="flex:1;justify-content:center">Iptal</button>
     </div>
   </div>
 </div>
@@ -432,19 +445,19 @@ async function doGiris(){
   var sifre = document.getElementById('g-sifre').value;
   var errEl = document.getElementById('g-err');
   errEl.style.color = '#f59e0b';
-  if(!email||!sifre){ errEl.style.color='#ef4444'; errEl.textContent='E-posta ve şifre gir'; return; }
-  errEl.textContent = 'Giriş yapılıyor...';
+  if(!email||!sifre){ errEl.style.color='#ef4444'; errEl.textContent='Email ve sifre gir'; return; }
+  errEl.textContent = 'Giris yapiliyor...';
   try {
     var r = await sb.auth.signInWithPassword({email:email, password:sifre});
     if(r.error){ errEl.style.color='#ef4444'; errEl.textContent='Hata: '+r.error.message; return; }
     me = r.data.user;
-    errEl.textContent = 'Yükleniyor...';
+    errEl.textContent = 'Yukleniyor...';
     await loadProfile();
     errEl.textContent = '';
     showApp();
   } catch(e){
     errEl.style.color='#ef4444';
-    errEl.textContent = 'Bağlantı hatası: '+(e.message||e);
+    errEl.textContent = 'Baglanti hatasi: '+(e.message||e);
   }
 }
 
@@ -482,7 +495,7 @@ function setupRealtime(){
       if(payload.new.user_id !== me.id && payload.new.ay_id === aktifAy){
         loadEntries().then(function(){
           renderListe();
-          toast('Yeni giriş: '+payload.new.code);
+          toast('Yeni giris: '+payload.new.code);
         });
       }
     })
@@ -506,7 +519,7 @@ function setupRealtime(){
           localStorage.setItem('bt_groups', JSON.stringify(groups));
           renderGroups();
           renderGrpChips();
-          toast('Kategoriler güncellendi');
+          toast('Kategoriler guncellendi');
         }
       } catch(e){}
     })
@@ -605,6 +618,21 @@ function toast(msg, err){
   var el = document.getElementById('toast');
   el.textContent = msg; el.className = 'toast show'+(err?' err':'');
   clearTimeout(tt); tt = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+  if(!err) bildirimSesi();
+}
+function bildirimSesi(){
+  try {
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.15);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime+0.15);
+  } catch(e){}
 }
 
 // ── AY YÖNETİMİ ──
@@ -623,7 +651,7 @@ function initAylar(){
 }
 async function yeniAyEkle(){
   var name = document.getElementById('ay-inp').value.trim();
-  if(!name){ toast('Ay adı gir', true); return; }
+  if(!name){ toast('Ay adi gir', true); return; }
   var id = 'ay'+Date.now();
   var ay = {id:id, name:name};
   aylar.push(ay);
@@ -643,7 +671,7 @@ async function secAy(id){
 async function secRapAy(id){
   aktifRapAy = id;
   await loadMuhFromDB();
-  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayıt yüklü' : '';
+  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayit yuklu' : '';
   renderRapor();
 }
 
@@ -708,19 +736,19 @@ async function doGiris(){
   var sifre = document.getElementById('g-sifre').value;
   var errEl = document.getElementById('g-err');
   errEl.style.color = '#f59e0b';
-  if(!email||!sifre){ errEl.style.color='#ef4444'; errEl.textContent='E-posta ve şifre gir'; return; }
-  errEl.textContent = 'Giriş yapılıyor...';
+  if(!email||!sifre){ errEl.style.color='#ef4444'; errEl.textContent='Email ve sifre gir'; return; }
+  errEl.textContent = 'Giris yapiliyor...';
   try {
     var r = await sb.auth.signInWithPassword({email:email, password:sifre});
     if(r.error){ errEl.style.color='#ef4444'; errEl.textContent='Hata: '+r.error.message; return; }
     me = r.data.user;
-    errEl.textContent = 'Yükleniyor...';
+    errEl.textContent = 'Yukleniyor...';
     await loadProfile();
     errEl.textContent = '';
     showApp();
   } catch(e){
     errEl.style.color='#ef4444';
-    errEl.textContent = 'Bağlantı hatası: '+(e.message||e);
+    errEl.textContent = 'Baglanti hatasi: '+(e.message||e);
   }
 }
 
@@ -758,7 +786,7 @@ function setupRealtime(){
       if(payload.new.user_id !== me.id && payload.new.ay_id === aktifAy){
         loadEntries().then(function(){
           renderListe();
-          toast('Yeni giriş: '+payload.new.code);
+          toast('Yeni giris: '+payload.new.code);
         });
       }
     })
@@ -782,7 +810,7 @@ function setupRealtime(){
           localStorage.setItem('bt_groups', JSON.stringify(groups));
           renderGroups();
           renderGrpChips();
-          toast('Kategoriler güncellendi');
+          toast('Kategoriler guncellendi');
         }
       } catch(e){}
     })
@@ -881,6 +909,21 @@ function toast(msg, err){
   var el = document.getElementById('toast');
   el.textContent = msg; el.className = 'toast show'+(err?' err':'');
   clearTimeout(tt); tt = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+  if(!err) bildirimSesi();
+}
+function bildirimSesi(){
+  try {
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.15);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime+0.15);
+  } catch(e){}
 }
 
 // ── AY YÖNETİMİ ──
@@ -899,7 +942,7 @@ function initAylar(){
 }
 async function yeniAyEkle(){
   var name = document.getElementById('ay-inp').value.trim();
-  if(!name){ toast('Ay adı gir', true); return; }
+  if(!name){ toast('Ay adi gir', true); return; }
   var id = 'ay'+Date.now();
   var ay = {id:id, name:name};
   aylar.push(ay);
@@ -919,7 +962,7 @@ async function secAy(id){
 async function secRapAy(id){
   aktifRapAy = id;
   await loadMuhFromDB();
-  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayıt yüklü' : '';
+  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayit yuklu' : '';
   renderRapor();
 }
 
@@ -967,9 +1010,9 @@ function getSiraNo(baseCode, ek){
 }
 async function boruEkle(){
   var code = selParts.join('-');
-  if(!code){ toast('Boru seç', true); return; }
+  if(!code){ toast('Boru sec', true); return; }
   var adet = parseInt(document.getElementById('h-adet').value);
-  if(!adet||adet<1){ toast('Geçerli adet gir', true); return; }
+  if(!adet||adet<1){ toast('Gecerli adet gir', true); return; }
   var ek = document.getElementById('h-ek').value.trim().toUpperCase();
   var sira = getSiraNo(code, ek);
   var ornekNum = sira < 10 ? '0'+sira : ''+sira;
@@ -1010,8 +1053,8 @@ async function boruEkle(){
 
 async function scKaydet(){
   var code = selParts.join('-');
-  if(!code){ toast('Önce boru seç', true); return; }
-  if(shortcuts.length >= 10){ toast('En fazla 10 kısayol eklenebilir!', true); return; }
+  if(!code){ toast('Once boru sec', true); return; }
+  if(shortcuts.length >= 10){ toast('Max 10 kisayol eklenebilir!', true); return; }
   document.getElementById('sc-kaydet-kod').textContent = code;
   document.getElementById('sc-kaydet-inp').value = code;
   openOv('sc-kaydet-ov');
@@ -1022,7 +1065,7 @@ async function scKaydetOnayla(){
   closeOv('sc-kaydet-ov');
   var sc = {id:'sc'+Date.now(), user_id:me.id, code:code, label:label};
   var r = await sb.from('shortcuts').insert(sc);
-  if(!r.error){ shortcuts.push(sc); toast('Kısayol kaydedildi!'); renderSC(); }
+  if(!r.error){ shortcuts.push(sc); toast('Kisayol kaydedildi!'); renderSC(); }
 }
 
 // ── KISAYOLLAR ──
@@ -1037,23 +1080,23 @@ function renderSC(){
   el.innerHTML = html;
   document.getElementById('sc-giris').style.display='block';
   var sc = shortcuts.filter(function(x){ return x.id===selSC; })[0];
-  document.getElementById('sc-sel-lbl').textContent = sc ? 'Seçili: '+sc.code : 'Kısayola tıkla, adet gir, Ekle\'ye bas';
+  document.getElementById('sc-sel-lbl').textContent = sc ? 'Secili: '+sc.code : 'Kisayola tikla, adet gir, Ekle\'ye bas';
 }
 function scSec(id){ selSC = selSC===id?null:id; renderSC(); }
 function scSilOnayla(id){
   var sc = shortcuts.filter(function(x){ return x.id===id; })[0];
-  onay('"'+sc.label+'" kısayolunu sil?', sc.code, async function(){
+  onay('"'+sc.label+'" kisayolunu sil?', sc.code, async function(){
     await sb.from('shortcuts').delete().eq('id',id);
     shortcuts = shortcuts.filter(function(x){ return x.id!==id; });
     if(selSC===id) selSC=null;
-    toast('Kısayol silindi'); renderSC();
+    toast('Kisayol silindi'); renderSC();
   });
 }
 async function scEkle(){
-  if(!selSC){ toast('Önce kısayol seç', true); return; }
+  if(!selSC){ toast('Once kisayol sec', true); return; }
   var sc = shortcuts.filter(function(x){ return x.id===selSC; })[0];
   var adet = parseInt(document.getElementById('sc-adet').value);
-  if(!adet||adet<1){ toast('Geçerli adet gir', true); return; }
+  if(!adet||adet<1){ toast('Gecerli adet gir', true); return; }
   var ek = document.getElementById('sc-ek').value.trim().toUpperCase();
   var sira = getSiraNo(sc.code, ek);
   var ornekNum = sira < 10 ? '0'+sira : ''+sira;
@@ -1095,11 +1138,11 @@ function renderToday(){
     var e = list[i];
     rows += '<tr><td style="font-family:monospace;font-size:12px">'+e.code+'</td><td style="font-size:12px;color:var(--muted)">'+e.tarih+'</td><td style="font-size:12px;color:var(--muted)">'+(e.not_field||e.not||'—')+'</td><td><button type="button" class="btn btn-r btn-xs" onclick="entrySil(\''+e.id+'\')">Sil</button></td></tr>';
   }
-  el.innerHTML='<div class="tw"><table><thead><tr><th>KOD</th><th>TARİH</th><th>NOT</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  el.innerHTML='<div class="tw"><table><thead><tr><th>KOD</th><th>TARIH</th><th>NOT</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function entrySil(id){
   var e = entries.filter(function(x){ return x.id===id; })[0];
-  onay('Bu kaydı sil?', e.code, async function(){
+  onay('Bu kaydi sil?', e.code, async function(){
     await deleteEntry(id);
     var baseCode = e.base_code||e.baseCode;
     entries = entries.filter(function(x){ return x.id!==id; });
@@ -1118,8 +1161,8 @@ async function yenidenNumaralandir(baseCode, ayId){
 function bugunTemizle(){
   var today = new Date().toISOString().split('T')[0];
   var list = entries.filter(function(e){ return e.tarih===today && e.user_id===me.id; });
-  if(!list.length){ toast('Bugün giriş yok', true); return; }
-  onay('Bugünün girişlerini sil?', list.length+' kayıt silinecek', async function(){
+  if(!list.length){ toast('Bugun giris yok', true); return; }
+  onay('Bugunun girislerini sil?', list.length+' kayit silinecek', async function(){
     for(var i=0;i<list.length;i++) await deleteEntry(list[i].id);
     entries = entries.filter(function(e){ return !(e.tarih===today && e.user_id===me.id); });
     toast('Silindi'); renderToday(); renderListe();
@@ -1173,12 +1216,12 @@ function renderListe(){
     var uname = e.profiles ? e.profiles.name : '?';
     rows += '<tr><td style="font-family:monospace;font-size:11px">'+e.code+'</td><td style="font-size:11px;color:var(--muted)">'+e.tarih+'</td><td><span class="u-badge">'+uname+'</span></td><td><button type="button" class="btn btn-r btn-xs" onclick="entrySil(\''+e.id+'\')">Sil</button></td></tr>';
   }
-  wrap.innerHTML='<div class="tw"><table><thead><tr><th>KOD</th><th>TARİH</th><th>KİM</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  wrap.innerHTML='<div class="tw"><table><thead><tr><th>KOD</th><th>TARIH</th><th>KIM</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function listeTemizle(){
   var list = entries.filter(function(e){ return e.ay_id===aktifAy; });
   if(!list.length){ toast('Bu ayda veri yok', true); return; }
-  onay('Bu ayın tüm listesini sil?', list.length+' kayıt silinecek', async function(){
+  onay('Bu ayin tum listesini sil?', list.length+' kayit silinecek', async function(){
     await sb.from('entries').delete().eq('ay_id',aktifAy);
     entries = entries.filter(function(e){ return e.ay_id!==aktifAy; });
     toast('Liste temizlendi'); renderListe(); renderToday();
@@ -1214,14 +1257,14 @@ function renderGroups(){
 }
 function addGroup(){
   var name = document.getElementById('grp-inp').value.trim();
-  if(!name){ toast('Grup adı gir', true); return; }
+  if(!name){ toast('Grup adi gir', true); return; }
   groups.push({id:'g'+Date.now(), name:name, values:[]});
   saveGroups(); closeOv('grp-ov'); document.getElementById('grp-inp').value='';
   toast('Grup eklendi'); renderGroups(); renderGrpChips();
 }
 function grpSil(id){
   var g = groups.filter(function(x){ return x.id===id; })[0];
-  onay('"'+g.name+'" grubunu sil?', g.values.length+' değer silinecek', function(){
+  onay('"'+g.name+'" grubunu sil?', g.values.length+' deger silinecek', function(){
     groups = groups.filter(function(x){ return x.id!==id; });
     saveGroups(); toast('Silindi'); renderGroups(); renderGrpChips();
   });
@@ -1229,7 +1272,7 @@ function grpSil(id){
 function valEkle(gid){
   var inp = document.getElementById('vi-'+gid);
   var val = inp.value.trim().toUpperCase();
-  if(!val){ toast('Değer gir', true); return; }
+  if(!val){ toast('Deger gir', true); return; }
   var g = groups.filter(function(x){ return x.id===gid; })[0];
   if(g.values.indexOf(val)!==-1){ toast('Zaten var', true); return; }
   g.values.push(val); saveGroups(); inp.value='';
@@ -1238,7 +1281,7 @@ function valEkle(gid){
 }
 function valSil(gid, idx){
   var g = groups.filter(function(x){ return x.id===gid; })[0];
-  onay('"'+g.values[idx]+'" değerini sil?', '', function(){
+  onay('"'+g.values[idx]+'" degerini sil?', '', function(){
     g.values.splice(idx,1); saveGroups(); toast('Silindi'); renderGroups(); renderGrpChips();
   });
 }
@@ -1271,17 +1314,17 @@ async function renderRapor(){
   }
   tabsEl.innerHTML = tabHtml;
   if(!muhListesi.length) await loadMuhFromDB();
-  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayıt yüklü' : '';
+  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayit yuklu' : '';
   karsilastir();
   renderKaydedilenSonuclar();
 }
 async function muhYukle(){
   var raw = document.getElementById('muh-paste').value.trim();
-  if(!raw){ toast('Önce veri yapıştır', true); return; }
+  if(!raw){ toast('Once veri yapistir', true); return; }
   muhListesi = parseRaw(raw);
   await saveMuhToDB();
-  document.getElementById('muh-yuklu').textContent = muhListesi.length+' kayıt yüklendi';
-  toast('Yüklendi!'); karsilastir();
+  document.getElementById('muh-yuklu').textContent = muhListesi.length+' kayit yuklendi';
+  toast('Yuklendi!'); karsilastir();
 }
 function muhDosya(input){
   var file = input.files[0]; if(!file) return;
@@ -1289,10 +1332,10 @@ function muhDosya(input){
   var reader = new FileReader();
   reader.onload = async function(e){
     muhListesi = parseRaw(e.target.result);
-    if(!muhListesi.length){ toast('Hiç kayıt okunamadı', true); return; }
+    if(!muhListesi.length){ toast('Hic kayit okunamadi', true); return; }
     await saveMuhToDB();
-    document.getElementById('muh-yuklu').textContent = muhListesi.length+' kayıt yüklendi';
-    toast('Yüklendi!'); karsilastir();
+    document.getElementById('muh-yuklu').textContent = muhListesi.length+' kayit yuklendi';
+    toast('Yuklendi!'); karsilastir();
   };
   reader.readAsText(file,'UTF-8');
 }
@@ -1310,7 +1353,7 @@ function isleQueue(idx, durumEl, previewEl){
   if(idx>=ocrQueue.length){
     saveMuhToDB();
     durumEl.innerHTML = '<span style="color:var(--green)">Toplam '+muhListesi.length+' kod okundu</span>';
-    document.getElementById('muh-yuklu').textContent = muhListesi.length+' kayıt yüklendi';
+    document.getElementById('muh-yuklu').textContent = muhListesi.length+' kayit yuklendi';
     karsilastir(); return;
   }
   var file = ocrQueue[idx];
@@ -1361,8 +1404,8 @@ function parseRaw(raw){
   return result;
 }
 function muhTemizle(){
-  if(!muhListesi.length){ toast('Yüklü veri yok', true); return; }
-  onay('Yüklenen muhasebe verisini sil?', 'Karşılaştırma sonucu etkilenmez.', async function(){
+  if(!muhListesi.length){ toast('Yuklu veri yok', true); return; }
+  onay('Yuklenen muhasebe verisini sil?', 'Karsilastirma sonucu etkilenmez.', async function(){
     muhListesi = [];
     await saveMuhToDB();
     document.getElementById('muh-yuklu').textContent='';
@@ -1372,10 +1415,10 @@ function muhTemizle(){
   });
 }
 function karsilastirmaTemizle(){
-  onay('Karşılaştırma sonucunu sıfırla?', 'Tablo temizlenecek, liste etkilenmez', function(){
+  onay('Karsilastirma sonucunu sifirla?', 'Tablo temizlenecek, liste etkilenmez', function(){
     document.getElementById('rap-wrap').innerHTML='<div class="empty"><div class="ei">📊</div>Once muhasebe verisi yukle</div>';
     document.getElementById('rap-stat').innerHTML='';
-    toast('Sıfırlandı');
+    toast('Sifirlandi');
   });
 }
 function setFiltre(el){
@@ -1403,7 +1446,7 @@ function karsilastir(){
   }
   satirlar.sort(function(a,b){ return a.kod>b.kod?1:-1; });
   var sH='<div class="stat-row">';
-  sH+='<div class="stat-box"><div class="stat-num" style="color:var(--green)">'+esit+'</div><div class="stat-lbl">Eşit</div></div>';
+  sH+='<div class="stat-box"><div class="stat-num" style="color:var(--green)">'+esit+'</div><div class="stat-lbl">Esit</div></div>';
   sH+='<div class="stat-box"><div class="stat-num" style="color:var(--red)">'+eksik+'</div><div class="stat-lbl">Bizde Yok</div></div>';
   sH+='<div class="stat-box" style="grid-column:span 2"><div class="stat-num" style="color:var(--accent)">'+fazla+'</div><div class="stat-lbl">Muhasebeye Yok</div></div>';
   sH+='</div>'; statEl.innerHTML=sH;
@@ -1416,10 +1459,10 @@ function karsilastir(){
     var badge=s.durum==='esit'?'<span class="badge b-g">ESIT</span>':s.durum==='eksik'?'<span class="badge b-r">EKSIK</span>':'<span class="badge b-a">FAZLA</span>';
     rows+='<tr class="'+cls+'"><td style="font-family:monospace;font-size:11px">'+s.kod+'</td><td>'+(s.bizde?'✓':'—')+'</td><td>'+(s.muhde?'✓':'—')+'</td><td>'+badge+'</td></tr>';
   }
-  wrap.innerHTML='<div class="tw"><table><thead><tr><th>KOD</th><th>EKİP</th><th>MUHASEBE</th><th>DURUM</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  wrap.innerHTML='<div class="tw"><table><thead><tr><th>KOD</th><th>EKIP</th><th>MUHASEBE</th><th>DURUM</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function sonucuKaydet(){
-  if(!muhListesi.length){ toast('Önce muhasebe yükle', true); return; }
+  if(!muhListesi.length){ toast('Once muhasebe yukle', true); return; }
   var ay=aylar.filter(function(a){ return a.id===aktifRapAy; })[0];
   var ayAdi=ay?ay.name:aktifRapAy;
   var rapEntries=entries.filter(function(e){ return e.ay_id===aktifRapAy; });
@@ -1434,7 +1477,7 @@ function sonucuKaydet(){
     satirlar.push({kod:kod,bizde:bizde,muhde:muhde,durum:durum});
   }
   kaydedilenSonuclar[aktifRapAy]={ayAdi:ayAdi,tarih:new Date().toLocaleDateString('tr-TR'),satirlar:satirlar};
-  saveKaydedilenSonuclar(); toast('Sonuç kaydedildi'); renderKaydedilenSonuclar();
+  saveKaydedilenSonuclar(); toast('Sonuc kaydedildi'); renderKaydedilenSonuclar();
 }
 function renderKaydedilenSonuclar(){
   var el=document.getElementById('kayitli-sonuclar'); if(!el) return;
@@ -1450,7 +1493,7 @@ function renderKaydedilenSonuclar(){
     html+='<div style="background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px">';
     html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
     html+='<div><div style="font-family:var(--fh);font-size:15px;color:var(--accent)">'+s.ayAdi+'</div><div style="font-size:11px;color:var(--muted)">'+s.tarih+'</div></div>';
-    html+='<div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-xs" onclick="sonucuGoster(\''+k+'\')">Göster</button><button type="button" class="btn btn-r btn-xs" onclick="sonucuSil(\''+k+'\')">Sil</button></div>';
+    html+='<div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-xs" onclick="sonucuGoster(\''+k+'\')">Goster</button><button type="button" class="btn btn-r btn-xs" onclick="sonucuSil(\''+k+'\')">Sil</button></div>';
     html+='</div><div style="display:flex;gap:8px;font-size:12px"><span style="color:var(--green)">'+esit+' Esit</span><span style="color:var(--red)">'+eksik+' Eksik</span><span style="color:var(--accent)">'+fazla+' Fazla</span></div></div>';
   }
   el.innerHTML=html;
@@ -1466,11 +1509,11 @@ function sonucuGoster(ayId){
     var badge=x.durum==='esit'?'<span class="badge b-g">ESIT</span>':x.durum==='eksik'?'<span class="badge b-r">EKSIK</span>':'<span class="badge b-a">FAZLA</span>';
     rows+='<tr class="'+cls+'"><td style="font-family:monospace;font-size:11px">'+x.kod+'</td><td>'+(x.bizde?'✓':'—')+'</td><td>'+(x.muhde?'✓':'—')+'</td><td>'+badge+'</td></tr>';
   }
-  wrap.innerHTML='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Kayitli: '+s.ayAdi+'</div><div class="tw"><table><thead><tr><th>KOD</th><th>EKİP</th><th>MUHASEBE</th><th>DURUM</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  wrap.innerHTML='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Kayitli: '+s.ayAdi+'</div><div class="tw"><table><thead><tr><th>KOD</th><th>EKIP</th><th>MUHASEBE</th><th>DURUM</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function sonucuSil(ayId){
   var s=kaydedilenSonuclar[ayId];
-  onay('"'+s.ayAdi+'" sonucunu sil?','Geri alınamaz',function(){ delete kaydedilenSonuclar[ayId]; saveKaydedilenSonuclar(); toast('Silindi'); renderKaydedilenSonuclar(); });
+  onay('"'+s.ayAdi+'" sonucunu sil?','Geri alinamaz',function(){ delete kaydedilenSonuclar[ayId]; saveKaydedilenSonuclar(); toast('Silindi'); renderKaydedilenSonuclar(); });
 }
 function csvFark(){
   if(!muhListesi.length){ toast('Muhasebe verisi yok', true); return; }
@@ -1495,7 +1538,7 @@ async function ayiSil(id){
   var count = 0;
   var r = await sb.from('entries').select('id', {count:'exact'}).eq('ay_id',id);
   count = r.count || 0;
-  onay('"'+ay.name+'" ayını sil?', count+' giriş de silinecek!', async function(){
+  onay('"'+ay.name+'" ayini sil?', count+' giris de silinecek!', async function(){
     await sb.from('entries').delete().eq('ay_id',id);
     await sb.from('aylar').delete().eq('id',id);
     aylar = aylar.filter(function(a){ return a.id!==id; });
@@ -1672,15 +1715,15 @@ async function sifreDegistir(){
   var yeni2 = document.getElementById('yeni-sifre2').value;
   var errEl = document.getElementById('sifre-err');
   errEl.textContent = '';
-  if(!eski){ errEl.textContent = 'Mevcut şifreyi gir'; return; }
-  if(!yeni || yeni.length < 6){ errEl.textContent = 'Yeni şifre en az 6 karakter olmalı'; return; }
-  if(yeni !== yeni2){ errEl.textContent = 'Yeni şifreler eşleşmiyor'; return; }
+  if(!eski){ errEl.textContent = 'Mevcut sifreyi gir'; return; }
+  if(!yeni || yeni.length < 6){ errEl.textContent = 'Yeni sifre en az 6 karakter olmali'; return; }
+  if(yeni !== yeni2){ errEl.textContent = 'Yeni sifreler eslesmiyor'; return; }
   errEl.style.color = 'var(--accent)';
   errEl.textContent = 'Kontrol ediliyor...';
   // Eski sifreyi dogrula
   var kontrol = await sb.auth.signInWithPassword({email: me.email, password: eski});
-  if(kontrol.error){ errEl.style.color='var(--red)'; errEl.textContent = 'Mevcut şifre yanlış!'; return; }
-  errEl.textContent = 'Değiştiriliyor...';
+  if(kontrol.error){ errEl.style.color='var(--red)'; errEl.textContent = 'Mevcut sifre yanlis!'; return; }
+  errEl.textContent = 'Degistiriliyor...';
   var r = await sb.auth.updateUser({password: yeni});
   if(r.error){ errEl.style.color='var(--red)'; errEl.textContent = 'Hata: '+r.error.message; return; }
   document.getElementById('eski-sifre').value = '';
@@ -1688,7 +1731,7 @@ async function sifreDegistir(){
   document.getElementById('yeni-sifre2').value = '';
   errEl.textContent = '';
   closeOv('sifre-ov');
-  toast('Şifre değiştirildi!');
+  toast('Sifre degistirildi!');
 }
 
 // ── BOOT ──
