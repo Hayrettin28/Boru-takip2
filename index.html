@@ -148,7 +148,7 @@ tr:last-child td{border-bottom:none}
 <!-- APP -->
 <div id="app-wrap" style="display:none">
   <div class="topbar">
-    <div class="topbar-logo">BORU</div>
+    <div class="topbar-logo">BORU TAKİP</div>
     <div id="tarih-lbl" style="font-size:13px;color:var(--muted)"></div>
     <div class="avatar" id="user-avatar" onclick="goPageByName('ekip')" title="Ekip">?</div>
   </div>
@@ -156,7 +156,7 @@ tr:last-child td{border-bottom:none}
   <div class="content">
     <!-- GİRİŞ -->
     <div id="page-giris" class="page active">
-      <div class="ph"><div class="h1">Boru Girisi</div><span id="today-lbl" style="font-size:12px;color:var(--muted)"></span></div>
+      <div class="ph"><div class="h1">Boru Girişi</div><span id="today-lbl" style="font-size:12px;color:var(--muted)"></span></div>
       <div class="card">
         <div class="ct">Kısayollarım</div>
         <div id="sc-list" style="max-height:110px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:6px"><div style="color:var(--muted);font-size:12px">Kısayol yok — boru seç, Kısayol Kaydet'e bas</div></div>
@@ -199,7 +199,7 @@ tr:last-child td{border-bottom:none}
 
     <!-- LİSTE -->
     <div id="page-liste" class="page">
-      <div class="ph"><div class="h1">Ana Liste</div><div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-sm" onclick="csvIndir()">CSV</button><button type="button" class="btn btn-r btn-sm" onclick="listeTemizle()">Tumunu Sil</button></div></div>
+      <div class="ph"><div class="h1">Ana Liste</div><div style="display:flex;gap:6px"><button type="button" class="btn btn-g btn-sm" onclick="csvIndir()">CSV</button><button type="button" class="btn btn-r btn-sm" onclick="listeTemizle()">Tümünü Sil</button></div></div>
       <div id="ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
       <div id="liste-stat"></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px" id="kisi-filtre-row"></div>
@@ -219,7 +219,7 @@ tr:last-child td{border-bottom:none}
         <div class="ct">Muhasebe Verisi Yükle</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Kopyala-Yapıştır (her satıra bir kod)</div>
         <textarea id="muh-paste" rows="4" class="inp" style="font-family:monospace;font-size:12px;resize:vertical;width:100%" placeholder="M9-154-M-5510-032-001-SP02"></textarea>
-        <button type="button" class="btn btn-a btn-sm" style="margin-top:7px" onclick="muhYukle()">Yukle</button>
+        <button type="button" class="btn btn-a btn-sm" style="margin-top:7px" onclick="muhYukle()">Yükle</button>
         <div class="divider"></div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Dosya Yükle (txt/csv)</div>
         <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
@@ -251,7 +251,7 @@ tr:last-child td{border-bottom:none}
         <div id="rap-stat" style="margin-bottom:10px"></div>
         <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
           <button type="button" class="btn btn-bl btn-sm" onclick="sonucuKaydet()">Sonucu Kaydet</button>
-          <button type="button" class="btn btn-r btn-sm" onclick="karsilastirmaTemizle()">Sifirla</button>
+          <button type="button" class="btn btn-r btn-sm" onclick="karsilastirmaTemizle()">Sıfırla</button>
         </div>
         <div id="rap-wrap"></div>
       </div>
@@ -264,7 +264,7 @@ tr:last-child td{border-bottom:none}
     <!-- KATEGORİLER -->
     <div id="page-cats" class="page">
       <div class="ph"><div class="h1">Kategoriler</div><button type="button" class="btn btn-a btn-sm" onclick="openOv('grp-ov')">+ Grup Ekle</button></div>
-      <div class="hint">Gruplar olustur, degerler ekle. Giris ekraninda bunlara tiklayarak boru kodunu olusturursun.</div>
+      <div class="hint">Gruplar oluştur, değerler ekle. Giriş ekranında bunlara tıklayarak boru kodunu oluşturursun.</div>
       <div id="grp-list"></div>
     </div>
 
@@ -272,26 +272,26 @@ tr:last-child td{border-bottom:none}
     <div id="page-ekip" class="page">
       <div class="ph"><div class="h1">Ekip</div></div>
       <div class="card">
-        <div class="ct">Ekip Uyeleri</div>
+        <div class="ct">Ekip Üyeleri</div>
         <div id="ekip-list"></div>
       </div>
       <div class="card">
         <div class="ct">Istatistik</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Bu ayin giris istatistiklerini goruntule</div>
-        <button type="button" class="btn btn-bl btn-w" onclick="openStats()">Istatistikleri Goster</button>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Bu ayın giriş istatistiklerini görüntüle</div>
+        <button type="button" class="btn btn-bl btn-w" onclick="openStats()">İstatistikleri Göster</button>
       </div>
       <div class="card">
-        <div class="ct">Hesabim</div>
+        <div class="ct">Hesabım</div>
         <div id="hesap-bilgi" style="font-size:14px;color:var(--muted);margin-bottom:16px"></div>
-        <button type="button" class="btn btn-g btn-w" style="margin-bottom:8px" onclick="openOv('sifre-ov')">Sifre Degistir</button>
-        <button type="button" class="btn btn-r btn-w" onclick="doLogout()">Cikis Yap</button>
+        <button type="button" class="btn btn-g btn-w" style="margin-bottom:8px" onclick="openOv('sifre-ov')">Şifre Değiştir</button>
+        <button type="button" class="btn btn-r btn-w" onclick="doLogout()">Çıkış Yap</button>
       </div>
     </div>
   </div>
 
   <div class="bnav">
     <button type="button" class="nb active" onclick="goPage('giris',this)">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m-8-8h16"/></svg>Giris
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m-8-8h16"/></svg>Giriş
     </button>
     <button type="button" class="nb" onclick="goPage('liste',this)">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Liste
@@ -311,20 +311,20 @@ tr:last-child td{border-bottom:none}
 <!-- MODALS -->
 <div class="overlay" id="grp-ov">
   <div class="modal"><h3>Yeni Grup</h3>
-    <div class="f"><label>Grup Adi</label><input type="text" id="grp-inp" placeholder="orn: Gemi, Sistem"></div>
-    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="addGroup()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('grp-ov')">Iptal</button></div>
+    <div class="f"><label>Grup Adı</label><input type="text" id="grp-inp" placeholder="orn: Gemi, Sistem"></div>
+    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="addGroup()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('grp-ov')">İptal</button></div>
   </div>
 </div>
 <div class="overlay" id="ay-ov">
   <div class="modal"><h3>Yeni Ay Ekle</h3>
-    <div class="f"><label>Ay Adi</label><input type="text" id="ay-inp" placeholder="orn: Temmuz 2026"></div>
-    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="yeniAyEkle()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('ay-ov')">Iptal</button></div>
+    <div class="f"><label>Ay Adı</label><input type="text" id="ay-inp" placeholder="orn: Temmuz 2026"></div>
+    <div style="display:flex;gap:8px"><button type="button" class="btn btn-a" onclick="yeniAyEkle()">Ekle</button><button type="button" class="btn btn-g" onclick="closeOv('ay-ov')">İptal</button></div>
   </div>
 </div>
 <div class="overlay" id="stats-ov">
   <div class="modal" style="max-height:85vh;overflow-y:auto">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <h3 style="margin:0">Istatistik</h3>
+      <h3 style="margin:0">İstatistik</h3>
       <button type="button" class="btn btn-g btn-sm" onclick="closeOv('stats-ov')">Kapat</button>
     </div>
     <div id="stats-ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
@@ -334,26 +334,26 @@ tr:last-child td{border-bottom:none}
 
 <div class="overlay" id="sifre-ov">
   <div class="modal">
-    <h3>Sifre Degistir</h3>
-    <div class="f"><label>Mevcut Sifre</label><input type="password" id="eski-sifre" placeholder="Mevcut sifrenizi girin"></div>
-    <div class="f"><label>Yeni Sifre</label><input type="password" id="yeni-sifre" placeholder="En az 6 karakter"></div>
-    <div class="f"><label>Yeni Sifre (Tekrar)</label><input type="password" id="yeni-sifre2" placeholder="Tekrar gir"></div>
+    <h3>Şifre Değiştir</h3>
+    <div class="f"><label>Mevcut Şifre</label><input type="password" id="eski-sifre" placeholder="Mevcut sifrenizi girin"></div>
+    <div class="f"><label>Yeni Şifre</label><input type="password" id="yeni-sifre" placeholder="En az 6 karakter"></div>
+    <div class="f"><label>Yeni Şifre (Tekrar)</label><input type="password" id="yeni-sifre2" placeholder="Tekrar gir"></div>
     <div id="sifre-err" style="color:var(--red);font-size:12px;margin-bottom:10px"></div>
     <div style="display:flex;gap:8px">
-      <button type="button" class="btn btn-a" style="flex:1;justify-content:center" onclick="sifreDegistir()">Degistir</button>
-      <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sifre-ov')">Iptal</button>
+      <button type="button" class="btn btn-a" style="flex:1;justify-content:center" onclick="sifreDegistir()">Değiştir</button>
+      <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sifre-ov')">İptal</button>
     </div>
   </div>
 </div>
 
 <div class="overlay" id="sc-kaydet-ov">
   <div class="modal">
-    <h3>Kisayol Kaydet</h3>
+    <h3>Kısayol Kaydet</h3>
     <div style="font-family:monospace;font-size:13px;color:var(--accent);margin-bottom:12px" id="sc-kaydet-kod"></div>
-    <div class="f"><label>Kisayol Adi</label><input type="text" id="sc-kaydet-inp" placeholder="Bos biraksan kod kullanilir"></div>
+    <div class="f"><label>Kısayol Adı</label><input type="text" id="sc-kaydet-inp" placeholder="Bos biraksan kod kullanilir"></div>
     <div style="display:flex;gap:8px">
       <button type="button" class="btn btn-a" style="flex:1;justify-content:center" onclick="scKaydetOnayla()">Kaydet</button>
-      <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sc-kaydet-ov')">Iptal</button>
+      <button type="button" class="btn btn-g" style="flex:1;justify-content:center" onclick="closeOv('sc-kaydet-ov')">İptal</button>
     </div>
   </div>
 </div>
@@ -364,7 +364,7 @@ tr:last-child td{border-bottom:none}
     <div id="ekle-ozet" style="font-size:13px;background:var(--bg);border-radius:8px;padding:12px;margin-bottom:16px;line-height:1.8"></div>
     <div style="display:flex;gap:8px">
       <button type="button" class="btn btn-a" id="ekle-evet" style="flex:1;justify-content:center">Evet, Ekle</button>
-      <button type="button" class="btn btn-g" onclick="closeOv('ekle-ov')" style="flex:1;justify-content:center">Iptal</button>
+      <button type="button" class="btn btn-g" onclick="closeOv('ekle-ov')" style="flex:1;justify-content:center">İptal</button>
     </div>
   </div>
 </div>
@@ -374,7 +374,7 @@ tr:last-child td{border-bottom:none}
     <p id="onay-msg" style="color:var(--muted);font-size:13px;margin-bottom:18px"></p>
     <div style="display:flex;gap:8px">
       <button class="btn btn-r" id="onay-evet" style="flex:1;justify-content:center">Evet, Sil</button>
-      <button type="button" class="btn btn-g" onclick="closeOv('onay-ov')" style="flex:1;justify-content:center">Iptal</button>
+      <button type="button" class="btn btn-g" onclick="closeOv('onay-ov')" style="flex:1;justify-content:center">İptal</button>
     </div>
   </div>
 </div>
@@ -899,7 +899,7 @@ function initAylar(){
 }
 async function yeniAyEkle(){
   var name = document.getElementById('ay-inp').value.trim();
-  if(!name){ toast('Ay adi gir', true); return; }
+  if(!name){ toast('Ay adı gir', true); return; }
   var id = 'ay'+Date.now();
   var ay = {id:id, name:name};
   aylar.push(ay);
@@ -919,14 +919,14 @@ async function secAy(id){
 async function secRapAy(id){
   aktifRapAy = id;
   await loadMuhFromDB();
-  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayit yuklu' : '';
+  document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayıt yuklu' : '';
   renderRapor();
 }
 
 // ── GİRİŞ SAYFASI ──
 function renderGrpChips(){
   var el = document.getElementById('grp-chips-wrap');
-  if(!groups.length){ el.innerHTML='<div style="color:var(--muted);font-size:12px">Once Kategoriler sekmesinden grup olustur</div>'; return; }
+  if(!groups.length){ el.innerHTML='<div style="color:var(--muted);font-size:12px">Önce Kategoriler sekmesinden grup oluştur</div>'; return; }
   var html = '';
   for(var i=0; i<groups.length; i++){
     var g = groups[i];
