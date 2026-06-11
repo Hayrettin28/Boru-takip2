@@ -131,15 +131,15 @@ tr:last-child td{border-bottom:none}
 
     <div id="form-giris">
       <div class="f"><label>E-Posta</label><input id="g-email" type="email" placeholder="ad@mail.com"></div>
-      <div class="f"><label>Sifre</label><input id="g-sifre" type="password" placeholder="..."></div>
-      <button type="button" class="btn btn-a btn-w" onclick="doGiris()">Giris Yap</button>
+      <div class="f"><label>Şifre</label><input id="g-sifre" type="password" placeholder="..."></div>
+      <button type="button" class="btn btn-a btn-w" onclick="doGiris()">Giriş Yap</button>
       <div id="g-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
     <div id="form-kayit" style="display:none">
       <div class="f"><label>Ad Soyad</label><input id="k-ad" type="text" placeholder="Ahmet Yilmaz"></div>
       <div class="f"><label>E-Posta</label><input id="k-email" type="email" placeholder="ad@mail.com"></div>
-      <div class="f"><label>Sifre</label><input id="k-sifre" type="password" placeholder="En az 6 karakter"></div>
-      <button type="button" class="btn btn-a btn-w" onclick="doKayit()">Kayit Ol</button>
+      <div class="f"><label>Şifre</label><input id="k-sifre" type="password" placeholder="En az 6 karakter"></div>
+      <button type="button" class="btn btn-a btn-w" onclick="doKayit()">Kayıt Ol</button>
       <div id="k-err" style="color:var(--red);font-size:12px;margin-top:8px;text-align:center"></div>
     </div>
   </div>
@@ -158,8 +158,8 @@ tr:last-child td{border-bottom:none}
     <div id="page-giris" class="page active">
       <div class="ph"><div class="h1">Boru Girisi</div><span id="today-lbl" style="font-size:12px;color:var(--muted)"></span></div>
       <div class="card">
-        <div class="ct">Kisayollarim</div>
-        <div id="sc-list" style="max-height:110px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:6px"><div style="color:var(--muted);font-size:12px">Kisayol yok — boru sec, Kisayol Kaydet'e bas</div></div>
+        <div class="ct">Kısayollarım</div>
+        <div id="sc-list" style="max-height:110px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:6px"><div style="color:var(--muted);font-size:12px">Kısayol yok — boru seç, Kısayol Kaydet'e bas</div></div>
         <div id="sc-giris" style="display:none;margin-top:12px">
           <div class="divider"></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -168,19 +168,19 @@ tr:last-child td{border-bottom:none}
             <input id="sc-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
             <button type="button" class="btn btn-a" onclick="scEkle()">+ Ekle</button>
           </div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Ek bos: -1,-2,-3 | Ek SP: -SP1,-SP2,-SP3</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Ek gir: -1,-2,-3 | Ek SP: -SP1,-SP2,-SP3</div>
           <div id="sc-sel-lbl" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
         </div>
       </div>
       <div class="card">
-        <div class="ct">Boru Sec</div>
+        <div class="ct">Boru Seç</div>
         <div class="code-preview" id="code-prev">—</div>
         <div class="sel-parts" id="sel-parts"></div>
         <div id="grp-chips-wrap"></div>
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
           <button type="button" class="btn btn-g btn-sm" onclick="geriAl()">Geri Al</button>
           <button type="button" class="btn btn-g btn-sm" onclick="temizle()">Temizle</button>
-          <button type="button" class="btn btn-bl btn-sm" onclick="scKaydet()">Kisayol Kaydet</button>
+          <button type="button" class="btn btn-bl btn-sm" onclick="scKaydet()">Kısayol Kaydet</button>
         </div>
         <div class="divider"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -189,10 +189,10 @@ tr:last-child td{border-bottom:none}
           <input id="h-not" type="text" placeholder="Not" class="inp" style="flex:1;min-width:80px;font-size:13px">
           <button type="button" class="btn btn-a" onclick="boruEkle()">+ Ekle</button>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px">Ek bos: kod-1,2,3 | Ek SP: kod-SP1,SP2,SP3</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">Ek gir: kod-1,2,3 | Ek SP: kod-SP1,SP2,SP3</div>
       </div>
       <div class="card">
-        <div class="ct" style="display:flex;align-items:center;justify-content:space-between">Bugunku Girislerim<button type="button" class="btn btn-r btn-xs" onclick="bugunTemizle()">Tumunu Sil</button></div>
+        <div class="ct" style="display:flex;align-items:center;justify-content:space-between">Bugünkü Girişlerim<button type="button" class="btn btn-r btn-xs" onclick="bugunTemizle()">Tümünü Sil</button></div>
         <div id="today-list"></div>
       </div>
     </div>
@@ -204,8 +204,8 @@ tr:last-child td{border-bottom:none}
       <div id="liste-stat"></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px" id="kisi-filtre-row"></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="tarih-filtre-row">
-        <div class="filtre active" data-t="hepsi" onclick="setTarihFiltre(this)">Tum Tarihler</div>
-        <div class="filtre" data-t="bugun" onclick="setTarihFiltre(this)">Bugun</div>
+        <div class="filtre active" data-t="hepsi" onclick="setTarihFiltre(this)">Tüm Tarihler</div>
+        <div class="filtre" data-t="bugun" onclick="setTarihFiltre(this)">Bugün</div>
         <div class="filtre" data-t="buhafta" onclick="setTarihFiltre(this)">Bu Hafta</div>
       </div>
       <div class="card"><div id="liste-wrap"></div></div>
@@ -213,37 +213,37 @@ tr:last-child td{border-bottom:none}
 
     <!-- KARŞILAŞTIRMA -->
     <div id="page-rapor" class="page">
-      <div class="ph"><div class="h1">Karsilastirma</div><button type="button" class="btn btn-g btn-sm" onclick="csvFark()">Fark CSV</button></div>
+      <div class="ph"><div class="h1">Karşılaştırma</div><button type="button" class="btn btn-g btn-sm" onclick="csvFark()">Fark CSV</button></div>
       <div id="rap-ay-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
       <div class="card">
-        <div class="ct">Muhasebe Verisi Yukle</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Kopyala-Yapistir (her satira bir kod)</div>
+        <div class="ct">Muhasebe Verisi Yükle</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Kopyala-Yapıştır (her satıra bir kod)</div>
         <textarea id="muh-paste" rows="4" class="inp" style="font-family:monospace;font-size:12px;resize:vertical;width:100%" placeholder="M9-154-M-5510-032-001-SP02"></textarea>
         <button type="button" class="btn btn-a btn-sm" style="margin-top:7px" onclick="muhYukle()">Yukle</button>
         <div class="divider"></div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Dosya Yukle (txt/csv)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Dosya Yükle (txt/csv)</div>
         <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
           <input type="file" id="muh-file" accept=".txt,.csv" onchange="muhDosya(this)" style="display:none">
-          <div class="btn btn-g btn-sm">Dosya Sec</div>
-          <span id="dosya-adi" style="font-size:12px;color:var(--muted)">Secilmedi</span>
+          <div class="btn btn-g btn-sm">Dosya Seç</div>
+          <span id="dosya-adi" style="font-size:12px;color:var(--muted)">Seçilmedi</span>
         </label>
         <div class="divider"></div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Fotograftan Oku (AI)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Fotoğraftan Oku (AI)</div>
         <label style="display:block;border:2px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer">
           <input type="file" id="muh-foto" accept="image/*" multiple onchange="muhFoto(this)" style="display:none">
           <div style="font-size:26px;margin-bottom:4px">📷</div>
-          <div style="font-size:13px;color:var(--muted)">Tek veya birden fazla fotograf sec</div>
+          <div style="font-size:13px;color:var(--muted)">Tek veya birden fazla fotoğraf seç</div>
         </label>
         <div id="ocr-durum" style="font-size:12px;margin-top:7px"></div>
         <div id="ocr-preview" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;max-height:120px;overflow-y:auto;margin-top:6px;white-space:pre-wrap;word-break:break-all"></div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
           <div id="muh-yuklu" style="font-size:12px;color:var(--green);flex:1"></div>
-          <button type="button" class="btn btn-r btn-xs" onclick="muhTemizle()">Yuklenen Veriyi Sil</button>
+          <button type="button" class="btn btn-r btn-xs" onclick="muhTemizle()">Yüklenen Veriyi Sil</button>
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
         <div class="filtre active" data-f="hepsi" onclick="setFiltre(this)">Hepsi</div>
-        <div class="filtre" data-f="esit" onclick="setFiltre(this)">Esit</div>
+        <div class="filtre" data-f="esit" onclick="setFiltre(this)">Eşit</div>
         <div class="filtre" data-f="eksik" onclick="setFiltre(this)">Eksik</div>
         <div class="filtre" data-f="fazla" onclick="setFiltre(this)">Fazla</div>
       </div>
@@ -967,7 +967,7 @@ function getSiraNo(baseCode, ek){
 }
 async function boruEkle(){
   var code = selParts.join('-');
-  if(!code){ toast('Boru sec', true); return; }
+  if(!code){ toast('Boru seç', true); return; }
   var adet = parseInt(document.getElementById('h-adet').value);
   if(!adet||adet<1){ toast('Gecerli adet gir', true); return; }
   var ek = document.getElementById('h-ek').value.trim().toUpperCase();
@@ -1037,7 +1037,7 @@ function renderSC(){
   el.innerHTML = html;
   document.getElementById('sc-giris').style.display='block';
   var sc = shortcuts.filter(function(x){ return x.id===selSC; })[0];
-  document.getElementById('sc-sel-lbl').textContent = sc ? 'Secili: '+sc.code : 'Kisayola tikla, adet gir, Ekle\'ye bas';
+  document.getElementById('sc-sel-lbl').textContent = sc ? 'Secili: '+sc.code : 'Kısayola tıkla, adet gir, Ekle\'ye bas';
 }
 function scSec(id){ selSC = selSC===id?null:id; renderSC(); }
 function scSilOnayla(id){
