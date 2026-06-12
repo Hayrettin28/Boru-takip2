@@ -405,6 +405,7 @@ var kisiFiltre = 'hepsi';
 var tarihFiltre = 'hepsi';
 var aktifRapAy = '';
 var aktifFiltre = 'hepsi';
+var kayitliGosterAyId = null; // kayitli sonuc gosteriliyorsa ayId
 var kaydedilenSonuclar = JSON.parse(localStorage.getItem('bt_sonuclar') || '{}');
 var OR_KEY = '';
 var ocrQueue = [];
@@ -642,6 +643,7 @@ async function secAy(id){
 }
 async function secRapAy(id){
   aktifRapAy = id;
+  kayitliGosterAyId = null;
   await loadMuhFromDB();
   document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayıt yüklü' : '';
   renderRapor();
@@ -918,6 +920,7 @@ async function secAy(id){
 }
 async function secRapAy(id){
   aktifRapAy = id;
+  kayitliGosterAyId = null;
   await loadMuhFromDB();
   document.getElementById('muh-yuklu').textContent = muhListesi.length ? muhListesi.length+' kayıt yüklü' : '';
   renderRapor();
@@ -1042,7 +1045,7 @@ function renderSC(){
 function scSec(id){ selSC = selSC===id?null:id; renderSC(); }
 function scSilOnayla(id){
   var sc = shortcuts.filter(function(x){ return x.id===id; })[0];
-  onay('"'+sc.label+'" kisayolunu sil?', sc.code, async function(){
+  onay('"'+sc.label+'" kısayolunu sil?', sc.code, async function(){
     await sb.from('shortcuts').delete().eq('id',id);
     shortcuts = shortcuts.filter(function(x){ return x.id!==id; });
     if(selSC===id) selSC=null;
@@ -1368,6 +1371,7 @@ function muhTemizle(){
   if(!muhListesi.length){ toast('Yuklu veri yok', true); return; }
   onay('Yüklenen muhasebe verisini sil?', 'Karsilastirma sonucu etkilenmez.', async function(){
     muhListesi = [];
+    kayitliGosterAyId = null;
     await saveMuhToDB();
     document.getElementById('muh-yuklu').textContent='';
     document.getElementById('muh-paste').value='';
@@ -1378,6 +1382,7 @@ function muhTemizle(){
 function karsilastirmaTemizle(){
   onay('Karşılaştırma sonucunu sıfırla?', 'Tablo ve yüklenen veri temizlenecek', async function(){
     muhListesi = [];
+    kayitliGosterAyId = null;
     await saveMuhToDB();
     document.getElementById('muh-yuklu').textContent = '';
     document.getElementById('muh-paste').value = '';
@@ -1390,15 +1395,17 @@ function karsilastirmaTemizle(){
 function setFiltre(el){
   aktifFiltre = el.dataset.f;
   document.querySelectorAll('.filtre').forEach(function(f){ f.classList.remove('active'); });
-  el.classList.add('active'); karsilastir();
+  el.classList.add('active');
+  if(kayitliGosterAyId) _sonucuRender();
+  else karsilastir();
 }
 function filtreyiSec(tip){
   aktifFiltre = tip;
   document.querySelectorAll('.filtre').forEach(function(f){ f.classList.remove('active'); });
   var hedef = document.querySelector('.filtre[data-f="'+tip+'"]');
   if(hedef) hedef.classList.add('active');
-  karsilastir();
-  // Tabloya kaydır
+  if(kayitliGosterAyId) _sonucuRender();
+  else karsilastir();
   var wrap = document.getElementById('rap-wrap');
   if(wrap) wrap.scrollIntoView({behavior:'smooth', block:'start'});
 }
@@ -1459,7 +1466,7 @@ function sonucuKaydet(){
   saveKaydedilenSonuclar(); toast('Sonuc kaydedildi'); renderKaydedilenSonuclar();
 }
 function renderKaydedilenSonuclar(){
-  var el=document.getElementById('kayitli-sonuclar'); if(!el) return;
+  var el=document.getElementById('kayıtlı-sonuçlar'); if(!el) return;
   var keys=Object.keys(kaydedilenSonuclar);
   // Sadece aktif rap ayina ait sonuclari goster
   var filtered = keys.filter(function(k){ return k === aktifRapAy; });
@@ -1478,18 +1485,24 @@ function renderKaydedilenSonuclar(){
   el.innerHTML=html;
 }
 function sonucuGoster(ayId){
-  var s=kaydedilenSonuclar[ayId]; if(!s) return;
-  var filtreli=s.satirlar.filter(function(x){ return aktifFiltre==='hepsi'||x.durum===aktifFiltre; });
-  var wrap=document.getElementById('rap-wrap');
+  kayitliGosterAyId = ayId;
+  _sonucuRender();
+}
+function _sonucuRender(){
+  var ayId = kayitliGosterAyId;
+  var s = kaydedilenSonuclar[ayId]; if(!s) return;
+  var filtreli = s.satirlar.filter(function(x){ return aktifFiltre==='hepsi'||x.durum===aktifFiltre; });
+  var wrap = document.getElementById('rap-wrap');
   if(!filtreli.length){ wrap.innerHTML='<div class="empty">Seçili filtrede kayıt yok</div>'; return; }
   var rows='';
   for(var i=0;i<filtreli.length;i++){
     var x=filtreli[i],cls=x.durum==='eksik'?'row-eksik':x.durum==='fazla'?'row-fazla':'';
     var badge=x.durum==='esit'?'<span class="badge b-g">EŞİT</span>':x.durum==='eksik'?'<span class="badge b-r">EKSİK</span>':'<span class="badge b-a">FAZLA</span>';
-    rows+='<tr class="'+cls+'"><td style="font-family:monospace;font-size:11px">'+x.kod+'</td><td>'+(x.bizde?'✓':'—')+'</td><td>'+(x.muhde?'✓':'—')+'</td><td>'+badge+'</td></tr>';
+    rows+='<tr class="'+cls+'"><td style="font-family:monospace;font-size:11px">'+esc(x.kod)+'</td><td>'+(x.bizde?'✓':'—')+'</td><td>'+(x.muhde?'✓':'—')+'</td><td>'+badge+'</td></tr>';
   }
-  wrap.innerHTML='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Kayitli: '+s.ayAdi+'</div><div class="tw"><table><thead><tr><th>KOD</th><th>EKIP</th><th>MUHASEBE</th><th>DURUM</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  wrap.innerHTML='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Kayıtlı: '+esc(s.ayAdi)+'</div><div class="tw"><table><thead><tr><th>KOD</th><th>EKİP</th><th>MUHASEBE</th><th>DURUM</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
+
 function sonucuSil(ayId){
   var s=kaydedilenSonuclar[ayId];
   onay('"'+s.ayAdi+'" sonucunu sil?','Geri alınamaz',function(){ delete kaydedilenSonuclar[ayId]; saveKaydedilenSonuclar(); toast('Silindi'); renderKaydedilenSonuclar(); });
